@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ivory - Test Music Search</title>
+    <style>
+        body { background: #0a1428; color: #fff; font-family: monospace; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; background: #1a2332; border-left: 3px solid #32e0ff; }
+        input { padding: 8px; width: 100%; max-width: 400px; margin: 10px 0; }
+       button { padding: 10px 20px; background: #32e0ff; color: #000; border: none; cursor: pointer; font-weight: bold; }
+        .results { margin: 10px 0; padding: 10px; background: #0d0f14; border-radius: 4px; max-height: 400px; overflow-y: auto; }
+        .success { color: #00ff00; }
+        .error { color: #ff6b6b; }
+        .info { color: #32e0ff; }
+    </style>
+</head>
+<body>
+    <h1>🎵 Ivory Search Engine Test</h1>
+    
+    <div class="test-section">
+        <h2>iTunes API Test</h2>
+        <input id="itunesSearch" placeholder="Song name..." value="yellow">
+        <button onclick="testItunesAPI()">Test iTunes</button>
+        <div id="itunesResults" class="results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Last.fm API Test</h2>
+        <input id="lastfmSearch" placeholder="Song name..." value="yellow">
+        <button onclick="testLastfmAPI()">Test Last.fm</button>
+        <div id="lastfmResults" class="results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Combined Search (as in app)</h2>
+        <input id="combinedSearch" placeholder="Song name..." value="yellow">
+        <button onclick="testCombined()">Test Combined</button>
+        <div id="combinedResults" class="results"></div>
+    </div>
+
+    <script>
+        function log(element, message, type = 'info') {
+            const el = document.getElementById(element);
+            const now = new Date().toLocaleTimeString();
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info';
+            el.innerHTML += `<div class="${className}">[${now}] ${message}</div>`;
+            el.scrollTop = el.scrollHeight;
+        }
+
+        async function testItunesAPI() {
+            const search = document.getElementById('itunesSearch').value;
+            document.getElementById('itunesResults').innerHTML = '<div class="info">Loading...</div>';
+            
+            try {
+                log('itunesResults', `🔍 Searching iTunes for: "${search}"`, 'info');
+                
+                const url = `https://itunes.apple.com/search?term=${encodeURIComponent(search)}&entity=song&limit=5&media=music`;
+                log('itunesResults', `URL: ${url}`, 'info');
+                
+                const response = await fetch(url);
+                log('itunesResults', `Response status: ${response.status}`, response.ok ? 'success' : 'error');
+                
+                if (!response.ok) {
+                    log('itunesResults', `HTTP Error: ${response.status} ${response.statusText}`, 'error');
+                    return;
+                }
+                
+                const data = await response.json();
+                log('itunesResults', `Total results: ${data.resultCount}`, 'success');
+                
+                if (!data.results || data.results.length === 0) {
+                    log('itunesResults', 'No results found', 'error');
+                    return;
+                }
+                
+                data.results.forEach((track, idx) => {
+                    const preview = track.previewUrl ? '✅ HAS PREVIEW' : '❌ NO PREVIEW';
+                    log('itunesResults', `${idx+1}. "${track.trackName}" by ${track.artistName} ${preview}`, track.previewUrl ? 'success' : 'error');
+                });
+            } catch (e) {
+                log('itunesResults', `ERROR: ${e.message}`, 'error');
+            }
+        }
+
+        async function testLastfmAPI() {
+            const search = document.getElementById('lastfmSearch').value;
+            document.getElementById('lastfmResults').innerHTML = '<div class="info">Loading...</div>';
+            
+            try {
+                log('lastfmResults', `🔍 Searching Last.fm for: "${search}"`, 'info');
+                
+                const url = `http://ws.audioscrobbler.com/2.0/?method=track.search&track=${encodeURIComponent(search)}&limit=5&format=json&api_key=cf0f7a78b31476e0b7b86fef77b8a285`;
+                log('lastfmResults', `URL: ${url.substring(0, 80)}...`, 'info');
+                
+                const response = await fetch(url);
+                log('lastfmResults', `Response status: ${response.status}`, response.ok ? 'success' : 'error');
+                
+                const data = await response.json();
+                
+                if (!data.results || !data.results.trackmatches || data.results.trackmatches.track.length === 0) {
+                    log('lastfmResults', 'No results found', 'error');
+                    return;
+                }
+                
+                const tracks = Array.isArray(data.results.trackmatches.track) 
+                    ? data.results.trackmatches.track 
+                    : [data.results.trackmatches.track];
+                
+                log('lastfmResults', `Found ${tracks.length} tracks`, 'success');
+                
+                tracks.slice(0, 5).forEach((track, idx) => {
+                    log('lastfmResults', `${idx+1}. "${track.name}" by ${track.artist}`, 'success');
+                });
+            } catch (e) {
+                log('lastfmResults', `ERROR: ${e.message}`, 'error');
+            }
+        }
+
+        async function testCombined() {
+            const search = document.getElementById('combinedSearch').value;
+            document.getElementById('combinedResults').innerHTML = '';
+            
+            try {
+                log('combinedResults', `🌐 STARTING SEARCH for: "${search}"`, 'info');
+                
+                const [itunesRes, lastfmRes] = await Promise.all([
+                    fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(search)}&entity=song&limit=5&media=music`),
+                    fetch(`http://ws.audioscrobbler.com/2.0/?method=track.search&track=${encodeURIComponent(search)}&limit=5&format=json&api_key=cf0f7a78b31476e0b7b86fef77b8a285`)
+                ]);
+                
+                let totalResults = 0;
+                
+                if (itunesRes.ok) {
+                    const itunesData = await itunesRes.json();
+                    const count = itunesData.results.filter(t => t.previewUrl).length;
+                    totalResults += count;
+                    log('combinedResults', `✅ iTunes: ${count} playable tracks`, 'success');
+                    itunesData.results.filter(t => t.previewUrl).slice(0, 3).forEach(t => {
+                        log('combinedResults', `   🍎 ${t.trackName} - ${t.artistName}`, 'success');
+                    });
+                }
+                
+                if (lastfmRes.ok) {
+                    const lastfmData = await lastfmRes.json();
+                    const tracks = Array.isArray(lastfmData.results.trackmatches.track) 
+                        ? lastfmData.results.trackmatches.track 
+                        : [lastfmData.results.trackmatches.track];
+                    totalResults += tracks.length;
+                    log('combinedResults', `✅ Last.fm: ${tracks.length} tracks`, 'success');
+                    tracks.slice(0, 3).forEach(t => {
+                        log('combinedResults', `   🎶 ${t.name} - ${t.artist}`, 'success');
+                    });
+                }
+                
+                log('combinedResults', `✨ TOTAL: ${totalResults} songs ready to play`, totalResults > 0 ? 'success' : 'error');
+            } catch (e) {
+                log('combinedResults', `ERROR: ${e.message}`, 'error');
+            }
+        }
+    </script>
+</body>
+</html>
