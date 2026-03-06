@@ -258,13 +258,10 @@ const URL_REGEX = /^https?:\/\/.+\..+/i;
 
 // ─── 1. DATA SANITIZATION: Run BEFORE any rendering ───────────────────────
 function sanitizeSongsArt() {
-    console.log("🔍 Starting data sanitization...");
     const startTime = performance.now();
-    
+    let sanitizedCount = 0;
+
     songs.forEach((song, index) => {
-        const originalArt = song.art;
-        
-        // Check if image URL is null, undefined, empty, or invalid
         if (
             !song.art ||
             song.art === null ||
@@ -273,12 +270,12 @@ function sanitizeSongsArt() {
             !URL_REGEX.test(song.art)
         ) {
             song.art = DEFAULT_LOGO_PATH;
-            console.log(`✓ Sanitized [${index}]: "${song.title}"`);
+            sanitizedCount++;
         }
     });
     
     const endTime = performance.now();
-    console.log(`✅ Sanitization complete in ${(endTime - startTime).toFixed(2)}ms. All ${songs.length} songs data verified.`);
+    console.log(`✅ Sanitization: ${sanitizedCount} of ${songs.length} songs fixed in ${(endTime - startTime).toFixed(2)}ms`);
 }
 
 // ─── 2. localStorage PERSISTENCE Functions ────────────────────────────────
@@ -521,7 +518,7 @@ function renderPlaylist(playlistSongs = songs) {
             
             card.innerHTML = `
                 <div class="card-img-wrapper">
-                    <img src="${artUrl}" alt="${song.title}" onerror="this.onerror=null;this.src='IMAGES/logoo.png';">
+                    <img src="${artUrl}" alt="${song.title}" loading="lazy" onerror="this.onerror=null;this.src='IMAGES/logoo.png';">
                     <button class="play-fab" onclick="playSongAtIndex(${globalIndex}, event)">
                         <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                             <path d="M8 5v14l11-7z" />
@@ -736,7 +733,7 @@ function makeMoodCard(mood, img, title, subtitle) {
     return `
         <div class="music-card" onclick="playMood('${mood}')">
             <div class="card-img-wrapper">
-                <img src="${img}" alt="${title}" onerror="this.onerror=null;this.src='IMAGES/logoo.png';">
+                <img src="${img}" alt="${title}" loading="lazy" onerror="this.onerror=null;this.src='IMAGES/logoo.png';">
                 <button class="play-fab" aria-label="Play" onclick="event.stopPropagation(); playMood('${mood}', true);">
                     <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                         <polygon points="5 3 19 12 5 21 5 3"></polygon>
@@ -754,7 +751,7 @@ function makeGenreCard(fn, img, title, subtitle) {
     return `
         <div class="music-card" onclick="${fn}()">
             <div class="card-img-wrapper">
-                <img src="${img}" alt="${title}">
+                <img src="${img}" alt="${title}" loading="lazy">
                 <button class="play-fab" aria-label="Play" onclick="event.stopPropagation(); ${fn}(true);">
                     <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                         <polygon points="5 3 19 12 5 21 5 3"></polygon>
@@ -772,7 +769,7 @@ function makeArtistCard(fn, img, name, sub) {
     return `
         <div class="music-card" onclick="${fn}()">
             <div class="card-img-wrapper">
-                <img src="${img}" alt="${name}">
+                <img src="${img}" alt="${name}" loading="lazy">
                 <button class="play-fab" aria-label="Play" onclick="event.stopPropagation(); ${fn}(true);">
                     <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                         <polygon points="5 3 19 12 5 21 5 3"></polygon>
@@ -878,7 +875,7 @@ function renderSongList(playlistSongs, titleOverride) {
 
             row.innerHTML = `
                 <span class="song-num">${i + 1}</span>
-                <img src="${immediateArt}" class="song-list-art" id="list-art-${globalIndex}" alt="art" />
+                <img src="${immediateArt}" class="song-list-art" id="list-art-${globalIndex}" alt="art" loading="lazy" />
                 <span class="song-list-title">${song.title}</span>
                 <span class="song-list-artist">${song.artist}</span>
                 <span class="song-duration" id="duration-${globalIndex}">${song.durationFormatted || "--:--"}</span>
@@ -960,22 +957,46 @@ function renderSongList(playlistSongs, titleOverride) {
     }
 }
 
+let _durationFetchQueue = [];
+let _durationFetchActive = 0;
+const MAX_CONCURRENT_DURATION_FETCHES = 3;
+
 function fetchSongDuration(song, index) {
-    const audioObj = new Audio(song.file);
-    audioObj.onloadedmetadata = () => {
-        const duration = audioObj.duration;
-        const formatted = formatTime(duration);
-        song.durationFormatted = formatted; // Cache it
-        
-        const durationEl = document.getElementById(`duration-${index}`);
-        if (durationEl) {
-            durationEl.textContent = formatted;
-        }
-    };
-    // Clean up to avoid memory leaks if we created many
-    audioObj.onerror = () => {
-         console.warn("Could not load metadata for", song.title);
-    };
+    _durationFetchQueue.push({ song, index });
+    _processDurationQueue();
+}
+
+function _processDurationQueue() {
+    while (_durationFetchActive < MAX_CONCURRENT_DURATION_FETCHES && _durationFetchQueue.length > 0) {
+        const { song, index } = _durationFetchQueue.shift();
+        _durationFetchActive++;
+        const audioObj = new Audio();
+        audioObj.preload = 'metadata';
+        audioObj.src = song.file;
+        audioObj.onloadedmetadata = () => {
+            const duration = audioObj.duration;
+            const formatted = formatTime(duration);
+            song.durationFormatted = formatted;
+            const durationEl = document.getElementById(`duration-${index}`);
+            if (durationEl) durationEl.textContent = formatted;
+            // Clean up to release network connection and memory
+            audioObj.onloadedmetadata = null;
+            audioObj.onerror = null;
+            audioObj.src = '';
+            audioObj.removeAttribute('src');
+            _durationFetchActive--;
+            _processDurationQueue();
+        };
+        audioObj.onerror = () => {
+            console.warn("Could not load metadata for", song.title);
+            audioObj.onloadedmetadata = null;
+            audioObj.onerror = null;
+            audioObj.src = '';
+            audioObj.removeAttribute('src');
+            _durationFetchActive--;
+            _processDurationQueue();
+        };
+    }
 }
 
 
@@ -1050,6 +1071,9 @@ function loadSong(index) {
         
         const primaryArtist = song.artist.split(',')[0].trim(); 
         fetchYouTubeVideoId(primaryArtist, song.title);
+
+        // Preload next track's metadata for smooth transitions
+        _preloadNextTrack();
     };
 	
 	// ── Error handler ──────────────────
@@ -1066,6 +1090,43 @@ function loadSong(index) {
 		}
 		nextSong();
 	};
+}
+
+// ── Next-track preloading for smooth transitions ──
+let _preloadAudio = null;
+function _preloadNextTrack() {
+    // Clean up previous preload
+    if (_preloadAudio) {
+        _preloadAudio.onloadedmetadata = null;
+        _preloadAudio.onerror = null;
+        _preloadAudio.src = '';
+        _preloadAudio.removeAttribute('src');
+        _preloadAudio = null;
+    }
+    const nextIdx = (currentIndex + 1) % songs.length;
+    const nextSongObj = songs[nextIdx];
+    if (!nextSongObj || nextSongObj._isOnline) return; // Don't preload online streams
+
+    _preloadAudio = new Audio();
+    _preloadAudio.preload = 'metadata';
+    _preloadAudio.src = nextSongObj.file;
+    _preloadAudio.onloadedmetadata = () => {
+        // Cache duration if not already cached
+        if (!nextSongObj.durationFormatted && _preloadAudio.duration) {
+            nextSongObj.durationFormatted = formatTime(_preloadAudio.duration);
+        }
+        // Clean up after metadata loaded
+        if (_preloadAudio) {
+            _preloadAudio.onloadedmetadata = null;
+            _preloadAudio.onerror = null;
+        }
+    };
+    _preloadAudio.onerror = () => {
+        if (_preloadAudio) {
+            _preloadAudio.onloadedmetadata = null;
+            _preloadAudio.onerror = null;
+        }
+    };
 }
 
 // --- Songbar integration ---
@@ -1119,10 +1180,31 @@ function jsonpFetch(url, callbackParam) {
 }
 
 // Fetch album artwork — JSONP to iTunes with Deezer fallback (works from file://) ──────────
+const _artFetchPending = new Map(); // Deduplication: prevent concurrent fetches for same song
+
 async function fetchAlbumArt(title, artist) {
+    const cacheKey = `${title}||${artist}`;
+
+    // Check in-memory cache first (from localStorage)
+    if (artCache[cacheKey]) return artCache[cacheKey];
+
+    // Deduplicate concurrent requests for same song
+    if (_artFetchPending.has(cacheKey)) return _artFetchPending.get(cacheKey);
+
+    const fetchPromise = _fetchAlbumArtImpl(title, artist);
+    _artFetchPending.set(cacheKey, fetchPromise);
+    try {
+        const result = await fetchPromise;
+        return result;
+    } finally {
+        _artFetchPending.delete(cacheKey);
+    }
+}
+
+async function _fetchAlbumArtImpl(title, artist) {
     let cleanTitle = title.replace(/\[.*?\]|\(.*?\)/g, '').trim(); // Clean title for better matching
     let query = encodeURIComponent(`${cleanTitle} ${artist}`);
-    
+
     // Try iTunes first
     try {
         const url = `https://itunes.apple.com/search?term=${query}&entity=song&limit=1`;
@@ -1144,7 +1226,7 @@ async function fetchAlbumArt(title, artist) {
     } catch (e) {
         console.warn('Deezer art fetch failed:', e.message);
     }
-    
+
     // Fallback 2: General title search without artist
     try {
         const plainQuery = encodeURIComponent(cleanTitle);
@@ -1156,7 +1238,7 @@ async function fetchAlbumArt(title, artist) {
     } catch (e) {
         console.warn('Final iTunes fallback failed:', e.message);
     }
-    
+
     return null;
 }
 
@@ -1174,17 +1256,17 @@ function updateThemeFromArt(imageElement) {
 
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    
-    canvas.width = 50; 
+
+    canvas.width = 50;
     canvas.height = 50;
-    
+
     try {
         ctx.drawImage(imageElement, 0, 0, canvas.width, canvas.height);
         const imageData = ctx.getImageData(20, 20, 10, 10).data;
-        
+
         let r = 0, g = 0, b = 0;
         let count = 0;
-        
+
         for (let i = 0; i < imageData.length; i += 4) {
             if (imageData[i+3] === 0) continue; // Skip transparent
             r += imageData[i];
@@ -1192,12 +1274,12 @@ function updateThemeFromArt(imageElement) {
             b += imageData[i + 2];
             count++;
         }
-        
+
         if (count > 0) {
             r = Math.floor(r / count);
             g = Math.floor(g / count);
             b = Math.floor(b / count);
-            
+
             const mutedDominant = `rgba(${r}, ${g}, ${b}, 0.3)`;
             document.documentElement.style.setProperty('--glass-bg', mutedDominant);
             document.documentElement.style.setProperty('--mesh-color-1', `rgb(${Math.max(0, r-30)}, ${Math.max(0, g-30)}, ${Math.max(0, b-30)})`);
@@ -1207,6 +1289,13 @@ function updateThemeFromArt(imageElement) {
         console.warn('Canvas color extraction faded due to CORS:', e);
     }
 }
+
+// ── Cached SVG icon strings (avoid re-parsing DOM on every update) ──
+const PLAY_ICON_SM = `<svg class="play-icon-svg" viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`;
+const PAUSE_ICON_SM = `<svg class="pause-icon-svg" viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
+const PLAY_ICON_LG = `<svg class="play-icon-svg" viewBox="0 0 24 24" fill="currentColor" width="40" height="40"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`;
+const PAUSE_ICON_LG = `<svg class="pause-icon-svg" viewBox="0 0 24 24" fill="currentColor" width="40" height="40"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
+let _lastPlayState = null; // Track last play/pause state to avoid redundant innerHTML
 
 // When a song loads, update songbar
 function updateSongbarUI() {
@@ -1226,17 +1315,17 @@ function updateSongbarUI() {
     if (sb.art) {
         // Show art immediately from the song object (CDN URLs already present)
         const immediateArt = s.art || s.thumb || "IMAGES/logoo.png";
-        
+
         // Remove strict CORS crossOrigin tag to prevent the browser from outright blocking CDN images without headers!
         sb.art.removeAttribute('crossOrigin');
-        
+
         sb.art.src = immediateArt;
         sb.art.onload = () => updateThemeFromArt(sb.art);
         sb.art.onerror = function() {
             this.onerror = null;
             this.src = "IMAGES/logoo.png";
             if (sb.brandLogo && hasPlayed) sb.brandLogo.src = "IMAGES/logoo.png";
-            
+
             // Try to fetch since it failed
             fetchAlbumArt(s.title, s.artist).then(fetchedArt => {
                 if (fetchedArt) {
@@ -1254,9 +1343,10 @@ function updateSongbarUI() {
             });
         };
         if (sb.brandLogo && hasPlayed) sb.brandLogo.src = immediateArt;
-        
-        // Dynamically fetch album cover if missing (many English hits are missing them, or generic Hindi Hits)
-        if (immediateArt === "IMAGES/logoo.png" || !immediateArt.startsWith('http') || immediateArt.includes('Hindi-Hit-Songs')) {
+
+        // Dynamically fetch album cover if missing (only if not already fetching via onerror)
+        if (!s.fetchedArt && (immediateArt === "IMAGES/logoo.png" || !immediateArt.startsWith('http') || immediateArt.includes('Hindi-Hit-Songs'))) {
+             s.fetchedArt = true;
              fetchAlbumArt(s.title, s.artist).then(fetchedArt => {
                   if (fetchedArt) {
                        s.art = fetchedArt; // Cache it in the original array
@@ -1275,11 +1365,13 @@ function updateSongbarUI() {
              });
         }
     }
-	// update play button symbol
+	// update play button symbol (only when state changes)
 	if (sb.play) {
-		const playIcon = `<svg class="play-icon-svg" viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`;
-		const pauseIcon = `<svg class="pause-icon-svg" viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
-		sb.play.innerHTML = audio.paused ? playIcon : pauseIcon;
+		const newState = audio.paused ? 'paused' : 'playing';
+		if (_lastPlayState !== newState) {
+			_lastPlayState = newState;
+			sb.play.innerHTML = audio.paused ? PLAY_ICON_SM : PAUSE_ICON_SM;
+		}
 	}
 
     // Update Brand Logo with Album Art
@@ -1312,7 +1404,7 @@ function updateSongbarUI() {
     	const sourceIndicator = s._isOnline ? ` · 🌐 ${s._source.toUpperCase()}` : '';
     	fs.artist.textContent = (s.artist || "Unknown artist") + sourceIndicator;
     }
-    
+
     // Update FS Art and Background
     const updateFsArt = (src) => {
         if (fs.art) fs.art.src = src;
@@ -1334,9 +1426,7 @@ function updateSongbarUI() {
     }
 
     if (fs.play) {
-		const playIcon = `<svg class="play-icon-svg" viewBox="0 0 24 24" fill="currentColor" width="40" height="40"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`;
-		const pauseIcon = `<svg class="pause-icon-svg" viewBox="0 0 24 24" fill="currentColor" width="40" height="40"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
-		fs.play.innerHTML = audio.paused ? playIcon : pauseIcon;
+		fs.play.innerHTML = audio.paused ? PLAY_ICON_LG : PAUSE_ICON_LG;
     }
 
     // Update active song highlight in list
@@ -1360,7 +1450,7 @@ if (sb.play) sb.play.addEventListener("click", () => {
 		pauseSong();
 	}
 	updateSongbarUI();
-    
+
     // Init Visualizer on first user interaction (Play)
     if (!VisualizerManager.isInitialized) {
         VisualizerManager.init();
@@ -1375,6 +1465,8 @@ if (sb.next) sb.next.addEventListener("click", () => { nextSong(); updateSongbar
 if (sb.progress) {
 	// seeking
 	let isSeeking = false;
+	// Global flag for fullscreen seeking (used in rAF progress loop)
+	var _isFsSeekingGlobal = false;
 	sb.progress.addEventListener("input", (e) => {
 		isSeeking = true;
 		const percent = parseFloat(e.target.value);
@@ -1390,17 +1482,49 @@ if (sb.progress) {
 		}
 		isSeeking = false;
 	});
-	// update while audio plays
-	audio.addEventListener("timeupdate", () => {
-		if (!audio.duration) return;
-		if (!isSeeking) {
-			const pct = (audio.currentTime / audio.duration) * 100;
-			sb.progress.value = pct;
-			if (sb.current) sb.current.textContent = formatTime(audio.currentTime);
+
+	// ── Smooth progress bar via rAF instead of timeupdate ──
+	let _progressRafId = null;
+	let _lastProgressTime = -1;
+
+	function _updateProgressLoop() {
+		if (!audio.paused && !audio.ended && audio.duration) {
+			const ct = audio.currentTime;
+			// Only update DOM when time actually changed (avoid redundant writes)
+			if (!isSeeking && Math.abs(ct - _lastProgressTime) > 0.05) {
+				_lastProgressTime = ct;
+				const pct = (ct / audio.duration) * 100;
+				sb.progress.value = pct;
+				if (sb.current) sb.current.textContent = formatTime(ct);
+
+				// Also update fullscreen progress if visible
+				const fsOverlayEl = document.getElementById('fullscreen-overlay');
+				if (fsOverlayEl && fsOverlayEl.classList.contains('active')) {
+					const fsProgress = document.getElementById('fs-progress');
+					const fsCurrent = document.getElementById('fs-current-time');
+					if (fsProgress && !_isFsSeekingGlobal) fsProgress.value = pct;
+					if (fsCurrent && !_isFsSeekingGlobal) fsCurrent.textContent = formatTime(ct);
+				}
+			}
 		}
+		_progressRafId = requestAnimationFrame(_updateProgressLoop);
+	}
+
+	audio.addEventListener("play", () => {
+		if (!_progressRafId) _updateProgressLoop();
 	});
+	audio.addEventListener("pause", () => {
+		if (_progressRafId) { cancelAnimationFrame(_progressRafId); _progressRafId = null; }
+	});
+	audio.addEventListener("ended", () => {
+		if (_progressRafId) { cancelAnimationFrame(_progressRafId); _progressRafId = null; }
+	});
+
 	audio.addEventListener("durationchange", () => {
 		if (audio.duration && sb.duration) sb.duration.textContent = formatTime(audio.duration);
+		// Also update fullscreen duration
+		const fsDuration = document.getElementById('fs-duration');
+		if (audio.duration && fsDuration) fsDuration.textContent = formatTime(audio.duration);
 	});
 }
 
@@ -1417,7 +1541,7 @@ if (sb.volume) {
 		if (!isNaN(v)) {
             audio.volume = v;
             updateVolumeUI(); // Update the gradient bar if needed
-        } 
+        }
 	});
 }
 
@@ -1440,9 +1564,9 @@ const LyricsManager = {
             const query = `${title} ${artist}`;
             const url = `https://lrclib.net/api/search?q=${encodeURIComponent(query)}`;
             const response = await fetch(url);
-            
+
             if (!response.ok) throw new Error('Lyrics search failed');
-            
+
             const results = await response.json();
             if (!results || results.length === 0) throw new Error('Lyrics not found');
 
@@ -1468,7 +1592,7 @@ const LyricsManager = {
                 const text = c.syncedLyrics || c.plainLyrics || "";
                 const script = getScriptType(text);
                 let score = 0;
-                
+
                 if (script === 'other') score = -1; // Reject
                 else {
                     if (c.syncedLyrics) score += 10;
@@ -1481,7 +1605,7 @@ const LyricsManager = {
             if (scored.length === 0) throw new Error('No lyrics in supported language');
 
             const bestMatch = scored[0].candidate;
-            
+
             if (bestMatch.syncedLyrics) {
                 this.currentLyrics = this.parseLRC(bestMatch.syncedLyrics);
                 this.isSynced = true;
@@ -1500,7 +1624,7 @@ const LyricsManager = {
     parseLRC(lrc) {
         const lines = [];
         const regex = /^\[(\d{2}):(\d{2})\.(\d{2,3})\](.*)/;
-        
+
         lrc.split('\n').forEach(line => {
             const match = line.match(regex);
             if (match) {
@@ -1537,17 +1661,17 @@ const LyricsManager = {
 
     renderLyrics() {
         if (!this.currentLyrics.length) return;
-        
+
         // Generate HTML with onclick handlers
-        // We use a global helper or attach listeners after interaction. 
+        // We use a global helper or attach listeners after interaction.
         // Best approach: simple onClick attribute calling a global helper or inline logic.
         // But cleaner to attach listeners if possible. Since we recreate string, simpler to use onclick attribute.
         // Let's create a global helper `seekToLyrics(time)` to keep it clean.
-        
-        const html = this.currentLyrics.map((line, index) => 
-            `<p class="lyric-line" 
-                data-index="${index}" 
-                data-time="${line.time}" 
+
+        const html = this.currentLyrics.map((line, index) =>
+            `<p class="lyric-line"
+                data-index="${index}"
+                data-time="${line.time}"
                 onclick="LyricsManager.seekTo(${line.time})">
                 ${line.text || "&nbsp;"}
              </p>`
@@ -1555,35 +1679,35 @@ const LyricsManager = {
 
         if (this.container) this.container.innerHTML = html;
         if (this.fsContainer) this.fsContainer.innerHTML = html;
-        
+
         // Attach scroll listeners after rendering
         this.attachScrollListeners();
     },
 
     attachScrollListeners() {
         const containers = [this.container, this.fsContainer];
-        
+
         containers.forEach(container => {
             if (!container) return;
-            
+
             // Remove old listener if exists
             if (container._scrollListener) {
                 container.removeEventListener('scroll', container._scrollListener);
             }
-            
+
             // Create new listener
             const scrollListener = () => {
                 container.classList.add('is-scrolling');
-                
+
                 // Clear old timeout
                 if (container._scrollTimeout) clearTimeout(container._scrollTimeout);
-                
+
                 // Hide scrollbar after 1.5 seconds of no scrolling
                 container._scrollTimeout = setTimeout(() => {
                     container.classList.remove('is-scrolling');
                 }, 1500);
             };
-            
+
             container._scrollListener = scrollListener;
             container.addEventListener('scroll', scrollListener, false);
         });
@@ -1642,7 +1766,7 @@ const LyricsManager = {
 
     highlightLine(container, index) {
         if (!container) return;
-        
+
         // Remove active class from all
         const allLines = container.querySelectorAll('.lyric-line');
         allLines.forEach(line => line.classList.remove('active-lyric', 'active'));
@@ -1650,23 +1774,23 @@ const LyricsManager = {
         if (index >= 0 && index < allLines.length) {
             const activeLine = allLines[index];
             activeLine.classList.add('active-lyric', 'active');
-            
+
             // Show scrollbar when syncing lyrics
             container.classList.add('is-scrolling');
-            
+
             // Scroll the container itself (not the page) to center the active line
             const containerHeight = container.clientHeight;
             const lineTop = activeLine.offsetTop;
             const lineHeight = activeLine.offsetHeight;
-            
+
             // Better centering: position active line in middle of visible area
             const targetScrollTop = Math.max(0, lineTop - (containerHeight / 2) + (lineHeight / 2));
-            
+
             // Use requestAnimationFrame for smoother scrolling
             requestAnimationFrame(() => {
                 container.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
             });
-            
+
             // Ensure scrollbar stays visible while actively syncing
             if (container._scrollTimeout) {
                 clearTimeout(container._scrollTimeout);
@@ -1743,9 +1867,9 @@ function updateVolumeUI() {
 // initialize UI on load and when playlist renders
 document.addEventListener("DOMContentLoaded", () => {
 	updateSongbarUI();
-    
+
     // --- Visualizer Manager ---
-const VisualizerManager = {
+const VisualizerManager = window.VisualizerManager = {
     audioContext: null,
     source: null,
     visualizer: null,
@@ -1800,11 +1924,15 @@ const VisualizerManager = {
         this.startRenderLoop();
         this.startCycle();
 
-        // Handle Resize
+        // Handle Resize (debounced)
+        let _vizResizeTimer = null;
         window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            this.visualizer.setRendererSize(canvas.width, canvas.height);
+            clearTimeout(_vizResizeTimer);
+            _vizResizeTimer = setTimeout(() => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                this.visualizer.setRendererSize(canvas.width, canvas.height);
+            }, 200);
         });
 
         this.isInitialized = true;
@@ -1826,6 +1954,17 @@ const VisualizerManager = {
 
     startRenderLoop() {
         const render = () => {
+             if (document.hidden) {
+                 // Tab hidden — pause the render loop, resume on visibility change
+                 const onVisible = () => {
+                     if (!document.hidden) {
+                         document.removeEventListener('visibilitychange', onVisible);
+                         this.startRenderLoop(); // Restart
+                     }
+                 };
+                 document.addEventListener('visibilitychange', onVisible);
+                 return;
+             }
              this.animationFrameRequest = requestAnimationFrame(render);
              this.visualizer.render();
         };
@@ -1868,11 +2007,7 @@ const VisualizerManager = {
     }
 
     const globalBackBtn = document.getElementById('global-back-btn');
-    if (globalBackBtn) {
-        globalBackBtn.addEventListener('click', () => {
-            renderHome();
-        });
-    }
+    // globalBackBtn listener is attached separately below (line ~2074)
 
 	// If you render playlist elsewhere, call renderPlaylist(); but existing code exposes that.
 });
@@ -1958,55 +2093,11 @@ function nextSong() {
 
 
 // --- Search Functionality ---
+// NOTE: Search is handled by the global IIFE at the bottom of this file (initSearch)
+// which provides debounced local + online search with proper deduplication.
 const searchInput = document.getElementById('song-search');
 const searchResultsContainer = document.getElementById('search-results');
 
-if (searchInput) {
-    // Live Search
-    searchInput.addEventListener('input', (e) => {
-        // Normalize search query: lowercase, trim, remove duplicate spaces
-        const query = e.target.value.toLowerCase().trim().replace(/\s+/g, ' ');
-        
-        if (query === "") {
-            searchResultsContainer.classList.remove('active');
-            searchResultsContainer.innerHTML = '';
-            return;
-        }
-
-        const filtered = songs.filter(s => {
-            // Also normalize fields for comparison
-            const sTitle = (s.title || "").toLowerCase().trim().replace(/\s+/g, ' ');
-            const sArtist = (s.artist || "").toLowerCase().trim().replace(/\s+/g, ' ');
-            const sFolder = (s.folder || "").toLowerCase().trim().replace(/\s+/g, ' ');
-
-            return sTitle.includes(query) || sArtist.includes(query) || sFolder.includes(query);
-        });
-
-        renderSearchResults(filtered);
-    });
-
-    // Close on click outside
-    document.addEventListener('click', (e) => {
-        // Only close if not clicking input or results
-        if (searchResultsContainer && !searchInput.contains(e.target) && !searchResultsContainer.contains(e.target)) {
-            searchResultsContainer.classList.remove('active');
-        }
-    });
-
-    // Show again if focused and has value
-    searchInput.addEventListener('focus', () => {
-        if(searchInput.value.trim() !== "") {
-             const query = searchInput.value.toLowerCase().trim().replace(/\s+/g, ' ');
-             const filtered = songs.filter(s => {
-                const sTitle = (s.title || "").toLowerCase().trim().replace(/\s+/g, ' ');
-                const sArtist = (s.artist || "").toLowerCase().trim().replace(/\s+/g, ' ');
-                const sFolder = (s.folder || "").toLowerCase().trim().replace(/\s+/g, ' ');
-                return sTitle.includes(query) || sArtist.includes(query) || sFolder.includes(query);
-            });
-            renderSearchResults(filtered);
-        }
-    });
-}
 
 function renderSearchResults(results) {
     // Ensure container exists before adding to it
@@ -2023,7 +2114,7 @@ function renderSearchResults(results) {
         const globalIndex = songs.indexOf(song);
         const item = document.createElement('div');
         item.className = 'search-result-item';
-        
+
         // Create image element
         const imgElement = document.createElement('img');
         imgElement.className = 'search-img';
@@ -2054,7 +2145,7 @@ function renderSearchResults(results) {
                 <div class="search-artist">${song.artist}</div>
             </div>
         `;
-        
+
         // Insert image at the beginning
         item.insertBefore(imgElement, item.firstChild);
 
@@ -2092,7 +2183,7 @@ async function fetchLyrics(artist, title) {
     // Clean up strings for better API matching
     // Remove "ft.", "feat", text in brackets, etc to get raw artist/title
     // Also remove everything after " - " if present (often used for subtitles in filenames)
-    let cleanArtist = artist.split(',')[0].split('&')[0].replace(/\(.*\)/g, "").trim(); 
+    let cleanArtist = artist.split(',')[0].split('&')[0].replace(/\(.*\)/g, "").trim();
     let cleanTitle = title.replace(/\(.*\)/g, "").replace(/ft\..*/i, "").replace(/feat\..*/i, "").split('-')[0].trim();
 
     console.log(`Fetching lyrics for: ${cleanArtist} - ${cleanTitle}`);
@@ -2204,7 +2295,7 @@ function initThreeJS() {
 
         renderer.render(scene, camera);
     }
-    
+
     animate();
 
     // Resize
@@ -2223,7 +2314,7 @@ function initThreeJS() {
 // --- 3D Card Tilt Effect ---
 function initTiltEffect() {
     const cards = document.querySelectorAll('.music-card');
-    
+
     cards.forEach(card => {
         card.addEventListener('mousemove', handleHover);
         card.addEventListener('mouseleave', resetCard);
@@ -2239,7 +2330,7 @@ function initTiltEffect() {
         const width = card.offsetWidth;
         const height = card.offsetHeight;
         const rect = card.getBoundingClientRect();
-        
+
         const xVal = e.clientX - rect.left;
         const yVal = e.clientY - rect.top;
 
@@ -2262,14 +2353,14 @@ function init3DEarth() {
     if (typeof THREE === 'undefined') return;
 
     const scene = new THREE.Scene();
-    
+
     // Camera close to earth to see horizon curvature
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    
+
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
-    
+
     // Append securely beneath UI
     renderer.domElement.style.position = 'fixed';
     renderer.domElement.style.top = '0';
@@ -2328,7 +2419,7 @@ function init3DEarth() {
         gl_FragColor = vec4(0.3, 0.6, 1.0, 1.0) * intensity * 1.5;
       }
     `;
-    
+
     const atmosGeo = new THREE.SphereGeometry(r + 1.2, 64, 64);
     const atmosMat = new THREE.ShaderMaterial({
         vertexShader: atmosphereVertexShader,
@@ -2358,7 +2449,7 @@ function init3DEarth() {
     sunGradient.addColorStop(1, 'rgba(255, 210, 130, 0)');
     sunCtx.fillStyle = sunGradient;
     sunCtx.fillRect(0, 0, 128, 128);
-    
+
     const sunMat = new THREE.SpriteMaterial({
         map: new THREE.CanvasTexture(sunCanvas),
         blending: THREE.AdditiveBlending,
@@ -2402,19 +2493,19 @@ function init3DEarth() {
 
     function animate() {
         requestAnimationFrame(animate);
-        
+
         // Rotate Earth slowly for that monolithic feel
         earthMesh.rotation.y += 0.0003;
         cloudMesh.rotation.y += 0.0004;
-        
+
         // Dynamic camera parallax (sweeping view)
         camera.position.x += (mouseX * 8 - camera.position.x) * 0.03;
         camera.position.y += (-mouseY * 4 - camera.position.y) * 0.03;
         camera.lookAt(0, 0, -32);
-        
+
         renderer.render(scene, camera);
     }
-    
+
     animate();
 
     window.addEventListener('resize', () => {
@@ -2429,10 +2520,10 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
         // STEP 1: SANITIZE all image URLs BEFORE rendering anything
         sanitizeSongsArt();
-        
+
         // STEP 2: RESTORE song from localStorage if available
         restoreSavedSong();
-        
+
         // STEP 3: Safely render UI
         safeRenderHome();
         updateSongbarUI();
@@ -2527,7 +2618,7 @@ if (fsControls.progress) {
             if (fsControls.current) fsControls.current.textContent = formatTime(audio.currentTime);
         }
     });
-    
+
     // Sync duration
     audio.addEventListener('durationchange', () => {
          if (audio.duration && fsControls.duration) {
@@ -2540,10 +2631,10 @@ if (fsControls.progress) {
 document.addEventListener('scroll', function (e) {
     if (e.target && e.target.classList) {
         e.target.classList.add('is-scrolling');
-        
+
         // Clear previous timeout for this element
         if (e.target.scrollTimeout) clearTimeout(e.target.scrollTimeout);
-        
+
         // Hide scrollbar after 1 second of no scrolling
         e.target.scrollTimeout = setTimeout(() => {
             e.target.classList.remove('is-scrolling');
@@ -2558,30 +2649,30 @@ class MusicCard {
         this.element = element;
         this.bindEvents();
     }
-    
+
     bindEvents() {
         this.element.addEventListener('mousemove', (e) => this.handleTilt(e));
         this.element.addEventListener('mouseleave', () => this.resetTilt());
     }
-    
+
     handleTilt(e) {
         // Enqueue inside requestAnimationFrame for smooth execution
         requestAnimationFrame(() => {
             const rect = this.element.getBoundingClientRect();
             const xVal = e.clientX - rect.left;
             const yVal = e.clientY - rect.top;
-            
+
             const width = rect.width;
             const height = rect.height;
-            
+
             // Limit degrees for tasteful tilt
             const yRotation = 15 * ((xVal - width / 2) / width);
             const xRotation = -15 * ((yVal - height / 2) / height);
-            
+
             this.element.style.transform = `perspective(1000px) rotateX(${xRotation}deg) rotateY(${yRotation}deg) scale3d(1.02, 1.02, 1.02)`;
         });
     }
-    
+
     resetTilt() {
         this.element.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
     }
@@ -2592,7 +2683,7 @@ const IvoryRouter = {
     init() {
         // Handle back/forward buttons
         window.addEventListener('popstate', () => this.handleRoute(location.pathname));
-        
+
         // Attach to all local links
         document.querySelectorAll('a[data-link]').forEach(link => {
             link.addEventListener('click', (e) => {
@@ -2603,16 +2694,16 @@ const IvoryRouter = {
             });
         });
     },
-    
+
     async handleRoute(route) {
         // The '#main-content' div updates, while the '#player-bar' stays untouched and keeps playing music.
         const mainContent = document.querySelector('.content-body');
         if (!mainContent) return;
-        
+
         // CSS Fade Out
         mainContent.style.transition = 'opacity 0.2s ease';
-        mainContent.style.opacity = 0; 
-        
+        mainContent.style.opacity = 0;
+
         setTimeout(() => {
             // Mock View Replacement - this is where you'd fetch components or HTML snippets
             if (route === '/lyrics') {
@@ -2622,10 +2713,10 @@ const IvoryRouter = {
             } else if (route === '/') {
                 // Should technically reload the home view
             }
-            
+
             // CSS Fade In
-            mainContent.style.opacity = 1; 
-        }, 200); 
+            mainContent.style.opacity = 1;
+        }, 200);
     }
 };
 
@@ -2638,47 +2729,47 @@ class AudioVisualizer {
         this.canvas = document.getElementById(canvasId);
         if (!this.canvas) return;
         this.ctx = this.canvas.getContext('2d');
-        
+
         this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         this.analyser = this.audioCtx.createAnalyser();
-        
+
         // Connect source only once
         if (!window.audioSourceNode) {
             window.audioSourceNode = this.audioCtx.createMediaElementSource(this.audio);
         }
         window.audioSourceNode.connect(this.analyser);
         this.analyser.connect(this.audioCtx.destination);
-        
+
         this.analyser.fftSize = 256;
         this.bufferLength = this.analyser.frequencyBinCount;
         this.dataArray = new Uint8Array(this.bufferLength);
-        
+
         this.draw = this.draw.bind(this);
     }
-    
+
     start() {
         if (this.audioCtx.state === 'suspended') this.audioCtx.resume();
         this.draw();
     }
-    
+
     draw() {
         requestAnimationFrame(this.draw); // Maintains 60fps link
-        
+
         this.analyser.getByteFrequencyData(this.dataArray);
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        
+
         const barWidth = (this.canvas.width / this.bufferLength) * 2.5;
         let x = 0;
-        
+
         // Fetch current UI accent variable dynamically
         const computedStyle = getComputedStyle(document.documentElement);
         const neonAccent = computedStyle.getPropertyValue('--neon-accent').trim() || '#32e0ff';
-        
+
         for(let i = 0; i < this.bufferLength; i++) {
             const barHeight = this.dataArray[i] / 2;
             this.ctx.fillStyle = neonAccent;
             this.ctx.globalAlpha = 0.4; // Soft background glow
-            
+
             this.ctx.fillRect(x, this.canvas.height - barHeight, barWidth, barHeight);
             x += barWidth + 1;
         }
@@ -2692,11 +2783,11 @@ let ivoryVisualizer = null;
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.music-card').forEach(card => new MusicCard(card));
     IvoryRouter.init();
-    
+
     // Auto-attach visualizer to existing global audio tag (assuming id='audio' implicitly or global variable 'audio')
     // Fallback ID selector if your layout assigns it
     const playerAudio = window.audio || document.querySelector('audio');
-    
+
     // Create a background overlay canvas dynamically if missing
     let bgCanvas = document.getElementById('audio-visualizer');
     if (!bgCanvas) {
@@ -2712,7 +2803,7 @@ document.addEventListener('DOMContentLoaded', () => {
         bgCanvas.style.opacity = '0.5';
         document.body.appendChild(bgCanvas);
     }
-    
+
     // Fix DPI
     bgCanvas.width = window.innerWidth;
     bgCanvas.height = 150;
@@ -2745,11 +2836,11 @@ async function fetchYouTubeVideoId(artist, title) {
 
     const fsContainer = document.getElementById('fullscreen-overlay');
     const videoContainer = document.getElementById('fs-video-bg-container');
-    
+
     try {
         const query = encodeURIComponent(`${title} ${artist} official music video 4k`);
         const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=${query}&type=video&key=${YOUTUBE_API_KEY}`);
-        
+
         if (!res.ok) throw new Error("YouTube API Error.");
 
         const data = await res.json();
@@ -2883,16 +2974,16 @@ const OnlineMusicEngine = {
         try {
             console.log('🍎 iTunes search:', q);
             const url = `https://itunes.apple.com/search?term=${encodeURIComponent(q)}&entity=song&limit=10&media=music`;
-            
+
             const response = await fetch(url);
             if (!response.ok) {
                 console.log('iTunes:', response.status, 'status');
                 return [];
             }
-            
+
             const data = await response.json();
             if (!data?.results?.length) return [];
-            
+
             const results = data.results
                 .filter(t => t.trackName && t.previewUrl)
                 .slice(0, 15)
@@ -2908,7 +2999,7 @@ const OnlineMusicEngine = {
                     duration: Math.max(30, (t.trackTimeMillis || 180000) / 1000),
                     quality: 'preview'
                 }));
-            
+
             console.log(`✅ iTunes: ${results.length} tracks`);
             return results;
         } catch (e) {
@@ -2920,30 +3011,30 @@ const OnlineMusicEngine = {
     // Master search
     async searchAll(q) {
         if (!q.trim()) return [];
-        
+
         console.log('🌐 SEARCH START:', q);
-        
+
         try {
             // First try iTunes
             const itunesResults = await this.searchiTunes(q);
             console.log('iTunes results:', itunesResults.length);
-            
+
             if (itunesResults.length > 0) {
                 console.log('✨ Found iTunes results!');
                 return itunesResults;
             }
-            
+
             // Then try demo
             const demoResults = this.getDemoResults(q);
             if (demoResults.length > 0) {
                 console.log('📌 Using demo results for testing');
                 return demoResults;
             }
-            
+
             // Fallback to YouTube search
             console.log('⚠️ Falling back to YouTube search');
             return await this.searchYoutube(q);
-            
+
         } catch (err) {
             console.error('❌ Search error:', err);
             return await this.searchYoutube(q);
@@ -2990,7 +3081,7 @@ const OnlineMusicEngine = {
     // ── Inject an online track as a temporary song and play it ──
     function playOnlineResult(track) {
         console.log('🎵 Playing online track:', track.trackName);
-        
+
         // Show toast notification
         const toast = document.createElement('div');
         toast.style.cssText = `
@@ -3010,7 +3101,7 @@ const OnlineMusicEngine = {
         toast.innerHTML = `🎵 ${track.source === 'youtube' ? 'Opening YouTube...' : 'Opening stream...'}`;
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 3000);
-        
+
         // For YouTube sources, just open the link - don't try to add to queue
         if (track.source === 'youtube') {
             console.log('📺 YouTube - opening link directly');
@@ -3019,7 +3110,7 @@ const OnlineMusicEngine = {
             searchInput.blur();
             return;
         }
-        
+
         // For playable sources (iTunes, demo, etc.), add to queue and play
         const duration = track.duration || 180;
         const tempSong = {
@@ -3036,7 +3127,7 @@ const OnlineMusicEngine = {
         };
 
         // Push to global songs array (avoid duplicates by source+ID)
-        const existingIdx = songs.findIndex(s => 
+        const existingIdx = songs.findIndex(s =>
             s._onlineId === tempSong._onlineId && s._source === tempSong._source
         );
         let targetIndex;
@@ -3065,14 +3156,14 @@ const OnlineMusicEngine = {
         }[source] || '🌐';
 
         const qualityLabel = quality === 'preview' ? '⏱️ 30s' : quality === 'high' ? '🎵 HQ' : '🎵 FULL';
-        
+
         const badge = `<span style="
             font-size:0.6rem;font-weight:700;padding:3px 8px;border-radius:10px;
             background:linear-gradient(90deg,#32e0ff22,#a55eea22);
             border:1px solid rgba(50,224,255,0.3);color:#32e0ff;
             white-space:nowrap;flex-shrink:0;letter-spacing:.5px;margin:0 4px">
             ${sourceEmoji} ${qualityLabel}</span>`;
-        
+
         return { html: `
             <div class="search-result-item" style="gap:12px;cursor:pointer">
                 <img class="search-img" src="${imgSrc}" alt="" style="width:45px;height:45px;object-fit:cover;border-radius:4px" onerror="this.src='IMAGES/logoo.png'">
@@ -3118,7 +3209,7 @@ const OnlineMusicEngine = {
     async function doSearch(q) {
         if (!q.trim()) { hideDropdown(); return; }
         lastQuery = q;
-        
+
         console.log('🔍 User search:', q);
 
         // Show loading immediately
@@ -3129,7 +3220,7 @@ const OnlineMusicEngine = {
 
         try {
             isLoading = true;
-            
+
             // Start online search in parallel
             const onlineTracks = await OnlineMusicEngine.searchAll(q);
             isLoading = false;
@@ -3211,12 +3302,12 @@ const OnlineMusicEngine = {
         } catch (err) {
             isLoading = false;
             console.error('❌ Search error:', err);
-            
+
             if (localMatches.length > 0) {
                 // Still show local results if online fails
                 console.log('Showing local results only due to error');
                 dropdown.innerHTML = '';
-                
+
                 const hdr = document.createElement('div');
                 hdr.innerHTML = divider('💿 Your Library');
                 dropdown.appendChild(hdr);
@@ -3238,7 +3329,7 @@ const OnlineMusicEngine = {
                     item.addEventListener('click', onClick);
                     dropdown.appendChild(item);
                 });
-                
+
                 dropdown.classList.add('active');
             } else {
                 dropdown.innerHTML = `<div class="search-result-item" style="pointer-events:none;justify-content:center;padding:20px;color:#aaa">
@@ -3268,9 +3359,9 @@ const OnlineMusicEngine = {
         if (e.key === 'Escape') { hideDropdown(); searchInput.blur(); }
         if (e.key === 'Enter') {
             const q = searchInput.value.trim();
-            if (q) { 
-                clearTimeout(debounceTimer); 
-                doSearch(q); 
+            if (q) {
+                clearTimeout(debounceTimer);
+                doSearch(q);
             }
         }
     });
