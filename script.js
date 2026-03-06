@@ -1130,21 +1130,25 @@ function _preloadNextTrack() {
 }
 
 // --- Songbar integration ---
-// Query songbar elements (safe if songbar exists)
 const sb = {
-	art: document.getElementById("sb-art"),
-	title: document.getElementById("sb-title"),
-	artist: document.getElementById("sb-artist"),
-	play: document.getElementById("sb-play"),
-	prev: document.getElementById("sb-prev"),
-	next: document.getElementById("sb-next"),
-	progress: document.getElementById("sb-progress"),
-	current: document.getElementById("sb-current"),
-	duration: document.getElementById("sb-duration"),
-	volume: document.getElementById("sb-volume"),
-	shuffle: document.getElementById("sb-shuffle"),
-	repeat: document.getElementById("sb-repeat"),
-    brandLogo: document.querySelector('.brand-logo') // Add brand logo reference
+	art:       document.getElementById("sb-art"),
+	title:     document.getElementById("sb-title"),
+	artist:    document.getElementById("sb-artist"),
+	play:      document.getElementById("sb-play"),
+	prev:      document.getElementById("sb-prev"),
+	next:      document.getElementById("sb-next"),
+	// Desktop progress bar (inside .player-controls)
+	progress:  document.getElementById("sb-progress-d"),
+	current:   document.getElementById("sb-current-d"),
+	duration:  document.getElementById("sb-duration-d"),
+	// Mobile progress strip (inside .mobile-progress-strip)
+	progressM: document.getElementById("sb-progress"),
+	currentM:  document.getElementById("sb-current"),
+	durationM: document.getElementById("sb-duration"),
+	volume:    document.getElementById("sb-volume"),
+	shuffle:   document.getElementById("sb-shuffle"),
+	repeat:    document.getElementById("sb-repeat"),
+	brandLogo: document.querySelector('.brand-logo')
 };
 
 // Helper to format seconds -> M:SS
@@ -1462,71 +1466,89 @@ if (sb.play) sb.play.addEventListener("click", () => {
 if (sb.prev) sb.prev.addEventListener("click", () => { prevSong(); updateSongbarUI(); });
 if (sb.next) sb.next.addEventListener("click", () => { nextSong(); updateSongbarUI(); });
 
-if (sb.progress) {
-	// seeking
-	let isSeeking = false;
-	// Global flag for fullscreen seeking (used in rAF progress loop)
-	var _isFsSeekingGlobal = false;
-	sb.progress.addEventListener("input", (e) => {
+// ── Helper: set both desktop + mobile progress elements ──
+function _setProgress(pct, timeStr) {
+	const valStr = pct + '%';
+	if (sb.progress) {
+		sb.progress.value = pct;
+		sb.progress.style.setProperty('--val', valStr);
+	}
+	if (sb.current)  sb.current.textContent  = timeStr;
+	if (sb.progressM) {
+		sb.progressM.value = pct;
+		sb.progressM.style.setProperty('--val', valStr);
+	}
+	if (sb.currentM) sb.currentM.textContent = timeStr;
+}
+function _setDuration(timeStr) {
+	if (sb.duration)  sb.duration.textContent      = timeStr;
+	if (sb.durationM) sb.durationM.textContent     = timeStr;
+}
+
+// ── Seeking — wire both desktop and mobile inputs ──
+let isSeeking = false;
+var _isFsSeekingGlobal = false;
+
+function _wireSeek(input) {
+	if (!input) return;
+	input.addEventListener("input", (e) => {
 		isSeeking = true;
-		const percent = parseFloat(e.target.value);
-		if (!isNaN(percent) && audio.duration) {
-			const time = (percent / 100) * audio.duration;
-			if (sb.current) sb.current.textContent = formatTime(time);
+		const pct = parseFloat(e.target.value);
+		if (!isNaN(pct) && audio.duration) {
+			const t = (pct / 100) * audio.duration;
+			_setProgress(pct, formatTime(t));
 		}
 	});
-	sb.progress.addEventListener("change", (e) => {
-		const percent = parseFloat(e.target.value);
-		if (!isNaN(percent) && audio.duration) {
-			audio.currentTime = (percent / 100) * audio.duration;
+	input.addEventListener("change", (e) => {
+		const pct = parseFloat(e.target.value);
+		if (!isNaN(pct) && audio.duration) {
+			audio.currentTime = (pct / 100) * audio.duration;
 		}
 		isSeeking = false;
 	});
-
-	// ── Smooth progress bar via rAF instead of timeupdate ──
-	let _progressRafId = null;
-	let _lastProgressTime = -1;
-
-	function _updateProgressLoop() {
-		if (!audio.paused && !audio.ended && audio.duration) {
-			const ct = audio.currentTime;
-			// Only update DOM when time actually changed (avoid redundant writes)
-			if (!isSeeking && Math.abs(ct - _lastProgressTime) > 0.05) {
-				_lastProgressTime = ct;
-				const pct = (ct / audio.duration) * 100;
-				sb.progress.value = pct;
-				if (sb.current) sb.current.textContent = formatTime(ct);
-
-				// Also update fullscreen progress if visible
-				const fsOverlayEl = document.getElementById('fullscreen-overlay');
-				if (fsOverlayEl && fsOverlayEl.classList.contains('active')) {
-					const fsProgress = document.getElementById('fs-progress');
-					const fsCurrent = document.getElementById('fs-current-time');
-					if (fsProgress && !_isFsSeekingGlobal) fsProgress.value = pct;
-					if (fsCurrent && !_isFsSeekingGlobal) fsCurrent.textContent = formatTime(ct);
-				}
-			}
-		}
-		_progressRafId = requestAnimationFrame(_updateProgressLoop);
-	}
-
-	audio.addEventListener("play", () => {
-		if (!_progressRafId) _updateProgressLoop();
-	});
-	audio.addEventListener("pause", () => {
-		if (_progressRafId) { cancelAnimationFrame(_progressRafId); _progressRafId = null; }
-	});
-	audio.addEventListener("ended", () => {
-		if (_progressRafId) { cancelAnimationFrame(_progressRafId); _progressRafId = null; }
-	});
-
-	audio.addEventListener("durationchange", () => {
-		if (audio.duration && sb.duration) sb.duration.textContent = formatTime(audio.duration);
-		// Also update fullscreen duration
-		const fsDuration = document.getElementById('fs-duration');
-		if (audio.duration && fsDuration) fsDuration.textContent = formatTime(audio.duration);
+	// Also update fill during seeking on this specific input
+	input.addEventListener("input", () => {
+		input.style.setProperty('--val', input.value + '%');
 	});
 }
+_wireSeek(sb.progress);   // desktop
+_wireSeek(sb.progressM);  // mobile
+
+// ── Smooth progress via rAF ──
+let _progressRafId = null;
+let _lastProgressTime = -1;
+
+function _updateProgressLoop() {
+	if (!audio.paused && !audio.ended && audio.duration) {
+		const ct = audio.currentTime;
+		if (!isSeeking && Math.abs(ct - _lastProgressTime) > 0.05) {
+			_lastProgressTime = ct;
+			const pct = (ct / audio.duration) * 100;
+			_setProgress(pct, formatTime(ct));
+
+			// Fullscreen
+			const fsOverlay = document.getElementById('fullscreen-overlay');
+			if (fsOverlay && fsOverlay.classList.contains('active')) {
+				const fsP = document.getElementById('fs-progress');
+				const fsC = document.getElementById('fs-current-time');
+				if (fsP && !_isFsSeekingGlobal) fsP.value = pct;
+				if (fsC && !_isFsSeekingGlobal) fsC.textContent = formatTime(ct);
+			}
+		}
+	}
+	_progressRafId = requestAnimationFrame(_updateProgressLoop);
+}
+
+audio.addEventListener("play",  () => { if (!_progressRafId) _updateProgressLoop(); });
+audio.addEventListener("pause", () => { if (_progressRafId) { cancelAnimationFrame(_progressRafId); _progressRafId = null; } });
+audio.addEventListener("ended", () => { if (_progressRafId) { cancelAnimationFrame(_progressRafId); _progressRafId = null; } });
+
+audio.addEventListener("durationchange", () => {
+	const fmt = audio.duration ? formatTime(audio.duration) : '0:00';
+	_setDuration(fmt);
+	const fsDur = document.getElementById('fs-duration');
+	if (fsDur) fsDur.textContent = fmt;
+});
 
 // play/pause sync
 audio.addEventListener("play", updateSongbarUI);

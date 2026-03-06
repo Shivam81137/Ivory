@@ -828,9 +828,10 @@ html {
   background: var(--cyan-accent);
 }
 
-/* Mobile-only progress strip — hidden on desktop */
+/* Mobile-only progress strip — hidden on desktop, out of grid flow */
 .mobile-progress-strip {
   display: none;
+  position: absolute; /* never participates in grid layout */
 }
 
 /* --- MUSIC PLAYER BAR --- */
@@ -1189,52 +1190,55 @@ input[type="range"]:focus {
 
 input[type="range"]::-webkit-slider-runnable-track {
   width: 100%;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.2);
+  height: 3px;
+  background: linear-gradient(
+    to right,
+    var(--cyan-accent) var(--val, 0%),
+    rgba(255, 255, 255, 0.18) var(--val, 0%)
+  );
   border-radius: 2px;
-  transition: height 0.2s ease, background 0.2s ease;
+  transition: height 0.2s ease;
 }
 
 input[type="range"]:hover::-webkit-slider-runnable-track {
-  height: 6px;
-  background: #1db954;
+  height: 5px;
 }
 
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  height: 12px;
-  width: 12px;
+  height: 13px;
+  width: 13px;
   border-radius: 50%;
   background: #ffffff;
-  margin-top: -5px; /* Offset to center thumb on 2px track */
+  margin-top: -5px;
   opacity: 0;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 8px rgba(50, 224, 255, 0.6);
   transition: opacity 0.2s ease, transform 0.2s ease;
   will-change: transform;
 }
 
 input[type="range"]:hover::-webkit-slider-thumb {
   opacity: 1;
-  transform: scale(1.3);
+  transform: scale(1.2);
 }
 
-/* Firefox support */
+/* Firefox */
 input[type="range"]::-moz-range-track {
   width: 100%;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.2);
+  height: 3px;
+  background: rgba(255, 255, 255, 0.18);
   border-radius: 2px;
-  transition: height 0.2s ease, background 0.2s ease;
 }
 
-input[type="range"]:hover::-moz-range-track {
-  height: 6px;
-  background: #1db954;
+input[type="range"]::-moz-range-progress {
+  background: var(--cyan-accent);
+  height: 3px;
+  border-radius: 2px;
 }
 
 input[type="range"]::-moz-range-thumb {
-  height: 12px;
-  width: 12px;
+  height: 13px;
+  width: 13px;
   border: none;
   border-radius: 50%;
   background: #ffffff;
@@ -1244,7 +1248,7 @@ input[type="range"]::-moz-range-thumb {
 
 input[type="range"]:hover::-moz-range-thumb {
   opacity: 1;
-  transform: scale(1.3);
+  transform: scale(1.2);
 }
 
 .progress-bar-range {
