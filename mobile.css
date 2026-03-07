@@ -1,395 +1,1324 @@
-/* --- RESPONSIVE MOBILE STYLES --- */
+/* ═══════════════════════════════════════════════════════════════════
+   IVORY — MOBILE STYLES  (max-width: 768px)
+   Rich, app-like responsive design with glass morphism & fluid layout
+   ═══════════════════════════════════════════════════════════════════ */
+
 @media (max-width: 768px) {
-    .app-layout {
-        flex-direction: column;
-        padding: 0;
-        gap: 0;
-        height: calc(100vh - 130px);
+
+  /* ─────────────────────────────────────────────────
+     0.  GLOBAL RESETS & TOKENS (mobile overrides)
+  ───────────────────────────────────────────────── */
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+    tap-highlight-color: transparent;
+  }
+
+  body {
+    overflow: hidden;
+    overscroll-behavior: none;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+
+  /* ─────────────────────────────────────────────────
+     1.  APP SHELL LAYOUT
+  ───────────────────────────────────────────────── */
+
+  .app-layout {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    gap: 0;
+    /* Default: full screen height (intro-mode / no song playing yet) */
+    height: 100dvh;
+    width: 100%;
+    transition: height 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Once a song plays, the player bar is visible — shrink the layout */
+  body:not(.intro-mode) .app-layout {
+    height: calc(100dvh - 132px);
+  }
+
+  /* ─────────────────────────────────────────────────
+     2.  SIDEBAR — premium slide-in drawer
+  ───────────────────────────────────────────────── */
+
+  .sidebar {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    height: 100dvh;
+    width: 80%;
+    max-width: 300px;
+    z-index: 1001;
+    background: linear-gradient(
+      170deg,
+      rgba(8, 16, 42, 0.98) 0%,
+      rgba(4, 8, 22, 0.99) 55%,
+      rgba(2, 5, 14, 1) 100%
+    );
+    border-right: 1px solid rgba(50, 224, 255, 0.14);
+    border-radius: 0 28px 28px 0;
+    box-shadow:
+      16px 0 56px rgba(0, 0, 0, 0.75),
+      4px 0 20px rgba(50, 224, 255, 0.05),
+      inset -1px 0 0 rgba(50, 224, 255, 0.06);
+    transition: left 0.38s cubic-bezier(0.32, 0, 0.12, 1);
+    backdrop-filter: blur(40px) saturate(1.4);
+    -webkit-backdrop-filter: blur(40px) saturate(1.4);
+    display: flex;
+    flex-direction: column;
+    padding: 0 0 32px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+  }
+
+  .sidebar::-webkit-scrollbar { display: none; }
+
+  .sidebar.active {
+    left: 0;
+    box-shadow:
+      20px 0 70px rgba(0, 0, 0, 0.85),
+      6px 0 20px rgba(50, 224, 255, 0.08),
+      inset -1px 0 0 rgba(50, 224, 255, 0.1);
+  }
+
+  /* ── Sidebar header band ── */
+  .sidebar .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 52px 22px 22px;
+    margin-bottom: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(50, 224, 255, 0.06) 0%,
+      transparent 100%
+    );
+    border-bottom: 1px solid rgba(50, 224, 255, 0.08);
+    position: relative;
+  }
+
+  .sidebar .logo-area::after {
+    content: 'IVORY';
+    position: absolute;
+    right: 22px;
+    top: 54px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.28em;
+    color: rgba(50, 224, 255, 0.45);
+  }
+
+  .sidebar .brand-logo {
+    width: 46px;
+    height: 46px;
+    border-radius: 13px;
+    box-shadow:
+      0 0 18px rgba(50, 224, 255, 0.38),
+      0 0 6px rgba(50, 224, 255, 0.2),
+      0 4px 14px rgba(0, 0, 0, 0.6);
+  }
+
+  /* Sidebar content padding */
+  .sidebar .lyrics-label {
+    font-size: 0.58rem;
+    letter-spacing: 0.22em;
+    margin: 22px 22px 10px;
+    color: var(--cyan-accent);
+    opacity: 0.55;
+  }
+
+  .sidebar .lyrics-container {
+    font-size: 0.86rem;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.65);
+    padding: 0 22px;
+  }
+
+  /* ─────────────────────────────────────────────────
+     3.  SIDEBAR OVERLAY
+  ───────────────────────────────────────────────── */
+
+  .sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0);
+    z-index: 1000;
+    display: none;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    transition:
+      background 0.38s ease,
+      backdrop-filter 0.38s ease;
+  }
+
+  .sidebar-overlay.active {
+    display: block;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px) saturate(0.8);
+    -webkit-backdrop-filter: blur(8px) saturate(0.8);
+  }
+
+  /* ─────────────────────────────────────────────────
+     4.  MAIN VIEW
+  ───────────────────────────────────────────────── */
+
+  .main-view {
+    width: 100%;
+    border-radius: 0;
+    border: none;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* ─────────────────────────────────────────────────
+     5.  TOP HEADER — premium frosted glass bar
+  ───────────────────────────────────────────────── */
+
+  .top-header {
+    position: sticky;
+    top: 0;
+    z-index: 90;
+    padding: 12px 14px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: linear-gradient(
+      180deg,
+      rgba(4, 9, 22, 0.97) 0%,
+      rgba(4, 9, 22, 0.92) 70%,
+      rgba(4, 9, 22, 0) 100%
+    );
+    backdrop-filter: blur(20px) saturate(1.5);
+    -webkit-backdrop-filter: blur(20px) saturate(1.5);
+    border-bottom: 1px solid rgba(50, 224, 255, 0.06);
+  }
+
+  /* Top row: hamburger + search (side by side) */
+  .top-header .nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+  }
+
+  /* Search bar sits next to nav controls in the same row */
+  .top-header .search-container {
+    flex: 1;
+  }
+
+  /* Hide desktop welcome section */
+  .top-header .welcome-section {
+    display: none;
+  }
+
+  /* ─────────────────────────────────────────────────
+     6.  HAMBURGER / MOBILE MENU BUTTON
+  ───────────────────────────────────────────────── */
+
+  .mobile-menu-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.055);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    color: rgba(255, 255, 255, 0.82);
+    flex-shrink: 0;
+    transition: background 0.2s, border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+  }
+
+  .mobile-menu-btn:active {
+    background: rgba(50, 224, 255, 0.1);
+    border-color: rgba(50, 224, 255, 0.3);
+    transform: scale(0.91);
+    box-shadow: 0 0 12px rgba(50, 224, 255, 0.15);
+  }
+
+  /* Back button */
+  #global-back-btn {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, transform 0.15s;
+    flex-shrink: 0;
+  }
+
+  #global-back-btn:active {
+    background: rgba(50, 224, 255, 0.08);
+    transform: scale(0.91);
+  }
+
+  /* ─────────────────────────────────────────────────
+     7.  SEARCH BAR — premium glass input
+  ───────────────────────────────────────────────── */
+
+  .search-container {
+    position: relative;
+    width: 100%;
+  }
+
+  .search-container input#song-search {
+    width: 100%;
+    height: 40px;
+    padding: 0 14px 0 40px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    color: #fff;
+    font-size: 0.86rem;
+    font-family: inherit;
+    outline: none;
+    transition:
+      border-color 0.25s,
+      background 0.25s,
+      box-shadow 0.25s;
+    letter-spacing: 0.01em;
+  }
+
+  .search-container input#song-search::placeholder {
+    color: rgba(255, 255, 255, 0.28);
+    font-size: 0.82rem;
+  }
+
+  .search-container input#song-search:focus {
+    border-color: rgba(50, 224, 255, 0.4);
+    background: rgba(50, 224, 255, 0.04);
+    box-shadow:
+      0 0 0 3px rgba(50, 224, 255, 0.07),
+      inset 0 1px 0 rgba(50, 224, 255, 0.05);
+  }
+
+  .search-icon-input {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 15px;
+    height: 15px;
+    color: rgba(255, 255, 255, 0.3);
+    pointer-events: none;
+  }
+
+  /* Search dropdown */
+  .search-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    z-index: 200;
+    background: rgba(8, 15, 36, 0.98);
+    border: 1px solid rgba(50, 224, 255, 0.15);
+    border-radius: 18px;
+    backdrop-filter: blur(30px) saturate(1.5);
+    -webkit-backdrop-filter: blur(30px) saturate(1.5);
+    box-shadow:
+      0 20px 56px rgba(0, 0, 0, 0.65),
+      0 0 0 1px rgba(50, 224, 255, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    overflow: hidden;
+    max-height: 55dvh;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+
+  .search-dropdown::-webkit-scrollbar { display: none; }
+
+  /* ─────────────────────────────────────────────────
+     8.  FILTER PILLS — horizontal scroll ribbon
+  ───────────────────────────────────────────────── */
+
+  .filter-bar {
+    display: flex;
+    gap: 7px;
+    padding: 8px 14px 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    flex-shrink: 0;
+  }
+
+  .filter-bar::-webkit-scrollbar { display: none; }
+
+  .pill {
+    white-space: nowrap;
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.52);
+    cursor: pointer;
+    transition: all 0.22s ease;
+    flex-shrink: 0;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .pill.active {
+    background: linear-gradient(
+      135deg,
+      rgba(50, 224, 255, 0.18) 0%,
+      rgba(50, 224, 255, 0.08) 100%
+    );
+    border-color: rgba(50, 224, 255, 0.4);
+    color: var(--cyan-accent);
+    box-shadow:
+      0 0 14px rgba(50, 224, 255, 0.1),
+      inset 0 1px 0 rgba(50, 224, 255, 0.1);
+  }
+
+  .pill:active {
+    transform: scale(0.93);
+    opacity: 0.8;
+  }
+
+  /* ─────────────────────────────────────────────────
+     9.  CONTENT BODY — smooth scroll container
+  ───────────────────────────────────────────────── */
+
+  .content-body {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 10px 12px 28px;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(50, 224, 255, 0.12) transparent;
+  }
+
+  .content-body::-webkit-scrollbar { width: 2px; }
+  .content-body::-webkit-scrollbar-track { background: transparent; }
+  .content-body::-webkit-scrollbar-thumb {
+    background: rgba(50, 224, 255, 0.18);
+    border-radius: 4px;
+  }
+
+  /* ─────────────────────────────────────────────────
+     10.  HOME SECTIONS & SECTION TITLES
+  ───────────────────────────────────────────────── */
+
+  .home-section {
+    margin-bottom: 30px;
+  }
+
+  .section-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: 14px;
+    padding-left: 2px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: none;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      rgba(50, 224, 255, 0.2) 0%,
+      transparent 80%
+    );
+    border-radius: 2px;
+  }
+
+  /* ─────────────────────────────────────────────────
+     11.  CARD GRID — responsive columns
+  ───────────────────────────────────────────────── */
+
+  .card-grid,
+  .home-card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 11px;
+  }
+
+  #genre-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 9px;
+  }
+
+  #artist-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 11px;
+  }
+
+  /* ─────────────────────────────────────────────────
+     12.  MUSIC CARDS — rich glass cards
+  ───────────────────────────────────────────────── */
+
+  .music-card {
+    border-radius: 18px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.065);
+    cursor: pointer;
+    transition:
+      transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.22s ease,
+      border-color 0.22s ease;
+    position: relative;
+    -webkit-user-select: none;
+    user-select: none;
+    will-change: transform;
+  }
+
+  /* Subtle inner top shimmer */
+  .music-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.12) 40%,
+      rgba(255, 255, 255, 0.08) 60%,
+      transparent 100%
+    );
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .music-card:active {
+    transform: scale(0.95);
+    border-color: rgba(50, 224, 255, 0.25);
+    box-shadow:
+      0 0 0 2px rgba(50, 224, 255, 0.08),
+      0 10px 28px rgba(0, 0, 0, 0.45);
+  }
+
+  /* Card image wrapper */
+  .card-img-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+  }
+
+  .card-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s ease;
+  }
+
+  /* Gradient overlay on image for text legibility */
+  .card-img-wrapper::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 40%,
+      rgba(4, 8, 20, 0.55) 100%
+    );
+    pointer-events: none;
+  }
+
+  .music-card:active .card-img-wrapper img {
+    transform: scale(1.05);
+  }
+
+  /* Play FAB */
+  .play-fab {
+    position: absolute;
+    bottom: 9px;
+    right: 9px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(50, 224, 255, 0.95);
+    color: #040c1a;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow:
+      0 4px 16px rgba(50, 224, 255, 0.5),
+      0 2px 6px rgba(0, 0, 0, 0.45);
+    z-index: 2;
+    opacity: 0;
+    transform: scale(0.65) translateY(4px);
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+      background 0.15s;
+  }
+
+  /* Always visible on mobile */
+  .music-card .play-fab {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+
+  .play-fab:active {
+    transform: scale(0.85);
+    background: #fff;
+  }
+
+  .play-fab svg {
+    width: 15px;
+    height: 15px;
+    fill: currentColor;
+    margin-left: 2px;
+  }
+
+  /* Card text */
+  .card-details {
+    padding: 9px 11px 11px;
+    background: transparent;
+  }
+
+  .card-details h3 {
+    font-size: 0.77rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+    letter-spacing: 0.01em;
+  }
+
+  .card-details p {
+    font-size: 0.67rem;
+    color: rgba(255, 255, 255, 0.38);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+  }
+
+  /* ─────────────────────────────────────────────────
+     13.  SONG LIST VIEW — premium rows
+  ───────────────────────────────────────────────── */
+
+  .song-list-container {
+    padding: 0;
+  }
+
+  .song-list-header {
+    padding: 6px 2px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 6px;
+  }
+
+  .song-list-header h2 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+
+  .song-list-row {
+    display: grid;
+    grid-template-columns: 20px 48px 1fr auto 28px;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 6px 9px 2px;
+    border-radius: 14px;
+    cursor: pointer;
+    transition:
+      background 0.18s ease,
+      transform 0.15s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.025);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .song-list-row:last-child { border-bottom: none; }
+
+  .song-list-row:active {
+    background: rgba(50, 224, 255, 0.055);
+    transform: scale(0.985);
+  }
+
+  .song-list-row.active-song {
+    background: rgba(50, 224, 255, 0.07);
+  }
+
+  .song-list-row.active-song .song-list-title {
+    color: var(--cyan-accent);
+  }
+
+  .song-num {
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.24);
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+  }
+
+  .song-list-art {
+    width: 48px;
+    height: 48px;
+    border-radius: 11px;
+    object-fit: cover;
+    flex-shrink: 0;
+    box-shadow:
+      0 3px 12px rgba(0, 0, 0, 0.45),
+      0 0 0 1px rgba(255, 255, 255, 0.05);
+  }
+
+  .song-list-title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.92);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.25;
+    letter-spacing: 0.005em;
+  }
+
+  .song-list-artist {
+    display: none;
+  }
+
+  .song-duration {
+    font-size: 0.66rem;
+    color: rgba(255, 255, 255, 0.26);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .song-list-play {
+    color: rgba(255, 255, 255, 0.38);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s, background 0.15s, transform 0.15s;
+  }
+
+  .song-list-play:active {
+    background: rgba(50, 224, 255, 0.1);
+    color: var(--cyan-accent);
+    transform: scale(0.88);
+  }
+
+  /* ─────────────────────────────────────────────────
+     14.  MUSIC PLAYER BAR — premium bottom bar
+  ───────────────────────────────────────────────── */
+
+  .music-player {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: auto;
+    min-height: 124px;
+
+    display: flex !important;
+    grid-template-columns: unset !important;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+
+    padding: 0;
+    padding-top: 4px;
+    gap: 0;
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(5, 10, 24, 0.96) 0%,
+        rgba(3, 6, 16, 0.99) 100%
+      );
+    border-top: 1px solid rgba(50, 224, 255, 0.08);
+    backdrop-filter: blur(32px) saturate(1.6);
+    -webkit-backdrop-filter: blur(32px) saturate(1.6);
+    box-shadow:
+      0 -1px 0 rgba(50, 224, 255, 0.06),
+      0 -16px 50px rgba(0, 0, 0, 0.7),
+      inset 0 1px 0 rgba(255, 255, 255, 0.025);
+    z-index: 999;
+    overflow: visible;
+
+    /* Hidden off-screen until a song is played */
+    transform: translateY(100%);
+    transition:
+      transform 0.42s cubic-bezier(0.32, 0, 0.12, 1),
+      box-shadow 0.3s ease;
+  }
+
+  /* Slide up into view when .active is added by JS (on first play) */
+  .music-player.active {
+    transform: translateY(0);
+    box-shadow:
+      0 -1px 0 rgba(50, 224, 255, 0.1),
+      0 -20px 60px rgba(0, 0, 0, 0.75),
+      inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  }
+
+  /* Override the desktop intro-mode display:none — let transform handle it on mobile */
+  body.intro-mode .music-player {
+    display: flex !important;
+    transform: translateY(100%);
+  }
+
+  /* ── 14a. Hairline progress strip ── */
+
+  .music-player .mobile-progress-strip {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .music-player .mobile-progress-strip .time {
+    display: none;
+  }
+
+  .music-player .mobile-progress-strip .playback-bar {
+    display: block;
+    height: 4px;
+    padding: 0;
+    margin: 0;
+    position: relative;
+  }
+
+  .music-player .mobile-progress-strip input[type="range"] {
+    position: absolute;
+    top: -10px;
+    left: 0;
+    width: 100%;
+    height: 24px;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    z-index: 2;
+  }
+
+  .music-player .mobile-progress-strip input[type="range"]::-webkit-slider-runnable-track {
+    height: 4px;
+    background: linear-gradient(
+      to right,
+      var(--cyan-accent) var(--val, 0%),
+      rgba(255, 255, 255, 0.08) var(--val, 0%)
+    );
+    border-radius: 0;
+  }
+
+  .music-player .mobile-progress-strip input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    margin-top: -7px;
+    opacity: 0;
+    transition: opacity 0.18s, transform 0.15s;
+    box-shadow:
+      0 0 10px rgba(50, 224, 255, 0.9),
+      0 2px 6px rgba(0,0,0,0.5);
+  }
+
+  .music-player .mobile-progress-strip input[type="range"]:active::-webkit-slider-thumb {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
+  .music-player .mobile-progress-strip input[type="range"]::-moz-range-track {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 0;
+  }
+
+  .music-player .mobile-progress-strip input[type="range"]::-moz-range-progress {
+    height: 4px;
+    background: var(--cyan-accent);
+    border-radius: 0;
+  }
+
+  .music-player .mobile-progress-strip input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border: none;
+    border-radius: 50%;
+    background: #fff;
+    opacity: 0;
+  }
+
+  /* Hide desktop progress bar on mobile */
+  .music-player .desktop-playback-bar {
+    display: none !important;
+  }
+
+  /* ── 14b. Song info row ── */
+
+  .music-player .song-info {
+    order: 2;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    padding: 12px 16px 5px;
+    gap: 13px;
+    min-width: 0;
+    width: 100%;
+    margin: 0;
+  }
+
+  /* Album art thumbnail */
+  .music-player .player-art {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    border-radius: 13px;
+    object-fit: cover;
+    flex-shrink: 0;
+    box-shadow:
+      0 0 0 2px rgba(50, 224, 255, 0.15),
+      0 6px 20px rgba(0, 0, 0, 0.6);
+    transition: box-shadow 0.45s ease, transform 0.3s ease;
+  }
+
+  .music-player.is-playing .player-art {
+    animation: playerArtPulse 3.5s ease-in-out infinite;
+  }
+
+  @keyframes playerArtPulse {
+    0%, 100% {
+      box-shadow:
+        0 0 0 2px rgba(50, 224, 255, 0.14),
+        0 6px 20px rgba(0, 0, 0, 0.6);
+    }
+    50% {
+      box-shadow:
+        0 0 0 3px rgba(50, 224, 255, 0.42),
+        0 0 20px rgba(50, 224, 255, 0.2),
+        0 6px 20px rgba(0, 0, 0, 0.6);
+    }
+  }
+
+  /* Song text block */
+  .music-player .song-text {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .music-player .song-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: 0.01em;
+    line-height: 1.3;
+  }
+
+  .music-player .song-artist {
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.4);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+  }
+
+  /* Like button */
+  .music-player .like-btn {
+    flex-shrink: 0;
+    color: rgba(255, 255, 255, 0.3);
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .music-player .like-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .music-player .like-btn:active {
+    color: #ff4b6e;
+    transform: scale(1.25);
+  }
+
+  .music-player .like-btn.liked {
+    color: #ff4b6e;
+  }
+
+  .music-player .like-btn.liked svg {
+    fill: #ff4b6e;
+    stroke: #ff4b6e;
+  }
+
+  /* ── 14c. Playback controls row ── */
+
+  .music-player .player-controls {
+    order: 3;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex-shrink: 0;
+    padding: 2px 14px 14px;
+    gap: 0;
+  }
+
+  .music-player .control-buttons {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 0;
+  }
+
+  /* Shuffle */
+  .music-player .shuffle-btn {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transition: color 0.18s, transform 0.15s;
+    flex-shrink: 0;
+  }
+
+  .music-player .shuffle-btn .btn-label { display: none; }
+
+  .music-player .shuffle-btn.active {
+    color: var(--cyan-accent);
+    filter: drop-shadow(0 0 5px rgba(50, 224, 255, 0.55));
+  }
+
+  .music-player .shuffle-btn:active { transform: scale(0.85); }
+
+  /* Prev */
+  .music-player .prev-btn {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.75);
+    border-radius: 50%;
+    transition: color 0.15s, transform 0.15s;
+    flex-shrink: 0;
+  }
+
+  .music-player .prev-btn:active {
+    color: #fff;
+    transform: scale(0.85);
+  }
+
+  /* Play/Pause — glowing white orb */
+  .music-player .play-btn-main {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #06101e;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+      0 0 0 7px rgba(255, 255, 255, 0.06),
+      0 8px 28px rgba(0, 0, 0, 0.55);
+    transition:
+      transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
+      background 0.18s ease,
+      box-shadow 0.18s ease;
+  }
+
+  .music-player .play-btn-main:active {
+    transform: scale(0.88);
+    background: var(--cyan-accent);
+    color: #06101e;
+    box-shadow:
+      0 0 0 7px rgba(50, 224, 255, 0.12),
+      0 8px 30px rgba(50, 224, 255, 0.5);
+  }
+
+  .music-player .play-btn-main svg {
+    width: 22px;
+    height: 22px;
+    fill: currentColor;
+  }
+
+  /* Next */
+  .music-player .next-btn {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.75);
+    border-radius: 50%;
+    transition: color 0.15s, transform 0.15s;
+    flex-shrink: 0;
+  }
+
+  .music-player .next-btn:active {
+    color: #fff;
+    transform: scale(0.85);
+  }
+
+  /* Repeat */
+  .music-player .repeat-btn {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transition: color 0.18s, transform 0.15s;
+    flex-shrink: 0;
+  }
+
+  .music-player .repeat-btn .btn-label { display: none; }
+
+  .music-player .repeat-btn.active {
+    color: var(--cyan-accent);
+    filter: drop-shadow(0 0 5px rgba(50, 224, 255, 0.55));
+  }
+
+  .music-player .repeat-btn:active { transform: scale(0.85); }
+
+  /* Hide desktop extras */
+  .volume-controls           { display: none !important; }
+  .music-player #expand-btn  { display: none !important; }
+
+  /* ─────────────────────────────────────────────────
+     15.  FULLSCREEN OVERLAY
+  ───────────────────────────────────────────────── */
+
+  #fullscreen-overlay {
+    border-radius: 0;
+  }
+
+  .fs-content {
+    flex-direction: column;
+    padding: 20px 20px 32px;
+    gap: 22px;
+    overflow-y: auto;
+  }
+
+  .fs-left {
+    align-items: center;
+    gap: 18px;
+  }
+
+  .fs-art {
+    width: min(74vw, 290px);
+    height: min(74vw, 290px);
+    border-radius: 24px;
+    box-shadow:
+      0 20px 60px rgba(0,0,0,0.65),
+      0 0 0 2px rgba(255,255,255,0.06);
+  }
+
+  .fs-info h2 {
+    font-size: 1.25rem;
+    text-align: center;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  .fs-info p {
+    font-size: 0.83rem;
+    text-align: center;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .fs-right {
+    width: 100%;
+    max-height: 34dvh;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+
+  .fs-right::-webkit-scrollbar { display: none; }
+
+  /* ─────────────────────────────────────────────────
+     16.  SCROLLBAR POLISH
+  ───────────────────────────────────────────────── */
+
+  .playlist-list::-webkit-scrollbar { width: 2px; }
+  .playlist-list::-webkit-scrollbar-thumb {
+    background: rgba(50, 224, 255, 0.18);
+    border-radius: 4px;
+  }
+
+  /* ─────────────────────────────────────────────────
+     17.  ANIMATIONS
+  ───────────────────────────────────────────────── */
+
+  .fade-in-up {
+    animation: fadeInUp 0.32s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Stagger home sections */
+  .home-section:nth-child(1) { animation: fadeInUp 0.35s 0.04s both; }
+  .home-section:nth-child(2) { animation: fadeInUp 0.35s 0.10s both; }
+  .home-section:nth-child(3) { animation: fadeInUp 0.35s 0.16s both; }
+
+  /* Card pop-in */
+  .music-card {
+    animation: cardPopIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  @keyframes cardPopIn {
+    from {
+      opacity: 0;
+      transform: scale(0.92) translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  /* ─────────────────────────────────────────────────
+     18.  EXTRA SMALL SCREENS (≤ 390px)
+  ───────────────────────────────────────────────── */
+
+  @media (max-width: 390px) {
+    .card-grid,
+    .home-card-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 9px;
     }
 
-    /* Sidebar Mobile Styling */
-    .sidebar {
-        position: fixed;
-        left: -100%;
-        top: 0;
-        height: 100vh;
-        width: 80%;
-        max-width: 300px;
-        z-index: 1001;
-        background: var(--navy-dark);
-        background: linear-gradient(160deg, rgba(13, 27, 62, 0.98) 0%, rgba(5, 11, 20, 0.98) 100%);
-        border-right: 1px solid rgba(50, 224, 255, 0.2);
-        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
-        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    #genre-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
     }
 
-    .sidebar.active { left: 0; }
+    .card-details h3 { font-size: 0.73rem; }
+    .card-details p  { font-size: 0.63rem; }
 
-    .sidebar-overlay {
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.6);
-        z-index: 1000;
-        display: none;
-        backdrop-filter: blur(4px);
-        opacity: 0;
-        transition: opacity 0.3s ease;
+    .music-player .play-btn-main {
+      width: 50px;
+      height: 50px;
     }
 
-    .sidebar-overlay.active { display: block; opacity: 1; }
-
-    /* Main View Mobile Styling */
-    .app-layout {
-        height: calc(100vh - 116px);
+    .music-player .player-art {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
     }
 
-    .main-view {
-        width: 100%;
-        border-radius: 0;
-        border: none;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
+    .music-player .song-title  { font-size: 0.83rem; }
+    .music-player .song-artist { font-size: 0.63rem; }
 
-    .top-header {
-        padding: 12px 15px;
-        background: rgba(13, 27, 62, 0.85);
-    }
+    .top-header    { padding: 10px 12px 9px; }
+    .content-body  { padding: 8px 10px 22px; }
+    .section-title { font-size: 0.88rem; }
+  }
 
-    .content-body {
-        padding: 15px;
-        padding-bottom: 20px;
-    }
+  /* ─────────────────────────────────────────────────
+     19.  LANDSCAPE PHONE (height ≤ 450px)
+  ───────────────────────────────────────────────── */
 
-    /* ════════════════════════════════════
-       MOBILE PLAYER BAR — full redesign
-       ════════════════════════════════════ */
+  @media (max-height: 450px) {
+    body:not(.intro-mode) .app-layout { height: calc(100dvh - 104px); }
 
     .music-player {
-        position: fixed;
-        bottom: 0; left: 0; right: 0;
-        height: auto;
-        min-height: 116px;
-        display: flex !important;
-        grid-template-columns: unset !important;
-        flex-direction: column;
-        align-items: stretch;
-        justify-content: flex-start;
-        padding: 0;
-        padding-top: 3px; /* space for the absolute progress strip */
-        gap: 0;
-        background: linear-gradient(
-            180deg,
-            rgba(8, 14, 30, 0.97) 0%,
-            rgba(4, 8, 18, 1) 100%
-        );
-        border-top: none;
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.6);
-        z-index: 999;
-        overflow: visible; /* allow absolute strip to show */
+      min-height: 100px;
+      flex-direction: row;
+      align-items: center;
+      padding: 0 10px;
+      gap: 0;
     }
 
-    /* ── ROW 1: Hairline progress strip — absolute at top of player ── */
-    .music-player .mobile-progress-strip {
-        display: block;
-        position: absolute;
-        top: 0; left: 0; right: 0;
-        height: 3px;
-        z-index: 10;
-        background: rgba(255, 255, 255, 0.08);
-    }
-
-    /* Hide time labels inside the strip */
-    .music-player .mobile-progress-strip .time {
-        display: none;
-    }
-
-    .music-player .mobile-progress-strip .playback-bar {
-        display: block;
-        height: 3px;
-        padding: 0;
-        margin: 0;
-        position: relative;
-    }
-
-    /* The actual range input — full width, no height confusion */
-    .music-player .mobile-progress-strip input[type="range"] {
-        position: absolute;
-        top: -6px; /* vertically centre the touch area over the 3px strip */
-        left: 0;
-        width: 100%;
-        height: 15px;     /* large touch target */
-        margin: 0;
-        padding: 0;
-        cursor: pointer;
-        appearance: none;
-        -webkit-appearance: none;
-        background: transparent;
-        z-index: 2;
-    }
-
-    .music-player .mobile-progress-strip input[type="range"]::-webkit-slider-runnable-track {
-        height: 3px;
-        background: linear-gradient(
-            to right,
-            rgba(50, 224, 255, 0.9) var(--val, 0%),
-            rgba(255, 255, 255, 0.12) var(--val, 0%)
-        );
-        border-radius: 0;
-        transition: none;
-    }
-
-    /* Thumb — hidden normally, shown on touch */
-    .music-player .mobile-progress-strip input[type="range"]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        width: 14px;
-        height: 14px;
-        border-radius: 50%;
-        background: var(--cyan-accent);
-        margin-top: -5.5px;
-        opacity: 0;
-        transition: opacity 0.15s;
-        box-shadow: 0 0 6px rgba(50, 224, 255, 0.8);
-    }
-
-    .music-player .mobile-progress-strip input[type="range"]:active::-webkit-slider-thumb {
-        opacity: 1;
-    }
-
-    .music-player .mobile-progress-strip input[type="range"]::-moz-range-track {
-        height: 3px;
-        background: rgba(255, 255, 255, 0.12);
-        border-radius: 0;
-    }
-
-    .music-player .mobile-progress-strip input[type="range"]::-moz-range-thumb {
-        width: 14px; height: 14px;
-        border: none;
-        border-radius: 50%;
-        background: var(--cyan-accent);
-        opacity: 0;
-    }
-
-    /* Also hide the desktop .playback-bar (inside .player-controls) on mobile */
-    .music-player .desktop-playback-bar {
-        display: none !important;
-    }
-
-    /* ── ROW 2: Art + Song info + Like ── */
     .music-player .song-info {
-        order: 2;
-        flex: 0 0 auto;
-        display: flex;
-        align-items: center;
-        padding: 10px 16px 6px;
-        gap: 12px;
-        min-width: 0;
-        width: 100%;
-        margin: 0;
+      padding: 6px 8px;
+      flex: 1;
     }
 
-    /* Album art thumbnail — 52px square with cyan glow ring */
     .music-player .player-art {
-        width: 52px;
-        height: 52px;
-        min-width: 52px;
-        border-radius: 10px;
-        object-fit: cover;
-        flex-shrink: 0;
-        box-shadow:
-            0 0 0 2px rgba(50, 224, 255, 0.2),
-            0 4px 14px rgba(0, 0, 0, 0.7);
-        animation: mobileArtPulse 4s ease-in-out infinite;
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
     }
 
-    @keyframes mobileArtPulse {
-        0%, 100% {
-            box-shadow:
-                0 0 0 2px rgba(50, 224, 255, 0.15),
-                0 4px 14px rgba(0, 0, 0, 0.7);
-        }
-        50% {
-            box-shadow:
-                0 0 0 2px rgba(50, 224, 255, 0.5),
-                0 0 14px rgba(50, 224, 255, 0.22),
-                0 4px 14px rgba(0, 0, 0, 0.7);
-        }
-    }
-
-    /* Song title + artist — flex-1 with ellipsis truncation */
-    .music-player .song-text {
-        flex: 1;
-        min-width: 0;
-        margin: 0;
-        overflow: hidden;
-    }
-
-    .music-player .song-title {
-        font-size: 0.92rem;
-        font-weight: 700;
-        color: #fff;
-        margin-bottom: 3px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        letter-spacing: 0.01em;
-    }
-
-    .music-player .song-artist {
-        font-size: 0.7rem;
-        color: rgba(255, 255, 255, 0.48);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    /* Like button */
-    .music-player .like-btn {
-        flex-shrink: 0;
-        color: rgba(255, 255, 255, 0.4);
-        width: 34px; height: 34px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        transition: color 0.2s, background 0.2s;
-    }
-
-    .music-player .like-btn svg {
-        width: 18px; height: 18px;
-    }
-
-    .music-player .like-btn:active {
-        background: rgba(255, 255, 255, 0.08);
-        color: var(--cyan-accent);
-    }
-
-    /* ── ROW 3: Playback controls (shuffle, prev, play, next, repeat) ── */
     .music-player .player-controls {
-        order: 3;
-        display: flex;
-        width: 100%;
-        flex-shrink: 0;
-        padding: 2px 10px 12px;
+      padding: 0 4px;
+      flex-direction: row;
+      align-items: center;
+      flex: 0 0 auto;
     }
 
     .music-player .control-buttons {
-        display: flex !important;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        gap: 0;
+      gap: 4px;
     }
 
-    /* Shuffle */
-    .music-player .shuffle-btn {
-        width: 38px; height: 38px;
-        display: flex; align-items: center; justify-content: center;
-        color: rgba(255, 255, 255, 0.38);
-        border-radius: 50%;
-        transition: color 0.15s, background 0.15s;
-        flex-shrink: 0;
-    }
-
-    .music-player .shuffle-btn .btn-label { display: none; }
-
-    .music-player .shuffle-btn.active { color: var(--cyan-accent); }
-
-    /* Prev */
-    .music-player .prev-btn {
-        width: 42px; height: 42px;
-        display: flex; align-items: center; justify-content: center;
-        color: rgba(255, 255, 255, 0.75);
-        border-radius: 50%;
-        transition: color 0.15s, background 0.15s;
-        flex-shrink: 0;
-    }
-
-    .music-player .prev-btn:active {
-        background: rgba(255, 255, 255, 0.08);
-        color: #fff;
-    }
-
-    /* Play / Pause — big white circle, centred */
     .music-player .play-btn-main {
-        width: 52px; height: 52px;
-        border-radius: 50%;
-        background: #ffffff;
-        color: #08101e;
-        flex-shrink: 0;
-        box-shadow:
-            0 0 0 5px rgba(255, 255, 255, 0.07),
-            0 6px 20px rgba(0, 0, 0, 0.45);
-        transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+      width: 44px;
+      height: 44px;
     }
 
-    .music-player .play-btn-main:active {
-        transform: scale(0.93);
-        background: var(--cyan-accent);
-        color: #08101e;
-        box-shadow:
-            0 0 0 5px rgba(50, 224, 255, 0.18),
-            0 6px 22px rgba(50, 224, 255, 0.4);
-    }
-
-    .music-player .play-btn-main svg {
-        width: 22px; height: 22px;
-        fill: currentColor;
-    }
-
-    /* Next */
-    .music-player .next-btn {
-        width: 42px; height: 42px;
-        display: flex; align-items: center; justify-content: center;
-        color: rgba(255, 255, 255, 0.75);
-        border-radius: 50%;
-        transition: color 0.15s, background 0.15s;
-        flex-shrink: 0;
-    }
-
-    .music-player .next-btn:active {
-        background: rgba(255, 255, 255, 0.08);
-        color: #fff;
-    }
-
-    /* Repeat */
+    .music-player .shuffle-btn,
     .music-player .repeat-btn {
-        width: 38px; height: 38px;
-        display: flex; align-items: center; justify-content: center;
-        color: rgba(255, 255, 255, 0.38);
-        border-radius: 50%;
-        transition: color 0.15s;
-        flex-shrink: 0;
+      display: none;
     }
+  }
 
-    .music-player .repeat-btn .btn-label { display: none; }
-
-    .music-player .repeat-btn.active { color: var(--cyan-accent); }
-
-    /* Hide volume / other desktop controls */
-    .volume-controls { display: none; }
-    .music-player #expand-btn { display: none; }
-
-    .mobile-menu-btn {
-        display: flex !important;
-        margin-right: 10px;
-        background: transparent;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .mobile-menu-btn:active {
-        background: rgba(255, 255, 255, 0.1);
-    }
-
-    .card-grid {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 12px;
-    }
-
-    .playlist-list::-webkit-scrollbar { width: 6px; }
-}
+} /* end @media (max-width: 768px) */

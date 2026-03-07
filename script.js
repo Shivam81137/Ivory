@@ -1,5 +1,50 @@
 console.log("Script loaded successfully.");
 
+// ── SECTION FALLBACK IMAGES ─────────────────────────────────────────────────
+// Maps folder/section names → their section card image so that if a song's
+// cover art fails to load, the section card image is shown instead of the generic logo.
+const sectionFallbackImages = {
+    'Arijit Singh':          'IMAGES/arijit.jpg',
+    'Karan Aujla':           'IMAGES/karan_aujla.jpg',
+    'Hindi Hits':            'IMAGES/hindi_hits.jpg',
+    'Global Hits':           'IMAGES/english_hits.jpg',
+    'Anuv Jain':             'IMAGES/anuv jain.jpg',
+    'The Weeknd':            'IMAGES/weekend.jpg',
+    'Atif Aslam':            'IMAGES/Atif Aslam .jpg',
+    'Pritam':                'IMAGES/Pritam .jpg',
+    'Charlie Puth':          'IMAGES/charlie puth.jpg',
+    'Ariana Grande':         'IMAGES/Ariana Grande .jpg',
+    'Taylor Swift':          'IMAGES/Taylor swift.jpg',
+    'Mohit Chauhan':         'IMAGES/Mohit Chauhan .jpg',
+    // Moods
+    '❤️ Love Songs':         'IMAGES/love_vibes.jpg',
+    '💔 Sad Vibes':           'IMAGES/sad_vibes.jpg',
+    '⚡ Energetic':           'IMAGES/energetic_vibes.jpg',
+    '🌿 Chill Mode':          'IMAGES/chill_vibes.jpg',
+    '🌙 Night Drive':         'IMAGES/night_drive.jpg',
+    '✨ Feel Good':           'IMAGES/feel_good.jpg',
+    '🔥 Punjabi Vibes':       'IMAGES/punjabi_vibes.jpg',
+    '🎶 Indie Soul':          'IMAGES/indie_soul.jpg',
+    '🎤 Party Anthems':       'IMAGES/party_anthem.jpg',
+    '🌧️ Rainy Day':          'IMAGES/rainy day.jpg',
+    '💪 Workout':             'IMAGES/workout.jpg',
+    '🎬 Bollywood Classics':  'IMAGES/bollywood.jpg',
+    '☕ Morning Coffee':      'IMAGES/morning coffee.jpg',
+    '🌌 Late Night':          'IMAGES/late night.jpg',
+    '💃 Dance Floor':         'IMAGES/dance floor.jpg',
+    '🎸 Rock & Alt':          'IMAGES/rock & alt.jpg',
+    '🎌 K-Pop & Asian Pop':   'IMAGES/k pop & asian.jpg',
+};
+
+/**
+ * Returns the section card image for a given song object,
+ * falling back to the generic logo if no mapping exists.
+ */
+function getSectionFallback(song) {
+    if (!song) return 'IMAGES/logoo.png';
+    return sectionFallbackImages[song.folder] || 'IMAGES/logoo.png';
+}
+
 // Songs array with durations manually added from scan
 const songs = [
     { title: "Ae Dil Hai Mushkil", artist: "Pritam, Arijit Singh", file: "songs/Arijit/Ae Dil Hai Mushkil Title Track - PagalNew - Pritam, Arijit Singh.mp3", art: "https://c.saavncdn.com/257/Ae-Dil-Hai-Mushkil-Hindi-2016-500x500.jpg", folder: "Arijit Singh", durationFormatted: "4:29" },
@@ -41,16 +86,15 @@ const songs = [
     { title: "Enna Sona", artist: "Arijit Singh", file: "songs/HINDI HITS/A.R. Rahman - Enna Sona Best VideoOK JaanuArijit SinghShraddha KapoorAditya Roy - SonyMusicIndiaVEVO.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
     { title: "Mann Mera", artist: "Gajendra Verma", file: "songs/HINDI HITS/Gajendra Verma - Mann Mera (Lyrics)  Original Version - Indie India.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
     { title: "Zehnaseeb", artist: "Chinmayi Sripada, Shekhar Ravjiani", file: "songs/HINDI HITS/Zehnaseeb Lyric Video - Hasee Toh PhaseeParineeti, SidharthChinmayi S, Shekhar Ravjiani - SonyMusicIndiaVEVO.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "3:37" },
-    { title: "Tera Rastaa Chhodoon Na", artist: "Amitabh Bhattacharya, Anusha Mani", file: "songs/HINDI HITS/Tera Rastaa Chhodoon Na_Duplicate.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "2:11" },
+    { title: "Tera Rastaa Chhodoon Na", artist: "Amaal Mallik, Shalmali Kholgade", file: "songs/HINDI HITS/Tera Rastaa Chhodoon Na_Duplicate.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "2:11" },
     { title: "Humsafar", artist: "Akhil Sachdeva", file: "songs/HINDI HITS/Humsafar (Full Video)   Varun & Alia Bhatt  Akhil Sachdeva  Badrinath Ki Dulhania - T-Series.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
     { title: "Iraaday", artist: "Abdul Hannan, Rovalio", file: "songs/HINDI HITS/Abdul Hannan & Rovalio - Iraaday (Official Music Video) - Abdul Hannan.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
     { title: "Aankhon Se Batana", artist: "Dikshant", file: "songs/HINDI HITS/Aankhon Se Batana – Dikshant  Viral Song 2022  Official Video - Sony Music India.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
     { title: "Mere Liye Tum Kaafi Ho", artist: "Ayushmann Khurrana", file: "songs/HINDI HITS/Lyrical Mere Liye Tum Kaafi Ho  Shubh Mangal Zyada Saavdhan Ayushman Khurana,Jeetu  Tanishk-Vayu - T-Series.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Dariya", artist: "Vilen", file: "songs/HINDI HITS/Dariya - Lyrical Video  Baar Baar Dekho  Sidharth Malhotra & Katrina Kaif  Arko - Zee Music Company.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Ishq", artist: "Faheem Abdullah, Rauhan Malik", file: "songs/HINDI HITS/Ishq Bulaava Full Video - Hasee Toh PhaseeParineeti, SidharthSanam Puri, Shipra Goyal - SonyMusicIndiaVEVO.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Dariya", artist: "Arko", file: "songs/HINDI HITS/Dariya - Lyrical Video  Baar Baar Dekho  Sidharth Malhotra & Katrina Kaif  Arko - Zee Music Company.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
     { title: "Chaar Kadam", artist: "Shaan, Shreya Ghoshal", file: "songs/HINDI HITS/'Chaar Kadam' FULL VIDEO Song  PK  Sushant Singh Rajput  Anushka Sharma  T-series - T-Series.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
     { title: "Raanjhanaa", artist: "Jaswinder Singh, Shiraz Uppal", file: "songs/HINDI HITS/Raanjhanaa - Lyrical Video  Dhanush, Sonam Kapoor  A. R. Rahman  Jaswinder Singh & Shiraz Uppal - SonyMusicIndiaVEVO.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "4:15" },
-    { title: "Ik Kudi", artist: "Arpit Bala", file: "songs/HINDI HITS/Ik Kudi - wolf.cryman - Topic.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Ik Kudi", artist: "wolf.cryman", file: "songs/HINDI HITS/Ik Kudi - wolf.cryman - Topic.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
     { title: "Qaafirana", artist: "Arijit Singh, Nikhita Gandhi", file: "songs/HINDI HITS/Qaafirana - Lyrical   Kedarnath  Sushant S Rajput  Sara Ali Khan  Arijit Singh & Nikhita Amit T - Zee Music Company.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "5:52" },
     { title: "Be Intehaan", artist: "Atif Aslam, Sunidhi Chauhan", file: "songs/HINDI HITS/Be Intehaan - Race 2  Saif Ali Khan & Deepika Padukone  Atif Aslam, Sunidhi chauhan  Pritam - Tips Official.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
     { title: "Aahista", artist: "Arijit Singh, Jonita Gandhi", file: "songs/HINDI HITS/Aahista - Lyrical  Laila Majnu  Arijit Singh & Jonita Gandhi  Avinash T & Tripti D  Imtiaz Ali - Zee Music Company.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
@@ -66,7 +110,7 @@ const songs = [
     { title: "Sarangi", artist: "Sushant KC", file: "songs/HINDI HITS/Sushant KC - Sarangi (Official Music Video) - Sushant KC.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "4:59" },
     { title: "Inkem Inkem", artist: "Sid Sriram", file: "songs/HINDI HITS/Inkem Inkem -lyrics  Geetha Govindam  Sid Sriram  LYRICS🖤 #vijaydevarakonda - Cinephile's Corner.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
     { title: "Hosanna", artist: "Leon D'Souza, Suzanne D'Mello, Vijay Prakash", file: "songs/HINDI HITS/A.R. Rahman - Hosanna (Lyrics) ft. Leon D'souza & Suzanne D'Mello - seventyskye.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Darkhaast", artist: "Arijit Singh, Sunidhi Chauhan", file: "songs/HINDI HITS/Darkhaast.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Darkhaast", artist: "Arijit Singh, Sunidhi Chauhan", file: "song/DARKHAAST Full Audio Song   SHIVAAY   Arijit Singh & Sunidhi Chauhan  Ajay Devgn  T-Series - 256.MP3", art: "https://c.saavncdn.com/617/Shivaay-Hindi-2016-500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
     { title: "Jaan Ban Gaye", artist: "Mithoon, Vishal Mishra, Asees Kaur", file: "songs/HINDI HITS/Jaan Ban Gaye  Khuda Haafiz  Vidyut Jammwal, Shivaleeka Oberoi  Vishal Mishra,Asees Kaur Mithoon - Romance Rewind.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
     { title: "Saude Bazi", artist: "Anupam Amod", file: "songs/HINDI HITS/Lyrical Saude Bazi  Aakrosh  Ajay Devgn, Bipasha Basu  Pritam  Anupam Amod  Irshad Kamil - T-Series Bollywood Classics.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
     { title: "Khoya Khoya", artist: "Mohit Chauhan", file: "songs/HINDI HITS/'Khoya Khoya' FULL VIDEO Song  Sooraj Pancholi, Athiya Shetty  Hero  T-Series - T-Series.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
@@ -105,10 +149,9 @@ const songs = [
     { title: "Tujhko Jo Paaya", artist: "Mohit Chauhan", file: "songs/HINDI HITS/Pritam - Tujhko Jo Paaya Best Audio SongCrookEmraan HashmiNeha SharmaMohit Chauhan - SonyMusicIndiaVEVO.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
     { title: "Sachiya Mohabbatan", artist: "Sachet Tandon", file: "songs/HINDI HITS/LYRICAL Sachiya Mohabbatan  Arjun Patiala  Diljit Dosanjh, Kriti S  Sachet Tandon  Sachin-Jigar - T-Series.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
     { title: "Jab Tak", artist: "Armaan Malik", file: "songs/HINDI HITS/JAB TAK Video Song  M.S. DHONI -THE UNTOLD STORY  Armaan Malik, Amaal Mallik Sushant Singh Rajput - T-Series.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Dil Se Dil", artist: "Mohit Chauhan", file: "songs/HINDI HITS/Abhi Kuch Dino Se Lyrical Video  Dil Toh Baccha Hai Ji   Emraan hashmi, Ajay Devgn - T-Series.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
     { title: "Sadka Kiya", artist: "Suraj Jagan, Mahalaxmi Iyer", file: "songs/HINDI HITS/Sadka Best Audio Song - I Hate Luv StorysSonam KapoorImran KhanSurajMahalaxmi Iyer - SonyMusicIndiaVEVO.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "5:45" },
     { title: "Kahaan Ho Tum", artist: "Prateek Kuhad", file: "songs/HINDI HITS/Prateek Kuhad - Kahaan Ho Tum  Official Music Video  Prajakta Koli & Rohit Saraf  Mismatched - Netflix India.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Ishq Hai", artist: "Anuradha Paudwal", file: "songs/HINDI HITS/Ishq Hai Lyrics - Mismatched Season 3  Trending Hindi Song 2024 - Vibe Bird.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Ishq Hai", artist: "Anuv Jain", file: "songs/HINDI HITS/Ishq Hai Lyrics - Mismatched Season 3  Trending Hindi Song 2024 - Vibe Bird.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
     { title: "Maine Khud Ko", artist: "Mustafa Zahid", file: "songs/HINDI HITS/Maine Khud Ko Ragini MMS 2 Song With Lyrics  Sunny Leone  Mustafa Zahid - T-Series.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
     { title: "Jugraafiya", artist: "Udit Narayan, Shreya Ghoshal", file: "songs/HINDI HITS/Jugraafiya  Super 30  Hrithik Roshan & Mrunal Thakur  Udit Narayan & Shreya Ghoshal  Lyrical - Romance Rewind.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
     { title: "Shape of You", artist: "Ed Sheeran", file: "songs/english_hits/Ed Sheeran - Shape of You (Official Music Video) - Ed Sheeran.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
@@ -323,8 +366,11 @@ function restoreSavedSong() {
     try {
         // Verify saved index is still valid
         if (saved.index >= 0 && saved.index < songs.length) {
-            console.log(`🔄 Restoring saved song: "${saved.title}"`);
+            console.log(`🔄 Restoring saved song: "${saved.title}" (ready to play, not auto-showing player)`);
             currentIndex = saved.index;
+            // Only load metadata — do NOT remove intro-mode or show the player bar.
+            // The app always starts full-screen on refresh; player slides up only when
+            // the user explicitly plays a song.
             loadSong(currentIndex);
             updateSongbarUI();
         }
@@ -435,25 +481,65 @@ const feelGoodSongs = songs.filter(s => feelGoodSongTitles.some(t => s.title.toL
 const indieSoulTitles = ['Co2','Kahaan Ho Tum','Dandelions','Until I Found You','Double Take','I Think They Call This Love','At My Worst','Lovers','Blue','Ordinary','Sailor Song','Make You Mine','Somewhere Only We Know','Infinity','Afsos','Alag Aasmaan','Husn','Gul','Nadaaniyan','Khwab','Savera','Jhol','Timi Sangai','Bardali','Sarangi','Meri Banogi Kya','Kasari','Timi Nacha Na','Jo Tum Mere Ho','Baarishein','Arz Kiya Hai'];
 const indieSoulSongs = songs.filter(s => indieSoulTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
 
+// ─── NEW MOOD PLAYLISTS ───────────────────────────────────────────────────
+
+const partyAnthemTitles = ['Shape of You','Starboy','Gangnam Style','Old Town Road','Espresso','Beggin','Animals','Pink Venom','Believer','Thunder','Unstoppable','Ride It','Under The Influence','Unholy','Girls Like You','Bella Ciao','Hall of Fame','I See Red','Harleys In Hawaii','Eenie Meenie','52 Bars','MF Gabhru','On Top','100 Million','48 Rhymes','Courtside','Dominance','Aaye Haaye','Attention','Positions','Criminal','Paper Rings','Feel Good Inc.','Maria'];
+const partyAnthemSongs = songs.filter(s => partyAnthemTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
+
+const rainyDayTitles = ['Tum Hi Ho','Agar Tum Saath Ho','Baarishein','Hawayein','Khairiyat','Shayad','Tujhe Kitna Chahne Lage','Enna Sona','Sanam Re','Qaafirana','Mast Magan','Haareya','Sukoon Mila','Humsafar','Zehnaseeb','Manchala','Let Her Go','A Thousand Years','Blue','End Of Beginning','Somewhere Only We Know','Afsos','Gul','Husn','Kasari','Jhim Jhim Aune Aakhale','Timro Pratiksa','Timi Sangai','Darkhaast','Mere Bina','Dooron Dooron','Mere Nishan','Jaan Ban Gaye'];
+const rainyDaySongs = songs.filter(s => rainyDayTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
+
+const workoutTitles = ['Believer','Thunder','Unstoppable','Animals','Beggin','Hall of Fame','Old Town Road','Gangnam Style','Pink Venom','Shape of You','Darkside','I See Red','Bella Ciao','52 Bars','Antidote','MF Gabhru','On Top','Winning Speech','100 Million','48 Rhymes','5-7','Courtside','Dominance','Heartless','Popular','Espresso','Starboy','Mockingbird','Attention','Under The Influence'];
+const workoutSongs = songs.filter(s => workoutTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
+
+const bollywoodClassicTitles = ['Tum Hi Ho','Hawayein','Chaleya','Satranga','Pehli Nazar Mein','Jeene Laga Hoon','Enna Sona','Tum Tak','Chaar Kadam','Tu Chahiye','Be Intehaan','Rang Jo Lagyo','Labon Ko','Raanjhanaa','Zehnaseeb','Manchala','Ishq Bulaava','Humsafar','Zaalima','Bulleya','Ilahi','Sanam Re','Dekha Hazaro Dafaa','Kalank','Qaafirana','Mast Magan','Haareya','Sukoon Mila','Darkhaast','Jaan Ban Gaye','Yeh Fitoor Mera','Meherbaan','Sachiya Mohabbatan','Jab Tak','Maine Khud Ko','Jugraafiya','Sadka Kiya','Tujhko Jo Paaya','Abhi Kuch Dino Se','O Rangrez','Dil Ye Bekarar Kyun Hai','Taare Ginn','Kyon','Jogi'];
+const bollywoodClassicSongs = songs.filter(s => bollywoodClassicTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
+
+const morningCoffeeTitles = ['Perfect','Sapphire','Dandelions','Until I Found You','Make You Mine','I Like Me Better','Double Take','I Think They Call This Love','Espresso','At My Worst','Some','Sailor Song','Blue','Ordinary','Lovers','Jeene Laga Hoon','Tera Yaar Hoon Main','Apna Bana Le','Co2','Savera','Meri Banogi Kya','Tere Bina','Ve Haaniyaan','Rang Lageya','Husn','Gul','Jo Tum Mere Ho','Alag Aasmaan','Timi Nacha Na','Bardali','Sarangi','As It Was','Girls Like You','Stuck with U','Die With A Smile'];
+const morningCoffeeSongs = songs.filter(s => morningCoffeeTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
+
+const lateNightTitles = ['505','I Wanna Be Yours','Apocalypse','Sweater Weather','A Lonely Night','Heat Waves','Call Out My Name','The Hills','Heartless','Die For You','Timeless','São Paulo','Secrets','Reminder','One Of The Girls','Nothing Without You','Faded','Alone','Wrap Me In Plastic','Gat','Shinunoga E-Wa','End Of Beginning','Darkside','Closer','Save Your Tears','In Your Eyes','I Feel It Coming','Under The Influence','Unholy','Infinity','Love Me Harder','Fantasize','Skyfall'];
+const lateNightSongs = songs.filter(s => lateNightTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
+
+const danceFloorTitles = ['Shape of You','Señorita','Stay','Closer','Espresso','Positions','Harleys In Hawaii','Eenie Meenie','Girls Like You','Ride It','Old Town Road','Attention','Sunflower','Pink Venom','Animals','Gangnam Style','Beggin','Maria','Bella Ciao','Paper Rings','Criminal','Under The Influence','Unholy','Chaleya','Satranga','As It Was','Stuck with U','Feel Good Inc.','Some','100 Million','Aaye Haaye','Dominance','5-7','Courtside','Die With A Smile'];
+const danceFloorSongs = songs.filter(s => danceFloorTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
+
+const rockAltTitles = ['Believer','Thunder','505','I Wanna Be Yours','Sweater Weather','Heat Waves','Mockingbird','Hall of Fame','Darkside','I See Red','Feel Good Inc.','End Of Beginning','Apocalypse','Unstoppable','Faded','Alone','Skyfall','Bella Ciao','Starboy','Heartless','Popular'];
+const rockAltSongs = songs.filter(s => rockAltTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
+
+// ─── NEW GENRE PLAYLISTS ──────────────────────────────────────────────────
+
+const kpopAsianTitles = ['Pink Venom','Maria','Some','Gangnam Style','Shinunoga E-Wa','One Of The Girls','I Like You So Much','Gat'];
+const kpopAsianSongs = songs.filter(s => kpopAsianTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
+
+// ─── NEW ARTIST PLAYLISTS ─────────────────────────────────────────────────
+
+const atifAslamSongs = songs.filter(s => s.artist && s.artist.toLowerCase().includes('atif aslam'));
+const pritamSongs = songs.filter(s => s.artist && s.artist.toLowerCase().includes('pritam'));
+const charliePuthSongs = songs.filter(s => s.artist && s.artist.toLowerCase().includes('charlie puth'));
+const arianaGrandeSongs = songs.filter(s => s.artist && s.artist.toLowerCase().includes('ariana grande'));
+const taylorSwiftSongs = songs.filter(s => s.artist && s.artist.toLowerCase().includes('taylor swift'));
+const mohitChauhanSongs = songs.filter(s => s.artist && s.artist.toLowerCase().includes('mohit chauhan'));
+
+// ─── PLAY FUNCTIONS ───────────────────────────────────────────────────────
 
 function playArijitSongs(autoPlay = false) {
-    renderSongList(arijitSongs);
+    renderSongList(arijitSongs, 'Arijit Singh');
     if (autoPlay && arijitSongs.length > 0) playSongAtIndex(songs.indexOf(arijitSongs[0]));
 }
 
 function playKaranSongs(autoPlay = false) {
-    renderSongList(karanSongs);
+    renderSongList(karanSongs, 'Karan Aujla');
     if (autoPlay && karanSongs.length > 0) playSongAtIndex(songs.indexOf(karanSongs[0]));
 }
 
 function playGlobalHits(autoPlay = false) {
-    console.log("playGlobalHits called! autoPlay:", autoPlay);
-    renderSongList(globalHits);
+    renderSongList(globalHits, 'Global Hits');
     if (autoPlay && globalHits.length > 0) playSongAtIndex(songs.indexOf(globalHits[0]));
 }
 
 function playHindiHits(autoPlay = false) {
-    renderSongList(hindiHits);
+    renderSongList(hindiHits, 'Hindi Hits');
     if (autoPlay && hindiHits.length > 0) playSongAtIndex(songs.indexOf(hindiHits[0]));
 }
 
@@ -467,6 +553,41 @@ function playWeekndSongs(autoPlay = false) {
     if (autoPlay && weekndSongs.length > 0) playSongAtIndex(songs.indexOf(weekndSongs[0]));
 }
 
+function playAtifAslamSongs(autoPlay = false) {
+    renderSongList(atifAslamSongs, 'Atif Aslam');
+    if (autoPlay && atifAslamSongs.length > 0) playSongAtIndex(songs.indexOf(atifAslamSongs[0]));
+}
+
+function playPritamSongs(autoPlay = false) {
+    renderSongList(pritamSongs, 'Pritam');
+    if (autoPlay && pritamSongs.length > 0) playSongAtIndex(songs.indexOf(pritamSongs[0]));
+}
+
+function playCharliePuthSongs(autoPlay = false) {
+    renderSongList(charliePuthSongs, 'Charlie Puth');
+    if (autoPlay && charliePuthSongs.length > 0) playSongAtIndex(songs.indexOf(charliePuthSongs[0]));
+}
+
+function playArianaGrandeSongs(autoPlay = false) {
+    renderSongList(arianaGrandeSongs, 'Ariana Grande');
+    if (autoPlay && arianaGrandeSongs.length > 0) playSongAtIndex(songs.indexOf(arianaGrandeSongs[0]));
+}
+
+function playTaylorSwiftSongs(autoPlay = false) {
+    renderSongList(taylorSwiftSongs, 'Taylor Swift');
+    if (autoPlay && taylorSwiftSongs.length > 0) playSongAtIndex(songs.indexOf(taylorSwiftSongs[0]));
+}
+
+function playMohitChauhanSongs(autoPlay = false) {
+    renderSongList(mohitChauhanSongs, 'Mohit Chauhan');
+    if (autoPlay && mohitChauhanSongs.length > 0) playSongAtIndex(songs.indexOf(mohitChauhanSongs[0]));
+}
+
+function playKpopAsian(autoPlay = false) {
+    renderSongList(kpopAsianSongs, '🎌 K-Pop & Asian Pop');
+    if (autoPlay && kpopAsianSongs.length > 0) playSongAtIndex(songs.indexOf(kpopAsianSongs[0]));
+}
+
 function playMood(mood, autoPlay = false) {
     const moodMap = {
         sad: { list: sadSongs, name: '💔 Sad Vibes' },
@@ -477,6 +598,14 @@ function playMood(mood, autoPlay = false) {
         nightdrive: { list: nightDriveSongs, name: '🌙 Night Drive' },
         feelgood: { list: feelGoodSongs, name: '✨ Feel Good' },
         indie: { list: indieSoulSongs, name: '🎶 Indie Soul' },
+        party: { list: partyAnthemSongs, name: '🎤 Party Anthems' },
+        rainy: { list: rainyDaySongs, name: '🌧️ Rainy Day' },
+        workout: { list: workoutSongs, name: '💪 Workout' },
+        bollywood: { list: bollywoodClassicSongs, name: '🎬 Bollywood Classics' },
+        morning: { list: morningCoffeeSongs, name: '☕ Morning Coffee' },
+        latenight: { list: lateNightSongs, name: '🌌 Late Night' },
+        dancefloor: { list: danceFloorSongs, name: '💃 Dance Floor' },
+        rockalt: { list: rockAltSongs, name: '🎸 Rock & Alt' },
     };
     const m = moodMap[mood];
     if (!m) return;
@@ -514,11 +643,12 @@ function renderPlaylist(playlistSongs = songs) {
             card.className = 'music-card';
             card.setAttribute('data-index', globalIndex);
             
-            const artUrl = song.art || "IMAGES/logoo.png";
-            
+            const artUrl = song.art || getSectionFallback(song);
+            const sectionFallback = getSectionFallback(song);
+
             card.innerHTML = `
                 <div class="card-img-wrapper">
-                    <img src="${artUrl}" alt="${song.title}" loading="lazy" onerror="this.onerror=null;this.src='IMAGES/logoo.png';">
+                    <img src="${artUrl}" alt="${song.title}" loading="lazy" onerror="this.onerror=null;this.src='${sectionFallback}'">
                     <button class="play-fab" onclick="playSongAtIndex(${globalIndex}, event)">
                         <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                             <path d="M8 5v14l11-7z" />
@@ -566,8 +696,8 @@ function renderPlaylist(playlistSongs = songs) {
 
             img.onerror = function() {
                 this.onerror = null;
-                this.src = 'IMAGES/logoo.png';
                 const song = songs[index];
+                this.src = getSectionFallback(song);
                 if (song && !song.fetchedArt) {
                     song.fetchedArt = true;
                     fetchAlbumArt(song.title, song.artist).then(url => {
@@ -659,65 +789,16 @@ function renderArtists() {
         
         container.className = 'card-grid fade-in-up';
         container.innerHTML = `
-            <div class="music-card" onclick="playArijitSongs()">
-                <div class="card-img-wrapper">
-                    <img src="IMAGES/arijit.jpg" alt="Arijit Singh">
-                    <button class="play-fab" aria-label="Play" onclick="event.stopPropagation(); playArijitSongs(true);">
-                        <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                        </svg>
-                    </button>
-                </div>
-                <div class="card-details">
-                    <h3>Arijit Singh</h3>
-                    <p>Pure melody.</p>
-                </div>
-            </div>
-
-            <div class="music-card" onclick="playKaranSongs()">
-                <div class="card-img-wrapper">
-                    <img src="IMAGES/karan_aujla.jpg" alt="Karan Aujla">
-                    <button class="play-fab" aria-label="Play" onclick="event.stopPropagation(); playKaranSongs(true);">
-                        <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                        </svg>
-                    </button>
-                </div>
-                <div class="card-details">
-                    <h3>Karan Aujla</h3>
-                    <p>The Hit Maker.</p>
-                </div>
-            </div>
-
-            <div class="music-card" onclick="playAnuvJainSongs()">
-                <div class="card-img-wrapper">
-                    <img src="IMAGES/anuv jain.jpg" alt="Anuv Jain">
-                    <button class="play-fab" aria-label="Play" onclick="event.stopPropagation(); playAnuvJainSongs(true);">
-                        <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                        </svg>
-                    </button>
-                </div>
-                <div class="card-details">
-                    <h3>Anuv Jain</h3>
-                    <p>Soulful indie poetry.</p>
-                </div>
-            </div>
-
-            <div class="music-card" onclick="playWeekndSongs()">
-                <div class="card-img-wrapper">
-                    <img src="IMAGES/weekend.jpg" alt="The Weeknd">
-                    <button class="play-fab" aria-label="Play" onclick="event.stopPropagation(); playWeekndSongs(true);">
-                        <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                        </svg>
-                    </button>
-                </div>
-                <div class="card-details">
-                    <h3>The Weeknd</h3>
-                    <p>Dark R&amp;B excellence.</p>
-                </div>
-            </div>
+            ${makeArtistCard('playArijitSongs','IMAGES/arijit.jpg','Arijit Singh','Pure melody.')}
+            ${makeArtistCard('playKaranSongs','IMAGES/karan_aujla.jpg','Karan Aujla','The Hit Maker.')}
+            ${makeArtistCard('playAnuvJainSongs','IMAGES/anuv%20jain.jpg','Anuv Jain','Soulful indie poetry.')}
+            ${makeArtistCard('playWeekndSongs','IMAGES/weekend.jpg','The Weeknd','Dark R&B excellence.')}
+            ${makeArtistCard('playAtifAslamSongs','IMAGES/Atif%20Aslam%20.jpg','Atif Aslam','The romantic voice.')}
+            ${makeArtistCard('playPritamSongs','IMAGES/Pritam%20.jpg','Pritam','Bollywood\'s hitmaker.')}
+            ${makeArtistCard('playCharliePuthSongs','IMAGES/charlie%20puth.jpg','Charlie Puth','Perfect pitch pop.')}
+            ${makeArtistCard('playArianaGrandeSongs','IMAGES/Ariana%20Grande%20.jpg','Ariana Grande','Pop queen.')}
+            ${makeArtistCard('playTaylorSwiftSongs','IMAGES/Taylor%20swift.jpg','Taylor Swift','The Eras icon.')}
+            ${makeArtistCard('playMohitChauhanSongs','IMAGES/Mohit%20Chauhan%20.jpg','Mohit Chauhan','Soulful storyteller.')}
         `;
         if(typeof initTiltEffect === 'function') initTiltEffect();
     } catch (e) {
@@ -751,7 +832,7 @@ function makeGenreCard(fn, img, title, subtitle) {
     return `
         <div class="music-card" onclick="${fn}()">
             <div class="card-img-wrapper">
-                <img src="${img}" alt="${title}" loading="lazy">
+                <img src="${img}" alt="${title}" loading="lazy" onerror="this.onerror=null;this.src='IMAGES/logoo.png';">
                 <button class="play-fab" aria-label="Play" onclick="event.stopPropagation(); ${fn}(true);">
                     <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                         <polygon points="5 3 19 12 5 21 5 3"></polygon>
@@ -769,7 +850,7 @@ function makeArtistCard(fn, img, name, sub) {
     return `
         <div class="music-card" onclick="${fn}()">
             <div class="card-img-wrapper">
-                <img src="${img}" alt="${name}" loading="lazy">
+                <img src="${img}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='IMAGES/logoo.png';">
                 <button class="play-fab" aria-label="Play" onclick="event.stopPropagation(); ${fn}(true);">
                     <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                         <polygon points="5 3 19 12 5 21 5 3"></polygon>
@@ -801,6 +882,7 @@ function renderHome() {
             <div class="card-grid home-card-grid" id="genre-grid">
                 ${makeGenreCard('playGlobalHits','IMAGES/english_hits.jpg','English Hits','Global language of emotion.')}
                 ${makeGenreCard('playHindiHits','IMAGES/hindi_hits.jpg','Hindi Hits','Latest & Greatest.')}
+                ${makeGenreCard('playKpopAsian','IMAGES/k%20pop%20%26%20asian.jpg','🎌 K-Pop & Asian','From Seoul to Tokyo.')}
             </div>`;
         mainView.appendChild(genreSection);
 
@@ -818,6 +900,14 @@ function renderHome() {
                 ${makeMoodCard('feelgood','IMAGES/feel_good.jpg','✨ Feel Good','Good vibes only.')}
                 ${makeMoodCard('punjabi','IMAGES/punjabi_vibes.jpg','🔥 Punjabi Vibes','High energy desi beats.')}
                 ${makeMoodCard('indie','IMAGES/indie_soul.jpg','🎶 Indie Soul','Acoustic & indie poetry.')}
+                ${makeMoodCard('party','IMAGES/party_anthem.jpg','🎤 Party Anthems','Turn up the bass.')}
+                ${makeMoodCard('rainy','IMAGES/rainy%20day.jpg','🌧️ Rainy Day','Monsoon melancholy.')}
+                ${makeMoodCard('workout','IMAGES/workout.jpg','💪 Workout','Push your limits.')}
+                ${makeMoodCard('bollywood','IMAGES/bollywood.jpg','🎬 Bollywood Classics','Timeless Bollywood.')}
+                ${makeMoodCard('morning','IMAGES/morning%20coffee.jpg','☕ Morning Coffee','Start slow, sip easy.')}
+                ${makeMoodCard('latenight','IMAGES/late%20night.jpg','🌌 Late Night','Midnight solitude.')}
+                ${makeMoodCard('dancefloor','IMAGES/dance%20floor.jpg','💃 Dance Floor','Move your body.')}
+                ${makeMoodCard('rockalt','IMAGES/rock%20%26%20alt.jpg','🎸 Rock & Alt','Raw energy & guitars.')}
             </div>`;
         mainView.appendChild(moodSection);
 
@@ -829,8 +919,14 @@ function renderHome() {
             <div class="card-grid home-card-grid" id="artist-grid">
                 ${makeArtistCard('playArijitSongs','IMAGES/arijit.jpg','Arijit Singh','The voice of a generation.')}
                 ${makeArtistCard('playKaranSongs','IMAGES/karan_aujla.jpg','Karan Aujla','The hit maker.')}
-                ${makeArtistCard('playAnuvJainSongs','IMAGES/anuv jain.jpg','Anuv Jain','Soulful indie poetry.')}
+                ${makeArtistCard('playAnuvJainSongs','IMAGES/anuv%20jain.jpg','Anuv Jain','Soulful indie poetry.')}
                 ${makeArtistCard('playWeekndSongs','IMAGES/weekend.jpg','The Weeknd','Dark R&B excellence.')}
+                ${makeArtistCard('playAtifAslamSongs','IMAGES/Atif%20Aslam%20.jpg','Atif Aslam','The romantic voice.')}
+                ${makeArtistCard('playPritamSongs','IMAGES/Pritam%20.jpg','Pritam','Bollywood\'s hitmaker.')}
+                ${makeArtistCard('playCharliePuthSongs','IMAGES/charlie%20puth.jpg','Charlie Puth','Perfect pitch pop.')}
+                ${makeArtistCard('playArianaGrandeSongs','IMAGES/Ariana%20Grande%20.jpg','Ariana Grande','Pop queen.')}
+                ${makeArtistCard('playTaylorSwiftSongs','IMAGES/Taylor%20swift.jpg','Taylor Swift','The Eras icon.')}
+                ${makeArtistCard('playMohitChauhanSongs','IMAGES/Mohit%20Chauhan%20.jpg','Mohit Chauhan','Soulful storyteller.')}
             </div>`;
         mainView.appendChild(artistSection);
 
@@ -869,7 +965,7 @@ function renderSongList(playlistSongs, titleOverride) {
             }
             row.onclick = (e) => playSongAtIndex(globalIndex, e);
             
-            const immediateArt = song.art || song.thumb || "IMAGES/logoo.png";
+            const immediateArt = song.art || song.thumb || getSectionFallback(song);
 
             row.innerHTML = `
                 <span class="song-num">${i + 1}</span>
@@ -895,7 +991,7 @@ function renderSongList(playlistSongs, titleOverride) {
             if (artEl) {
                 artEl.onerror = function() {
                     this.onerror = null;
-                    this.src = "IMAGES/logoo.png"; // placeholder while fetching
+                    this.src = getSectionFallback(song); // show section card image while fetching
                     if (!song.fetchedArt) {
                         song.fetchedArt = true;
                         fetchAlbumArt(song.title, song.artist).then(fetchedArt => {
@@ -1573,7 +1669,7 @@ function updateSongbarUI() {
 	// if song has art property use it, otherwise keep default
     if (sb.art) {
         // Show art immediately from the song object (CDN URLs already present)
-        const immediateArt = s.art || s.thumb || "IMAGES/logoo.png";
+        const immediateArt = s.art || s.thumb || getSectionFallback(s);
 
         // Remove strict CORS crossOrigin tag to prevent the browser from outright blocking CDN images without headers!
         sb.art.removeAttribute('crossOrigin');
@@ -1582,8 +1678,9 @@ function updateSongbarUI() {
         sb.art.onload = () => updateThemeFromArt(sb.art);
         sb.art.onerror = function() {
             this.onerror = null;
-            this.src = "IMAGES/logoo.png";
-            if (sb.brandLogo && hasPlayed) sb.brandLogo.src = "IMAGES/logoo.png";
+            const fallback = getSectionFallback(s);
+            this.src = fallback;
+            if (sb.brandLogo && hasPlayed) sb.brandLogo.src = fallback;
 
             // Try to fetch since it failed
             fetchAlbumArt(s.title, s.artist).then(fetchedArt => {
@@ -1672,7 +1769,7 @@ function updateSongbarUI() {
 
     if (fs.art) {
          // ── INSTANT: same art that's already shown in the playbar ──
-         updateFsArt(s.art || s.thumb || "IMAGES/logoo.png");
+         updateFsArt(s.art || s.thumb || getSectionFallback(s));
          // The background fetch above (for sb.art) will update s.art when done;
          // we hook into sb.art's onload to keep fullscreen in sync.
          const _origOnload = sb.art ? sb.art.onload : null;
@@ -2331,8 +2428,11 @@ function playSong() {
     }
 
     const player = document.querySelector('.music-player');
-    if (player && !player.classList.contains('active')) {
-        player.classList.add('active');
+    if (player) {
+        if (!player.classList.contains('active')) {
+            player.classList.add('active');
+        }
+        player.classList.add('is-playing');
     }
     audio.play().catch(e => console.error("Play error:", e));
     
@@ -2344,6 +2444,8 @@ function playSong() {
 
 function pauseSong() {
     audio.pause();
+    const player = document.querySelector('.music-player');
+    if (player) player.classList.remove('is-playing');
 }
 
 function prevSong() {
