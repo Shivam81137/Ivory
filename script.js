@@ -801,8 +801,6 @@ function renderHome() {
             <div class="card-grid home-card-grid" id="genre-grid">
                 ${makeGenreCard('playGlobalHits','IMAGES/english_hits.jpg','English Hits','Global language of emotion.')}
                 ${makeGenreCard('playHindiHits','IMAGES/hindi_hits.jpg','Hindi Hits','Latest & Greatest.')}
-                ${makeGenreCard('playKaranSongs','IMAGES/karan_aujla.jpg','Karan Aujla','Punjabi rap king.')}
-                ${makeGenreCard('playArijitSongs','IMAGES/arijit.jpg','Arijit Singh','Pure melody.')}
             </div>`;
         mainView.appendChild(genreSection);
 
@@ -1246,52 +1244,309 @@ async function _fetchAlbumArtImpl(title, artist) {
     return null;
 }
 
-// --- Interactive Theme Engine ---
+// ═══════════════════════════════════════════════════════════════════════
+// ── DYNAMIC AMBIENT BACKGROUND ENGINE ──────────────────────────────────
+// Extracts dominant, secondary & vibrant colors from album art using
+// the Canvas API.  Applied as a heavily-blurred, low-opacity glow layer
+// that crossfades smoothly (~1 s) whenever the track changes.
+//
+// CORS strategy: the display <img> (sb.art) loads WITHOUT crossOrigin
+// so CDN images always render. For color extraction we load a SEPARATE
+// hidden Image() WITH crossOrigin="anonymous". If the CDN supports CORS
+// (saavncdn, mzstatic, etc. all do), we read pixels. If not, we retry
+// through a lightweight CORS proxy as a fallback.
+// ═══════════════════════════════════════════════════════════════════════
+
+const AmbientEngine = (() => {
+    // ── Reusable off-screen canvas (created once, reused forever) ──
+    const _canvas = document.createElement('canvas');
+    const _ctx    = _canvas.getContext('2d', { willReadFrequently: true });
+    _canvas.width  = 64;
+    _canvas.height = 64;
+
+    // ── Cache to skip re-extraction for the same image URL ──
+    const _cache = new Map();
+    let   _lastSrc = '';
+
+    // ── Default navy palette (used on first load / logo) ──
+    const DEFAULT = {
+        dominant:  [5, 11, 20],
+        secondary: [13, 27, 62],
+        tertiary:  [26, 47, 85],
+    };
+
+    /* ---------------------------------------------------------------
+       extractPalette(img) → palette | null
+       Draws img onto the offscreen canvas and reads pixel data.
+       Returns null if canvas is tainted (CORS block).
+       --------------------------------------------------------------- */
+    function extractPalette(img) {
+        const W = _canvas.width, H = _canvas.height;
+
+        try {
+            _ctx.clearRect(0, 0, W, H);
+            _ctx.drawImage(img, 0, 0, W, H);
+        } catch (e) {
+            console.warn('🎨 Ambient: drawImage failed:', e.message);
+            return null;
+        }
+
+        let pixels;
+        try {
+            pixels = _ctx.getImageData(0, 0, W, H).data;
+        } catch (e) {
+            // Canvas is tainted — CORS blocked pixel reading
+            console.warn('🎨 Ambient: tainted canvas, CORS blocked pixel read');
+            return null;
+        }
+
+        // ── Collect qualifying pixels ──
+        const buckets = [];
+        for (let i = 0; i < pixels.length; i += 4) {
+            const r = pixels[i], g = pixels[i+1], b = pixels[i+2], a = pixels[i+3];
+            if (a < 128) continue;
+            const brightness = r * 0.299 + g * 0.587 + b * 0.114;
+            if (brightness < 15 || brightness > 240) continue;
+            buckets.push([r, g, b]);
+        }
+
+        if (buckets.length < 10) return null;
+
+        // ── Simple median-cut (3 passes → up to 8 clusters) ──
+        const sorted = (arr, ch) => arr.slice().sort((a, b) => a[ch] - b[ch]);
+
+        function medianCut(list, depth) {
+            if (depth === 0 || list.length < 2) return [average(list)];
+            let maxRange = 0, splitCh = 0;
+            for (let ch = 0; ch < 3; ch++) {
+                const vals = list.map(p => p[ch]);
+                const range = Math.max(...vals) - Math.min(...vals);
+                if (range > maxRange) { maxRange = range; splitCh = ch; }
+            }
+            const s = sorted(list, splitCh);
+            const mid = Math.floor(s.length / 2);
+            return [
+                ...medianCut(s.slice(0, mid), depth - 1),
+                ...medianCut(s.slice(mid),    depth - 1),
+            ];
+        }
+
+        function average(list) {
+            let r = 0, g = 0, b = 0;
+            for (const p of list) { r += p[0]; g += p[1]; b += p[2]; }
+            const n = list.length || 1;
+            return [Math.round(r/n), Math.round(g/n), Math.round(b/n)];
+        }
+
+        const palette = medianCut(buckets, 3);
+
+        // ── Sort by saturation (most vibrant first) ──
+        function saturation([r, g, b]) {
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            return max === 0 ? 0 : (max - min) / max;
+        }
+        palette.sort((a, b) => saturation(b) - saturation(a));
+
+        // ── Darken to stay within dark-theme range ──
+        function darken([r, g, b], factor = 0.45) {
+            return [Math.round(r * factor), Math.round(g * factor), Math.round(b * factor)];
+        }
+
+        return {
+            dominant:  darken(palette[0] || DEFAULT.dominant,  0.70),
+            secondary: darken(palette[1] || palette[0] || DEFAULT.secondary, 0.55),
+            tertiary:  darken(palette[2] || palette[1] || DEFAULT.tertiary,  0.45),
+        };
+    }
+
+    /* ---------------------------------------------------------------
+       loadImageForExtraction(src) → Promise<HTMLImageElement>
+
+       Strategy for file:// compatibility:
+       1. Try loading with crossOrigin="anonymous" (works on http/https)
+       2. If that fails or canvas is still tainted, fetch via CORS proxy
+          as a blob, convert to Object URL, and load — guarantees
+          an untainted canvas even from file:// origins.
+       --------------------------------------------------------------- */
+    function loadImageForExtraction(src) {
+        // For local/same-origin images, load directly
+        if (!src.startsWith('http')) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = () => reject(new Error('Local image load failed'));
+                img.src = src;
+            });
+        }
+
+        // For cross-origin: fetch as blob via proxy, then load as object URL
+        // This guarantees an untainted canvas even from file:// protocol
+        return fetchImageAsBlob(src);
+    }
+
+    async function fetchImageAsBlob(originalUrl, proxyIndex = 0) {
+        const proxies = [
+            (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+            (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+            (url) => url,  // Direct attempt (works when served from http/https)
+        ];
+
+        for (let i = proxyIndex; i < proxies.length; i++) {
+            try {
+                const proxyUrl = proxies[i](originalUrl);
+                const response = await fetch(proxyUrl, { mode: 'cors' });
+                if (!response.ok) continue;
+
+                const blob = await response.blob();
+                // Some proxies return octet-stream instead of image/*, so accept any blob with data
+                if (blob.size < 100) continue;
+
+                const objectUrl = URL.createObjectURL(blob);
+
+                return await new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        // Don't revoke immediately — canvas needs the image data
+                        // Schedule cleanup after extraction
+                        img._objectUrl = objectUrl;
+                        resolve(img);
+                    };
+                    img.onerror = () => {
+                        URL.revokeObjectURL(objectUrl);
+                        reject(new Error('Blob image load failed'));
+                    };
+                    img.src = objectUrl;
+                });
+            } catch (e) {
+                console.warn(`🎨 Ambient: proxy ${i} failed:`, e.message);
+                continue;
+            }
+        }
+
+        throw new Error('All fetch methods failed for ' + originalUrl.substring(0, 60));
+    }
+
+    // Clean up object URLs after extraction
+    function cleanupImage(img) {
+        if (img && img._objectUrl) {
+            URL.revokeObjectURL(img._objectUrl);
+            img._objectUrl = null;
+        }
+    }
+
+    /* ---------------------------------------------------------------
+       apply(palette)  — write CSS custom properties
+       --------------------------------------------------------------- */
+    function apply(palette) {
+        const root = document.documentElement.style;
+
+        // Ambient glow layer
+        root.setProperty('--ambient-dominant',  palette.dominant.join(', '));
+        root.setProperty('--ambient-secondary', palette.secondary.join(', '));
+        root.setProperty('--ambient-tertiary',  palette.tertiary.join(', '));
+        root.setProperty('--ambient-opacity',   '0.6');
+
+        // Glass-bg tint
+        const [dr, dg, db] = palette.dominant;
+        root.setProperty('--glass-bg', `rgba(${dr}, ${dg}, ${db}, 0.30)`);
+
+        // Mesh gradient overlay colors
+        root.setProperty('--mesh-color-1',
+            `rgb(${Math.max(0, dr - 15)}, ${Math.max(0, dg - 15)}, ${Math.max(0, db - 15)})`);
+        root.setProperty('--mesh-color-2',
+            `rgb(${palette.secondary.join(', ')})`);
+        root.setProperty('--mesh-color-3',
+            `rgb(${palette.tertiary.join(', ')})`);
+
+        console.log(`🎨 Ambient applied: dominant(${palette.dominant}) secondary(${palette.secondary}) tertiary(${palette.tertiary})`);
+    }
+
+    /* ---------------------------------------------------------------
+       reset()  — restore default navy theme
+       --------------------------------------------------------------- */
+    function reset() {
+        const root = document.documentElement.style;
+        root.setProperty('--ambient-dominant',  DEFAULT.dominant.join(', '));
+        root.setProperty('--ambient-secondary', DEFAULT.secondary.join(', '));
+        root.setProperty('--ambient-tertiary',  DEFAULT.tertiary.join(', '));
+        root.setProperty('--ambient-opacity',   '0');
+        root.setProperty('--glass-bg', 'rgba(13, 27, 62, 0.4)');
+        root.setProperty('--mesh-color-1', '#050b14');
+        root.setProperty('--mesh-color-2', '#0d1b3e');
+        root.setProperty('--mesh-color-3', '#1a2f55');
+    }
+
+    /* ---------------------------------------------------------------
+       PUBLIC:  updateThemeFromArt(imgElement)
+       Called from sb.art.onload. Uses the image's src to load a
+       separate CORS-enabled copy for pixel extraction.
+       --------------------------------------------------------------- */
+    function updateThemeFromArt(imageElement) {
+        if (!imageElement || !imageElement.src) return;
+
+        // Default theme when nothing has played or image is the logo
+        if (!hasPlayed || imageElement.src.includes('logoo.png')) {
+            reset();
+            _lastSrc = '';
+            return;
+        }
+
+        const src = imageElement.src;
+
+        // Skip if same URL as last extraction
+        if (src === _lastSrc) return;
+        _lastSrc = src;
+
+        // Check cache first
+        if (_cache.has(src)) {
+            apply(_cache.get(src));
+            return;
+        }
+
+        // For local images (same-origin), extract directly from the displayed element
+        if (!src.startsWith('http') || src.startsWith(location.origin)) {
+            const palette = extractPalette(imageElement);
+            if (palette) {
+                _cache.set(src, palette);
+                apply(palette);
+            }
+            return;
+        }
+
+        // For cross-origin images: fetch as blob for untainted canvas access
+        console.log('🎨 Ambient: fetching image for color extraction...');
+
+        loadImageForExtraction(src)
+            .then(corsImg => {
+                const palette = extractPalette(corsImg);
+                cleanupImage(corsImg); // free the blob object URL
+
+                if (palette) {
+                    _cache.set(src, palette);
+                    // Keep cache bounded
+                    if (_cache.size > 80) {
+                        const first = _cache.keys().next().value;
+                        _cache.delete(first);
+                    }
+                    // Only apply if still on the same song
+                    if (_lastSrc === src) {
+                        apply(palette);
+                    }
+                } else {
+                    console.warn('🎨 Ambient: extraction returned null');
+                }
+            })
+            .catch(err => {
+                console.warn('🎨 Ambient: image fetch failed:', err.message);
+            });
+    }
+
+    return { updateThemeFromArt, reset };
+})();
+
+// ── Global alias so existing `sb.art.onload = () => updateThemeFromArt(sb.art)` keeps working ──
 function updateThemeFromArt(imageElement) {
-    if (!imageElement || !imageElement.complete) return;
-
-    // Use default theme if no song has played yet, or if it's explicitly the default logo.
-    if (!hasPlayed || (imageElement.src && imageElement.src.includes('logoo.png'))) {
-        document.documentElement.style.setProperty('--glass-bg', 'rgba(13, 27, 62, 0.4)');
-        document.documentElement.style.setProperty('--mesh-color-1', '#050b14');
-        document.documentElement.style.setProperty('--mesh-color-2', '#0d1b3e');
-        return;
-    }
-
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-
-    canvas.width = 50;
-    canvas.height = 50;
-
-    try {
-        ctx.drawImage(imageElement, 0, 0, canvas.width, canvas.height);
-        const imageData = ctx.getImageData(20, 20, 10, 10).data;
-
-        let r = 0, g = 0, b = 0;
-        let count = 0;
-
-        for (let i = 0; i < imageData.length; i += 4) {
-            if (imageData[i+3] === 0) continue; // Skip transparent
-            r += imageData[i];
-            g += imageData[i + 1];
-            b += imageData[i + 2];
-            count++;
-        }
-
-        if (count > 0) {
-            r = Math.floor(r / count);
-            g = Math.floor(g / count);
-            b = Math.floor(b / count);
-
-            const mutedDominant = `rgba(${r}, ${g}, ${b}, 0.3)`;
-            document.documentElement.style.setProperty('--glass-bg', mutedDominant);
-            document.documentElement.style.setProperty('--mesh-color-1', `rgb(${Math.max(0, r-30)}, ${Math.max(0, g-30)}, ${Math.max(0, b-30)})`);
-            document.documentElement.style.setProperty('--mesh-color-2', `rgb(${Math.max(0, r-50)}, ${Math.max(0, g-50)}, ${Math.max(0, b-10)})`);
-        }
-    } catch (e) {
-        console.warn('Canvas color extraction faded due to CORS:', e);
-    }
+    AmbientEngine.updateThemeFromArt(imageElement);
 }
 
 // ── Cached SVG icon strings (avoid re-parsing DOM on every update) ──
@@ -1531,7 +1786,10 @@ function _updateProgressLoop() {
 			if (fsOverlay && fsOverlay.classList.contains('active')) {
 				const fsP = document.getElementById('fs-progress');
 				const fsC = document.getElementById('fs-current-time');
-				if (fsP && !_isFsSeekingGlobal) fsP.value = pct;
+				if (fsP && !_isFsSeekingGlobal) {
+					fsP.value = pct;
+					fsP.style.setProperty('--fs-progress-pct', pct.toFixed(2) + '%');
+				}
 				if (fsC && !_isFsSeekingGlobal) fsC.textContent = formatTime(ct);
 			}
 		}
@@ -1797,8 +2055,11 @@ const LyricsManager = {
             const activeLine = allLines[index];
             activeLine.classList.add('active-lyric', 'active');
 
-            // Show scrollbar when syncing lyrics
-            container.classList.add('is-scrolling');
+            // Only show scrollbar indicator on sidebar, not fullscreen (scrollbar is hidden there)
+            const isFullscreen = container === this.fsContainer;
+            if (!isFullscreen) {
+                container.classList.add('is-scrolling');
+            }
 
             // Scroll the container itself (not the page) to center the active line
             const containerHeight = container.clientHeight;
@@ -1813,13 +2074,15 @@ const LyricsManager = {
                 container.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
             });
 
-            // Ensure scrollbar stays visible while actively syncing
-            if (container._scrollTimeout) {
-                clearTimeout(container._scrollTimeout);
+            // Ensure scrollbar stays visible while actively syncing (sidebar only)
+            if (!isFullscreen) {
+                if (container._scrollTimeout) {
+                    clearTimeout(container._scrollTimeout);
+                }
+                container._scrollTimeout = setTimeout(() => {
+                    container.classList.remove('is-scrolling');
+                }, 2000);
             }
-            container._scrollTimeout = setTimeout(() => {
-                container.classList.remove('is-scrolling');
-            }, 2000);
         }
     }
 };
@@ -1833,6 +2096,7 @@ audio.addEventListener('play', () => {
 
 audio.addEventListener('pause', () => {
     LyricsManager.stopSyncLoop();
+    updateSongbarUI(); // update play/pause icons in both bars
 });
 
 audio.addEventListener('ended', () => {
@@ -2061,6 +2325,11 @@ window.music = { songs, getSongs, refreshSongs, loadSong, playSong, pauseSong, n
 // --- Missing Player Functions ---
 // --- Missing Player Functions ---
 function playSong() {
+    // Exit intro mode on first play — reveal sidebar & player bar
+    if (document.body.classList.contains('intro-mode')) {
+        document.body.classList.remove('intro-mode');
+    }
+
     const player = document.querySelector('.music-player');
     if (player && !player.classList.contains('active')) {
         player.classList.add('active');
@@ -2568,6 +2837,15 @@ if (expandBtn && fsOverlay) {
     expandBtn.addEventListener('click', () => {
         fsOverlay.classList.add('active');
         document.body.style.overflow = 'hidden'; // Prevent background scrolling
+
+        // Re-sync lyrics position in fullscreen after it becomes visible
+        requestAnimationFrame(() => {
+            LyricsManager.sync(audio.currentTime || 0);
+            // Force scroll the fullscreen lyrics to the active line
+            if (LyricsManager.fsContainer && LyricsManager.activeLineIndex >= 0) {
+                LyricsManager.highlightLine(LyricsManager.fsContainer, LyricsManager.activeLineIndex);
+            }
+        });
     });
 }
 
@@ -2590,9 +2868,13 @@ const fsControls = {
 
 if (fsControls.play) {
     fsControls.play.addEventListener('click', () => {
-        if (audio.paused) playSong();
-        else pauseSong();
-        updateSongbarUI();
+        if (audio.paused) {
+            playSong();
+            // icon updates via audio 'play' event
+        } else {
+            pauseSong();
+            // icon updates via audio 'pause' event
+        }
     });
 }
 
@@ -2612,33 +2894,55 @@ if (fsControls.next) {
 
 // Progress Bar Sync
 if (fsControls.progress) {
-    let isFsSeeking = false;
+
+    const updateFsProgressFill = (pct) => {
+        fsControls.progress.style.setProperty('--fs-progress-pct', pct.toFixed(2) + '%');
+    };
+
+    fsControls.progress.addEventListener('mousedown', () => {
+        _isFsSeekingGlobal = true;
+    });
+    fsControls.progress.addEventListener('touchstart', () => {
+        _isFsSeekingGlobal = true;
+    }, { passive: true });
 
     fsControls.progress.addEventListener('input', (e) => {
-        isFsSeeking = true;
+        _isFsSeekingGlobal = true;
         const percent = parseFloat(e.target.value);
-        if (!isNaN(percent) && audio.duration) {
-            const time = (percent / 100) * audio.duration;
-            if (fsControls.current) fsControls.current.textContent = formatTime(time);
+        if (!isNaN(percent)) {
+            updateFsProgressFill(percent);
+            if (audio.duration) {
+                const time = (percent / 100) * audio.duration;
+                if (fsControls.current) fsControls.current.textContent = formatTime(time);
+            }
         }
     });
 
     fsControls.progress.addEventListener('change', (e) => {
         const percent = parseFloat(e.target.value);
         if (!isNaN(percent) && audio.duration) {
-             audio.currentTime = (percent / 100) * audio.duration;
+            audio.currentTime = (percent / 100) * audio.duration;
+            updateFsProgressFill(percent);
         }
-        isFsSeeking = false;
+        _isFsSeekingGlobal = false;
+    });
+
+    fsControls.progress.addEventListener('mouseup', (e) => {
+        const percent = parseFloat(e.target.value);
+        if (!isNaN(percent) && audio.duration) {
+            audio.currentTime = (percent / 100) * audio.duration;
+            updateFsProgressFill(percent);
+        }
+        _isFsSeekingGlobal = false;
     });
 
     // Sync updates from audio to FS progress
     audio.addEventListener('timeupdate', () => {
-        if (!audio.duration) return;
-        if (!isFsSeeking) {
-            const pct = (audio.currentTime / audio.duration) * 100;
-            fsControls.progress.value = pct;
-            if (fsControls.current) fsControls.current.textContent = formatTime(audio.currentTime);
-        }
+        if (!audio.duration || _isFsSeekingGlobal) return;
+        const pct = (audio.currentTime / audio.duration) * 100;
+        fsControls.progress.value = pct;
+        updateFsProgressFill(pct);
+        if (fsControls.current) fsControls.current.textContent = formatTime(audio.currentTime);
     });
 
     // Sync duration

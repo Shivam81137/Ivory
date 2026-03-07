@@ -17,6 +17,12 @@
   --mesh-color-2: #0d1b3e;
   --mesh-color-3: #1a2f55;
   --mesh-color-4: #02060c;
+
+  /* ── Dynamic Ambient Background (set by JS from album art) ── */
+  --ambient-dominant:  5, 11, 20;     /* R, G, B triplet — dominant color */
+  --ambient-secondary: 13, 27, 62;    /* R, G, B triplet — secondary accent */
+  --ambient-tertiary:  26, 47, 85;    /* R, G, B triplet — edge / vibrant */
+  --ambient-opacity:   0;             /* 0 = off (intro), ~0.55 when playing */
 }
 
 * {
@@ -47,6 +53,57 @@ body {
   background-color: #050b14;
   transition: background 1.5s cubic-bezier(0.4, 0, 0.2, 1);
   contain: strict;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DYNAMIC AMBIENT BACKGROUND — Album art color extraction
+   ═══════════════════════════════════════════════════════════
+   Multiple soft radial-gradient blobs, heavily blurred,
+   tinted with colors sampled from the current cover art.
+   Sits between the base canvas and the glass UI panels.     */
+
+#ambient-glow {
+  position: fixed;
+  inset: -80px;                       /* overflow so blur doesn't clip at edges */
+  z-index: -9;                        /* above #canvas-container (-10), below UI */
+  pointer-events: none;               /* click-through */
+  will-change: opacity, background;
+
+  /* Three radial blobs positioned at different corners/center  */
+  background:
+    radial-gradient(
+      ellipse 70% 60% at 20% 30%,
+      rgba(var(--ambient-dominant),  0.7) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 55% 70% at 75% 65%,
+      rgba(var(--ambient-secondary), 0.55) 0%,
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 50% 50% at 50% 50%,
+      rgba(var(--ambient-tertiary),  0.4) 0%,
+      transparent 60%
+    );
+
+  filter: blur(70px) saturate(1.8);
+  opacity: var(--ambient-opacity);
+
+  /* ── Smooth 1s crossfade on every track change ── */
+  transition:
+    background 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity    1.0s ease;
+
+  /* Subtle slow drift animation for a living feel */
+  animation: ambientDrift 25s ease-in-out infinite alternate;
+}
+
+@keyframes ambientDrift {
+  0%   { transform: translate(0, 0)       scale(1);    }
+  33%  { transform: translate(15px, -10px) scale(1.03); }
+  66%  { transform: translate(-10px, 8px)  scale(0.97); }
+  100% { transform: translate(5px, -5px)   scale(1.01); }
 }
 
 /* --- LAYOUT STRUCTURE --- */
@@ -1654,35 +1711,16 @@ input[type="range"]:hover::-moz-range-thumb {
     transparent 100%
   );
   scroll-behavior: smooth;
-  scrollbar-width: thin;
-  scrollbar-color: transparent transparent;
+  /* Hide scrollbar completely — lyrics auto-scroll via JS */
+  scrollbar-width: none;            /* Firefox */
+  -ms-overflow-style: none;         /* IE/Edge */
 }
 
-.fs-lyrics-container.is-scrolling {
-  scrollbar-color: rgba(50, 224, 255, 0.3) transparent;
-}
-
+/* Hide scrollbar for Webkit (Chrome, Safari, Edge) */
 .fs-lyrics-container::-webkit-scrollbar {
-  width: 4px;
-  background: transparent;
-}
-
-.fs-lyrics-container::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.fs-lyrics-container::-webkit-scrollbar-thumb {
-  background: transparent;
-  border-radius: 4px;
-}
-
-.fs-lyrics-container.is-scrolling::-webkit-scrollbar-thumb {
-  background: rgba(50, 224, 255, 0.4);
-  box-shadow: 0 0 8px rgba(50, 224, 255, 0.3);
-}
-
-.fs-lyrics-container.is-scrolling::-webkit-scrollbar-thumb:hover {
-  background: var(--cyan-accent);
+  width: 0;
+  height: 0;
+  display: none;
 }
 
 /* ── Lyric lines INSIDE the fullscreen container ──
@@ -1769,7 +1807,13 @@ input[type="range"]:hover::-moz-range-thumb {
   -webkit-appearance: none;
   height: 6px;
   border-radius: 3px;
-  background: rgba(255, 255, 255, 0.2);
+  background: linear-gradient(
+    to right,
+    var(--cyan-accent) 0%,
+    var(--cyan-accent) var(--fs-progress-pct, 0%),
+    rgba(255, 255, 255, 0.2) var(--fs-progress-pct, 0%),
+    rgba(255, 255, 255, 0.2) 100%
+  );
   cursor: pointer;
   outline: none;
 }
@@ -1958,6 +2002,34 @@ body:has(#fullscreen-overlay.active) .music-player {
 
 /* When Canvas is active, fade out the standard static background */
 .video-active .fs-background { opacity: 0; }
+
+/* ─── INTRO / SPLASH MODE ───────────────────────────────────────────── */
+/* Applied to <body> on first load; removed as soon as a song is played  */
+body.intro-mode .sidebar {
+  transform: translateX(-320px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+body.intro-mode .app-layout {
+  padding-left: 20px;
+  padding-bottom: 20px;
+}
+
+body.intro-mode .music-player {
+  display: none !important;
+}
+
+/* Smooth transitions when exiting intro-mode */
+.sidebar {
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity   0.45s ease;
+}
+
+.app-layout {
+  transition: padding-left   0.55s cubic-bezier(0.4, 0, 0.2, 1),
+              padding-bottom 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
 /* ─── MULTI-SECTION HOME LAYOUT ─────────────────────────────────────── */
 .home-section {
