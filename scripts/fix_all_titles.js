@@ -24,7 +24,7 @@ while ((pos = code.indexOf(searchStr, pos)) !== -1) {
     const titleValueStart = titleStart + 8; // skip 'title: "'
     const titleEnd = code.indexOf('"', pos + searchStr.length - 1);
     if (titleEnd === -1) { pos++; continue; }
-
+    
     const oldTitle = code.substring(titleValueStart, titleEnd);
     // Only fix if the title contains Chinese characters or "Wang Junqi"
     if (oldTitle.includes('Wang Junqi') || oldTitle.includes('我多喜欢你')) {
@@ -236,15 +236,15 @@ const folderFixes = [
 for (const fix of folderFixes) {
     const fileIdx = code.indexOf(fix.fileMatch);
     if (fileIdx === -1) continue;
-
+    
     // Find the line containing this file reference
     const lineStart = code.lastIndexOf('\n', fileIdx) + 1;
     const lineEnd = code.indexOf('\n', fileIdx);
     const line = code.substring(lineStart, lineEnd);
-
+    
     const wrongStr = `folder: "${fix.wrongFolder}"`;
     const correctStr = `folder: "${fix.correctFolder}"`;
-
+    
     if (line.includes(wrongStr)) {
         const newLine = line.replace(wrongStr, correctStr);
         code = code.substring(0, lineStart) + newLine + code.substring(lineEnd);
@@ -312,4 +312,3 @@ log.unshift(`Total fixes applied: ${fixCount}`);
 log.unshift(`=== fix_all_titles.js — ${new Date().toISOString()} ===`);
 const logPath = path.join(__dirname, 'fix_all_log.txt');
 fs.writeFileSync(logPath, log.join('\n'), 'utf8');
-

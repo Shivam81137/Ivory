@@ -39,7 +39,7 @@ const titleFixes = [
     [/title: "JAB TAK"/g, 'title: "Jab Tak"'],
     [/title: "RIDE IT"/g, 'title: "Ride It"'],
     [/title: "Feel Good Inc"/g, 'title: "Feel Good Inc."'],
-    // Fix escaped backslashes in titles
+    // Fix escaped backslashes in titles  
     [/title: "Harleys In Hawaii \\\\\\\\"/g, 'title: "Harleys In Hawaii"'],
     [/title: "Maine Khud Ko Ragini MMS 2\\\\\\\\\\\\\\\\" Song With"/g, 'title: "Maine Khud Ko"'],
     // Fix "I Like You So Much" long title
@@ -78,4 +78,3 @@ for (const fix of folderFixes) {
 
 fs.writeFileSync(SCRIPT, code, 'utf8');
 console.log('✅ Second pass cleanup complete.');
-
