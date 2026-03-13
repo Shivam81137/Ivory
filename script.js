@@ -1,4 +1,4 @@
-console.log("Script loaded successfully.");
+﻿console.log("Script loaded successfully.");
 
 // ── SECTION FALLBACK IMAGES ─────────────────────────────────────────────────
 // Maps folder/section names → their section card image so that if a song's
@@ -16,7 +16,10 @@ const sectionFallbackImages = {
     'Ariana Grande':         'IMAGES/Ariana Grande .jpg',
     'Taylor Swift':          'IMAGES/Taylor swift.jpg',
     'Mohit Chauhan':         'IMAGES/Mohit Chauhan .jpg',
-    // Moods
+    'Arpit Bala':            'IMAGES/Arpit bala.jpg',
+    'Talwiinder':             'IMAGES/talwinder.jpg',
+    'Retro Classics':         'IMAGES/retro classics.jpg',
+        // Moods
     '❤️ Love Songs':         'IMAGES/love_vibes.jpg',
     '💔 Sad Vibes':           'IMAGES/sad_vibes.jpg',
     '⚡ Energetic':           'IMAGES/energetic_vibes.jpg',
@@ -43,6 +46,24 @@ const sectionFallbackImages = {
 function getSectionFallback(song) {
     if (!song) return 'IMAGES/logoo.png';
     return sectionFallbackImages[song.folder] || 'IMAGES/logoo.png';
+}
+
+const playlistFallbackImages = {
+    ...sectionFallbackImages,
+    '🎙️ Retro Classics': 'IMAGES/retro classics.jpg',
+    '🎌 K-Pop & Asian': 'IMAGES/k pop & asian.jpg',
+    '🎌 K-Pop & Asian Pop': 'IMAGES/k pop & asian.jpg'
+};
+
+let currentPlaylistFallbackImage = null;
+
+function getPlaylistFallback(title) {
+    if (!title) return null;
+    return playlistFallbackImages[title] || null;
+}
+
+function getActiveFallbackImage(song) {
+    return currentPlaylistFallbackImage || getSectionFallback(song);
 }
 
 // Songs array with durations manually added from scan
@@ -289,8 +310,559 @@ const songs = [
     // Misc global
     { title: "Who Says", artist: "Selena Gomez", file: "song/Selena Gomez - Who Says (Lyrics) - 256.MP3", art: "https://is1-ssl.mzstatic.com/image/thumb/Music/v4/96/9a/68/969a6851-4a2b-929c-90e4-e4b7af95d568/source/500x500bb.jpg", folder: "Global Hits", durationFormatted: "" },
     { title: "Memories", artist: "Maroon 5", file: "song/Maroon 5 Memories Lyrics.mp3", art: "https://is1-ssl.mzstatic.com/image/thumb/Music113/v4/c7/ef/f8/c7eff832-9c74-e95a-dc0a-cc4fff44a06e/source/500x500bb.jpg", folder: "Global Hits", durationFormatted: "" },
-    { title: "Dandelions", artist: "Ruth B.", file: "song/Ruth B.Dandelions Lyrics.mp3", art: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/c3/75/25/c37525ea-b22d-a5c7-5eba-88de5e0e0c39/source/500x500bb.jpg", folder: "Global Hits", durationFormatted: "" }
+    { title: "Dandelions", artist: "Ruth B.", file: "song/Ruth B.Dandelions Lyrics.mp3", art: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/c3/75/25/c37525ea-b22d-a5c7-5eba-88de5e0e0c39/source/500x500bb.jpg", folder: "Global Hits", durationFormatted: "" },
+
+    // ─── AUTO-CATEGORIZED SONGS (all folders) ───────────────────────────────────
+    { title: "Chaar Kadam", artist: "Shaan, Shreya Ghoshal", file: "song/'Chaar Kadam' FULL VIDEO Song  PK  Sushant Singh Rajput  Anushka Sharma  T-series - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Khoya Khoya", artist: "Mohit Chauhan", file: "song/'Khoya Khoya' FULL VIDEO Song  Sooraj Pancholi, Athiya Shetty  Hero  T-Series - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Tu Chahiye", artist: "Atif Aslam", file: "song/'Tu Chahiye' Full AUDIO Song  Atif Aslam Pritam  Bajrangi Bhaijaan  Salman Khan, Kareena Kapoor - 256-1.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Tu Chahiye", artist: "Atif Aslam", file: "song/'Tu Chahiye' Full AUDIO Song  Atif Aslam Pritam  Bajrangi Bhaijaan  Salman Khan, Kareena Kapoor - 256.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Tu Chahiye", artist: "Atif Aslam", file: "song/'Tu Chahiye' FULL VIDEO Song - Atif Aslam Pritam  Bajrangi Bhaijaan  Salman Khan, Kareena Kapoor - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "505", artist: "Arctic Monkeys", file: "song/505.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "52 Bars", artist: "Karan Aujla, IKKY", file: "song/52 Bars - PagalNew - Karan Aujla, IKKY.mp3", art: "IMAGES/logoo.png", folder: "Karan Aujla", durationFormatted: "" },
+    { title: "Some", artist: "BOL4", file: "song/[MV] BOL4(볼빨간사춘기) - Some(썸 탈꺼야) - SUPER SOUND Bugs!.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Maria", artist: "Hwa Sa", file: "song/[MV] 화사 (Hwa Sa) - 마리아 (Maria) - MAMAMOO.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Enna Sona", artist: "Arijit Singh", file: "song/A.R. Rahman - Enna Sona Best VideoOK JaanuArijit SinghShraddha KapoorAditya Roy - SonyMusicIndiaVEVO.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Hosanna", artist: "Leon D'Souza, Suzanne D'Mello, Vijay Prakash", file: "song/A.R. Rahman - Hosanna (Lyrics) ft. Leon D'souza & Suzanne D'Mello - seventyskye.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Tum Tak", artist: "Javed Ali", file: "song/A.R. Rahman - Tum Tak Best Lyric VideoRaanjhanaaSonam KapoorDhanushJaved Ali - SonyMusicIndiaVEVO.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Aahista", artist: "Arijit Singh, Jonita Gandhi", file: "song/Aahista - Lyrical  Laila Majnu  Arijit Singh & Jonita Gandhi  Avinash T & Tripti D  Imtiaz Ali - Zee Music Company.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Aankhon Se Batana", artist: "Dikshant", file: "song/Aankhon Se Batana – Dikshant  Viral Song 2022  Official Video - Sony Music India.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Iraaday", artist: "Abdul Hannan, Rovalio", file: "song/Abdul Hannan & Rovalio - Iraaday (Official Music Video) - Abdul Hannan.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Abhi Kuch Dino Se", artist: "Mohit Chauhan", file: "song/Abhi Kuch Dino Se Lyrical Video  Dil Toh Baccha Hai Ji   Emraan hashmi, Ajay Devgn - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Skyfall", artist: "Adele", file: "song/Adele Skyfall Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Admirin You", artist: "Karan Aujla, IKKY", file: "song/Admirin You - PagalNew - Karan Aujla, IKKY.mp3", art: "IMAGES/logoo.png", folder: "Karan Aujla", durationFormatted: "" },
+    { title: "Ae Dil Hai Mushkil", artist: "Pritam, Arijit Singh", file: "song/Ae Dil Hai Mushkil Title Track - PagalNew - Pritam, Arijit Singh.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Agar Tum Saath Ho", artist: "Alka Yagnik, Arijit Singh", file: "song/Agar Tum Saath Ho - PagalNew - Alka Yagnik, Arijit Singh.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Nadaaniyan", artist: "Akshath", file: "song/Akshath - Nadaaniyan (Lyrics) - Indie India.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Alone", artist: "Alan Walker", file: "song/Alan Walker Alone Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Faded", artist: "Alan Walker", file: "song/Alan Walker Faded Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Let Me Down Slowly", artist: "Alec Benjamin", file: "song/Alec Benjamin Let Me Down Slowly Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Ordinary", artist: "Alex Warren", file: "song/Alex Warren Ordinary Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Lovers", artist: "Anna of the North", file: "song/Anna of the North - Lovers (from To All the Boys I've Loved Before) - AnnaOfTheNorthVEVO.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Antidote", artist: "Karan Aujla", file: "song/Antidote - PagalNew - Karan Aujla.mp3", art: "IMAGES/logoo.png", folder: "Karan Aujla", durationFormatted: "" },
+    { title: "Apna Bana Le", artist: "Arijit Singh, Sachin-Jigar", file: "song/Apna Bana Le - PagalNew - Arijit Singh, Sachin-Jigar.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Stuck with U", artist: "Ariana Grande & Justin Bieber", file: "song/Ariana Grande & Justin Bieber - Stuck with U - ArianaGrandeVevo.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Fantasize", artist: "Ariana Grande", file: "song/Ariana Grande - fantasize (slightly deluxe) - DRC Records.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Positions", artist: "Ariana Grande", file: "song/Ariana Grande - positions (Lyrics) - 7clouds.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Love Me Harder", artist: "Ariana Grande & The Weeknd", file: "song/Ariana Grande, The Weeknd - Love Me Harder - ArianaGrandeVevo.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Raabta", artist: "Arijit Singh", file: "song/Arijit Singh - Raabta (Lyrics Video) Agent Vinod  Saif Ali Khan , Kareena Kapoor Khan. - PluginVibes.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Bairiyaa", artist: "Atif Aslam, Shreya Ghoshal", file: "song/Bairiyaa  Aatif Aslam  Shreya Ghoshal   Girish Kumar  Shruti Haasan  Ramaiya Vastavaiya - Bollywood Dhamaka.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Be Intehaan", artist: "Atif Aslam, Sunidhi Chauhan", file: "song/Be Intehaan - Race 2  Saif Ali Khan & Deepika Padukone  Atif Aslam, Sunidhi chauhan  Pritam - Tips Official.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Lovely", artist: "Billie Eilish, Khalid", file: "song/Billie Eilish, Khalid - lovely - BillieEilishVEVO.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "‘Pink Venom’", artist: "BLACKPINK", file: "song/BLACKPINK - ‘Pink Venom’ MV - BLACKPINK.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Boyfriend", artist: "Karan Aujla", file: "song/Boyfriend - PagalNew - Karan Aujla.mp3", art: "IMAGES/logoo.png", folder: "Karan Aujla", durationFormatted: "" },
+    { title: "Criminal", artist: "Britney Spears", file: "song/Britney Spears - Criminal (Lyrics) - 7clouds.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Bulleya", artist: "Pritam, Amit Mishra, Shilpa Rao", file: "song/Bulleya - PagalNew - Pritam, Amit Mishra, Shilpa Rao.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Chaleya", artist: "Arijit Singh, Shilpa Rao", file: "song/Chaleya - PagalNew - Arijit Singh, Shilpa Rao.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Attention", artist: "Charlie Puth", file: "song/Charlie Puth - Attention [Official Video] - Charlie Puth.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "We Don't Talk Anymore", artist: "Charlie Puth", file: "song/Charlie Puth We Don t Talk Anymore feat.Selena Gomez Official Video.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Under The Influence", artist: "Chris Brown", file: "song/Chris Brown - Under The Influence (Official Video) - ChrisBrownVEVO.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "A Thousand Years", artist: "Christina Perri", file: "song/Christina Perri - A Thousand Years - LatinHype.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Wrap Me In Plastic", artist: "CHROMANCE", file: "song/CHROMANCE - Wrap Me In Plastic (Lyrics) - Cakes & Eclairs.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Apocalypse", artist: "Cigarettes After Sex", file: "song/Cigarettes After Sex Apocalypse Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Gat", artist: "DALENG DALE", file: "song/DALENG DALE - Gat (Lyrics) - M O O N.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Dariya", artist: "Arko", file: "song/Dariya - Lyrical Video  Baar Baar Dekho  Sidharth Malhotra & Katrina Kaif  Arko - Zee Music Company.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Dear Maahiya", artist: "Tanishka Bahl, Saaheal", file: "song/Dear Maahiya (Official Music Video)  Tanishka Bahl  Saaheal  Showkidd  UR Debut  New Hindi Song - UR DEBUT.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Dekha Hazaro Dafaa", artist: "Arijit Singh, Palak Muchhal", file: "song/Dekha Hazaro Dafaa - PagalNew - Arijit Singh, Palak Muchhal.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Double Take", artist: "Dhruv", file: "song/Dhruv - double take (Official Video) - Dhruv.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Dil Ye Bekarar Kyun Hai", artist: "Mohit Chauhan, Shreya Ghoshal", file: "song/Dil Ye Bekarar Kyun Hai  Players  Abhishek Bachchan  Sonam Kapoor - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "End Of Beginning", artist: "Djo", file: "song/Djo End Of Beginning Official Audio.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Dooron Dooron", artist: "Paresh Pahuja", file: "song/Dooron Dooron (Official Video) - Paresh Pahuja Feat. Harleen Sethi  Shiv  Meghdeep  Vaibhav - Paresh Pahuja.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Shape of You", artist: "Ed Sheeran", file: "song/Ed Sheeran - Shape of You (Official Music Video) - Ed Sheeran.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Perfect", artist: "Ed Sheeran", file: "song/Ed Sheeran Perfect.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Sapphire", artist: "Ed Sheeran", file: "song/Ed Sheeran Sapphire Official Music Video.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Ehsaas", artist: "Faheem Abdullah", file: "song/Ehsaas (Lyric Video) Faheem Abdullah  Vaibhav Pani  Hyder Dar - VYRLOriginals.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Jhim Jhim Aune Aakhale", artist: "Ekdev Limbu", file: "song/Ekdev Limbu 🌹- Jhim Jhim Aune Aakhale (Lyrics Video Nepali) - Nepali Fine Tunes 🎵.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Love Me Like You Do", artist: "Ellie Goulding", file: "song/Ellie Goulding - Love Me Like You Do (Lyrics) - The Vibe Guide.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "I Think They Call This Love", artist: "Elliot James Reay", file: "song/Elliot James Reay - I Think They Call This Love (Official Video) - Elliot James Reay.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Mockingbird", artist: "Eminem", file: "song/Eminem Mockingbird Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "I See Red", artist: "Everybody Loves An Outlaw", file: "song/Everybody Loves An Outlaw - I See Red (Lyrics) - 7clouds Country.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "For A Reason", artist: "Karan Aujla", file: "song/For A Reason - PagalNew - Karan Aujla.mp3", art: "IMAGES/logoo.png", folder: "Karan Aujla", durationFormatted: "" },
+    { title: "Shinunoga E-Wa", artist: "Fujii Kaze", file: "song/Fujii Kaze - Shinunoga E-Wa (Visual) - Fujii Kaze.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Mann Mera", artist: "Gajendra Verma", file: "song/Gajendra Verma - Mann Mera (Lyrics)  Original Version - Indie India.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Gehra Hua", artist: "Arijit Singh, Armaan Khan", file: "song/Gehra Hua - PagalNew - Arijit Singh, Armaan Khan.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Sailor Song", artist: "Gigi Perez", file: "song/Gigi Perez Sailor Song Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Heat Waves", artist: "Glass Animals", file: "song/Glass Animals Heat Waves.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Feel Good Inc.", artist: "Gorillaz", file: "song/Gorillaz Feel Good Inc.Official Video.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Gul", artist: "Anuv Jain", file: "song/Gul - 256-1.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Haareya", artist: "Arijit Singh", file: "song/Haareya Song  Meri Pyaari Bindu  Ayushmann, Parineeti  Arijit Singh  Sachin-Jigar, Priya Saraiya - YRF.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "As It Was", artist: "Harry Styles", file: "song/Harry Styles As It Was Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Hawayein", artist: "Pritam, Arijit Singh", file: "song/Hawayein - PagalNew - Pritam, Arijit Singh.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Humsafar", artist: "Akhil Sachdeva", file: "song/Humsafar (Full Video)   Varun & Alia Bhatt  Akhil Sachdeva  Badrinath Ki Dulhania - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "I Like You So Much, You’ll Know It (我多喜欢你，你会知道)- A Love So Beautiful OST -Wang Junqi", artist: "Ysabelle", file: "song/I Like You So Much, You’ll Know It (我多喜欢你，你会知道)- A Love So Beautiful OST -Wang Junqi [English Cover] - Ysabelle.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "I Really Do", artist: "Karan Aujla", file: "song/I Really Do - PagalNew - Karan Aujla.mp3", art: "IMAGES/logoo.png", folder: "Karan Aujla", durationFormatted: "" },
+    { title: "I Wanna Be Yours", artist: "Arctic Monkeys", file: "song/I Wanna Be Yours - Arctic Monkeys - Topic.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Ik Kudi", artist: "wolf.cryman", file: "song/Ik Kudi - wolf.cryman - Topic.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Ilahi", artist: "Pritam, Arijit Singh", file: "song/Ilahi - PagalNew - Pritam, Arijit Singh.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Believer", artist: "Imagine Dragons", file: "song/Imagine Dragons - Believer (Official Music Video) - ImagineDragonsVEVO.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Thunder", artist: "Imagine Dragons", file: "song/Imagine Dragons Thunder Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Love Story", artist: "Indila", file: "song/Indila Love Story Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Inkem Inkem", artist: "Sid Sriram", file: "song/Inkem Inkem -lyrics  Geetha Govindam  Sid Sriram  LYRICS🖤 #vijaydevarakonda - Cinephile's Corner.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Khwab", artist: "Iqlipse Nova, Aditya A", file: "song/Iqlipse Nova, Aditya A  - Khwab (Lyrics) - seventyskye.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Is This Love", artist: "Mohit Chauhan, Shreya Ghoshal", file: "song/Is This Love Lyrical - Kismat Konnection  Shahid Kapoor, Vidya Balan  Mohit C, Shreya G  Pritam - Tips Official.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Ishq Bulaava", artist: "Sanam Puri, Shipra Goyal", file: "song/Ishq Bulaava Full Video - Hasee Toh PhaseeParineeti, SidharthSanam Puri, Shipra Goyal - SonyMusicIndiaVEVO.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Ishq Hai", artist: "Anuv Jain", file: "song/Ishq Hai Lyrics - Mismatched Season 3  Trending Hindi Song 2024 - Vibe Bird.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Jaan Ban Gaye", artist: "Mithoon, Vishal Mishra, Asees Kaur", file: "song/Jaan Ban Gaye  Khuda Haafiz  Vidyut Jammwal, Shivaleeka Oberoi  Vishal Mishra,Asees Kaur Mithoon - Romance Rewind.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Jab Tak", artist: "Armaan Malik", file: "song/JAB TAK Video Song  M.S. DHONI -THE UNTOLD STORY  Armaan Malik, Amaal Mallik Sushant Singh Rajput - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Ride It", artist: "Jay Sean", file: "song/JAY SEAN - RIDE IT - JAYDED.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Infinity", artist: "Jaymes Young", file: "song/Jaymes Young Infinity.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Jeene Laga Hoon", artist: "Atif Aslam, Shreya Ghoshal", file: "song/Jeene Laga Hoon  Ramaiya Vastavaiya  Girish Kumar, Shruti Haasan  Atif Aslam  Shreya Goshal - Tips Official.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Jhol", artist: "Maanu, Annural Khalid", file: "song/Jhol  Coke Studio Pakistan  Season 15  Maanu x Annural Khalid - Coke Studio Pakistan.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Jogi", artist: "Yasser Desai, Aakanksha Sharma", file: "song/Jogi - Lyrical Shaadi Mein Zaroor Aana Rajkummar Rao,Kriti KArko ft Aakanksha Sharma - Zee Music Company.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Jugraafiya", artist: "Udit Narayan, Shreya Ghoshal", file: "song/Jugraafiya  Super 30  Hrithik Roshan & Mrunal Thakur  Udit Narayan & Shreya Ghoshal  Lyrical - Romance Rewind.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Kaise Bataaoon", artist: "K.K., Sonal Chauhan", file: "song/Kaise Bataaoon  Full (Video) Song - 3G  Neil Nitin Mukesh & Sonal Chauhan  KK - SonyMusicIndiaVEVO.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Kalank", artist: "Arijit Singh, Shilpa Rao", file: "song/Kalank (Bonus Track) - PagalNew - Arijit Singh, Shilpa Rao.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Harleys In Hawaii", artist: "Katy Perry", file: "song/Katy Perry - Harleys In Hawaii (Lyrics) You and I, Ridin' Harleys in Hawaii-i-i - Unique Sound.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Somewhere Only We Know", artist: "Keane", file: "song/Keane Somewhere Only We Know Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Khairiyat", artist: "Arijit Singh", file: "song/Khairiyat (Bonus Track) - PagalNew - Arijit Singh.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Kyon", artist: "Papon, Sunidhi Chauhan", file: "song/Kyon - BarfiPritamPaponSunidhiRanbirPriyanka - SonyMusicIndiaVEVO.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Bella Ciao", artist: "Money Heist Cast", file: "song/La Casa De Papel - Bella Ciao [Lyrics] (Money Heist) - ReLike Vibes.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Die With A Smile", artist: "Lady Gaga, Bruno Mars", file: "song/Lady Gaga, Bruno Mars - Die With A Smile (Official Music Video) - LadyGagaVEVO.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "I Like Me Better", artist: "Lauv", file: "song/Lauv - I Like Me Better [Official Audio] - Lauv.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Old Town Road", artist: "Lil Nas X ft. Billy Ray Cyrus", file: "song/Lil Nas X Old Town Road feat.Billy Ray Cyrus Lyrics napisy pl.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Labon Ko", artist: "K.K.", file: "song/Lyrical Labon Ko  Bhool Bhulaiyaa  Pritam  K.K. Akshay Kumar, Shiney Ahuja, Vidya Balan - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Mere Liye Tum Kaafi Ho", artist: "Ayushmann Khurrana", file: "song/Lyrical Mere Liye Tum Kaafi Ho  Shubh Mangal Zyada Saavdhan Ayushman Khurana,Jeetu  Tanishk-Vayu - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Sachiya Mohabbatan", artist: "Sachet Tandon", file: "song/LYRICAL Sachiya Mohabbatan  Arjun Patiala  Diljit Dosanjh, Kriti S  Sachet Tandon  Sachin-Jigar - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Saude Bazi", artist: "Anupam Amod", file: "song/Lyrical Saude Bazi  Aakrosh  Ajay Devgn, Bipasha Basu  Pritam  Anupam Amod  Irshad Kamil - T-Series Bollywood Classics.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Maine Khud Ko", artist: "Mustafa Zahid", file: "song/Maine Khud Ko Ragini MMS 2 Song With Lyrics  Sunny Leone  Mustafa Zahid - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Manchala", artist: "Shafqat Amanat Ali, Nupur Pant", file: "song/Manchala Full song - Parineeti Chopra, Sidharth  Hasee Toh Phasee - Bollywood songs.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Memories", artist: "Maroon 5", file: "song/Maroon 5 - Memories (Official Video) - Maroon5VEVO.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Animals", artist: "Maroon 5", file: "song/Maroon 5 Animals Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Girls Like You", artist: "Maroon 5", file: "song/Maroon 5 Girls Like You Lyrics ft.Cardi B.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Mast Magan", artist: "Shankar-Ehsaan-Loy, Arijit Singh, Chinmayi Sripada", file: "song/Mast Magan - PagalNew - Shankar-Ehsaan-Loy, Arijit Singh, Chinmayi Sripada.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Meherbaan", artist: "Ash King, Shilpa Rao, Shekhar Ravjiani", file: "song/Meherbaan Full Audio  Hrithik Roshan & Katrina Kaif  Vishal Shekhar - Zee Music Company.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Zulfein", artist: "Mehul Mahesh, DJ Aynik", file: "song/Mehul Mahesh & DJ Aynik - Zulfein  (Lyrics) - Musicgenree.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Mere Bina", artist: "Nikhil D'Souza", file: "song/Mere Bina Full Video - CrookEmraan Hashmi,Neha SharmaNikhil D'SouzaPritamMukesh Bhatt - SonyMusicIndiaVEVO.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Mere Nishan", artist: "Darshan Raval", file: "song/Mere Nishan (Lyrics) - Darshan Raval 🎶  Jhuki teri palko mein mil jaye mujhe panahe✨ - Sankalp Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Meri Banogi Kya", artist: "Rito Riba", file: "song/Meri Banogi Kya - Rito Riba  Official Music Lyrics Video - Lyrics4You.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "MF Gabhru", artist: "Karan Aujla", file: "song/MF Gabhru - PagalNew - Karan Aujla.mp3", art: "IMAGES/logoo.png", folder: "Karan Aujla", durationFormatted: "" },
+    { title: "Cheri Cheri Lady", artist: "Modern Talking", file: "song/Modern Talking - Cheri Cheri Lady (Lyrics) - 7clouds.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Beggin", artist: "Måneskin", file: "song/Måneskin Beggin Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Darkside", artist: "NEONI", file: "song/NEONI Darkside Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "O Rangrez", artist: "Shreya Ghoshal, Javed Bashir", file: "song/O Rangrez - Lyrcial Video  Bhaag Milkha Bhaag  Farhan, Sonam  Shreya Ghoshal, Javed Bashir - Sony Music India.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "On Top", artist: "Karan Aujla", file: "song/On Top - PagalNew - Karan Aujla.mp3", art: "IMAGES/logoo.png", folder: "Karan Aujla", durationFormatted: "" },
+    { title: "Night Changes", artist: "One Direction", file: "song/One Direction - Night Changes - OneDirectionVEVO.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Let Her Go", artist: "Passenger", file: "song/Passenger Let Her Go Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Pehli Nazar Mein", artist: "Atif Aslam", file: "song/Pehli Nazar Mein - Full Video  Race I Akshaye , Bipasha & Saif Ali  Atif Aslam  Pritam  Tips - Tips Official.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "At My Worst", artist: "Pink Sweat$", file: "song/Pink Sweat$ - At My Worst (Official Video) - Pink Sweats.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Sunflower", artist: "Post Malone, Swae Lee", file: "song/Post Malone, Swae Lee - Sunflower (Spider-Man Into the Spider-Verse) - PostMaloneVEVO.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Co2", artist: "Prateek Kuhad", file: "song/Prateek Kuhad - Co2 (Official Audio) - Prateek Kuhad.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Kahaan Ho Tum", artist: "Prateek Kuhad", file: "song/Prateek Kuhad - Kahaan Ho Tum  Official Music Video  Prajakta Koli & Rohit Saraf  Mismatched - Netflix India.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Tujhko Jo Paaya", artist: "Mohit Chauhan", file: "song/Pritam - Tujhko Jo Paaya Best Audio SongCrookEmraan HashmiNeha SharmaMohit Chauhan - SonyMusicIndiaVEVO.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Gangnam Style", artist: "PSY", file: "song/PSY - GANGNAM STYLE(강남스타일) MV - officialpsy.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Make You Mine", artist: "PUBLIC", file: "song/PUBLIC - Make You Mine (Put Your Hand in Mine) [Official Video] - PUBLICVEVO.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Qaafirana", artist: "Arijit Singh", file: "song/Qaafirana - Lyrical   Kedarnath  Sushant S Rajput  Sara Ali Khan  Arijit Singh & Nikhita Amit T - Zee Music Company.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Qaafirana", artist: "Arijit Singh, Nikhita Gandhi", file: "song/Qaafirana - PagalNew - Arijit Singh, Nikhita Gandhi.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Unknown Track", artist: "Ra & Tomine Harket", file: "song/Ra and Tomine Harket.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Raanjhanaa", artist: "Jaswinder Singh, Shiraz Uppal", file: "song/Raanjhanaa - Lyrical Video  Dhanush, Sonam Kapoor  A. R. Rahman  Jaswinder Singh & Shiraz Uppal - SonyMusicIndiaVEVO.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Rang Jo Lagyo", artist: "Atif Aslam, Shreya Ghoshal", file: "song/Rang Jo Lagyo - Atif Aslam (Lyrics)  Lyrical Bam Hindi - 256.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Rang Jo Lagyo", artist: "Atif Aslam, Shreya Ghoshal", file: "song/Rang Jo Lagyo Lyrical  Ramaiya Vastavaiya  Girish Kumar, Shruti Haasan Atif Aslam, Shreya Ghoshal - Tips Official.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Rang Lageya", artist: "Mohit Chauhan, Rochak Kohli", file: "song/Rang lageya - Paras chhabra mahira sharma ft. Mohit chuhaan (lyrics) - Music Club.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Ranjheya Ve", artist: "Zain Zohaib", file: "song/Ranjheya Ve  Zain Zohaib  Yratta media - Zain Zohaib.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Rukum Maikot", artist: "SD Yogi, Shanti Shree Pariyar", file: "song/Rukum Maikot ( Lyrics)  Nepali Cultural New nepali song  Khusma   SD Yogi & Shanti Shree Pariyar - Sonic Serenade🎶.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Dandelions", artist: "Ruth B.", file: "song/Ruth B. - Dandelions (Lyrics) - 7clouds.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Espresso", artist: "Sabrina Carpenter", file: "song/Sabrina Carpenter Espresso Official Audio.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Sadka Kiya", artist: "Suraj Jagan, Mahalaxmi Iyer", file: "song/Sadka Best Audio Song - I Hate Luv StorysSonam KapoorImran KhanSurajMahalaxmi Iyer - SonyMusicIndiaVEVO.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Sajni", artist: "Arijit Singh", file: "song/Sajni (Lyrical Video) Arijit Singh, Ram Sampath  Laapataa Ladies   Aamir Khan Productions - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Unholy", artist: "Sam Smith, Kim Petras", file: "song/Sam Smith - Unholy ft. Kim Petras - LatinHype.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Sanam Re", artist: "Arijit Singh, Mithoon", file: "song/Sanam Re - PagalNew - Arijit Singh, Mithoon.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Satranga", artist: "Arijit Singh, Shreyas Puranik", file: "song/Satranga - PagalNew - Arijit Singh, Shreyas Puranik.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Savera", artist: "Iqlipse Nova, Anubha Bajaj", file: "song/Savera -  New Instagram viral song  Official Lyric Video  Iqlipse Nova X Anubha Bajaj - Iqlipse Nova.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Eenie Meenie", artist: "Sean Kingston & Justin Bieber", file: "song/Sean Kingston Justin Bieber Eenie Meenie Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Timro Pratiksa", artist: "Shallum Lama", file: "song/Shallum Lama - Timro Pratiksa (Lyrics) - seventyskye.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Señorita", artist: "Shawn Mendes, Camila Cabello", file: "song/Shawn Mendes Camila Cabello Señorita Lyrics Letra.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Shayad", artist: "Pritam, Arijit Singh", file: "song/Shayad - PagalNew - Pritam, Arijit Singh.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Unstoppable", artist: "Sia", file: "song/Sia Unstoppable Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Softly", artist: "Karan Aujla", file: "song/Softly - PagalNew - Karan Aujla.mp3", art: "IMAGES/logoo.png", folder: "Karan Aujla", durationFormatted: "" },
+    { title: "Starboy", artist: "The Weeknd", file: "song/Starboy.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Until I Found You", artist: "Stephen Sanchez", file: "song/Stephen Sanchez - Until I Found You (Official Video) - StephenSanchezVEVO.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Sukoon Mila", artist: "Arijit Singh", file: "song/Sukoon Mila Full Video  Mary Kom  Priyanka Chopra & Darshan Gandas  Arijit Singh  HD - Zee Music Company.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Bardali", artist: "Sushant KC, Indrakala Rai", file: "song/Sushant KC - Bardali ft. Indrakala Rai (Official Music Video) - Sushant KC.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Sarangi", artist: "Sushant KC", file: "song/Sushant KC - Sarangi (Official Music Video) - Sushant KC.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Taare Ginn", artist: "Mohit Chauhan, Shreya Ghoshal", file: "song/Taare Ginn - Dil BecharaFull SongSushant-Sanjana@A. R. RahmanMohit-Shreya - SonyMusicIndiaVEVO.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Love Story", artist: "Taylor Swift", file: "song/Taylor Swift - Love Story - TaylorSwiftVEVO.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Lover", artist: "Taylor Swift", file: "song/Taylor Swift - Lover Remix Feat. Shawn Mendes (Lyric Video) - Taylor Swift.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Paper Rings", artist: "Taylor Swift", file: "song/Taylor Swift - Paper Rings (Official Audio) - TaylorSwiftVEVO.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Tera Rastaa Chhodoon Na", artist: "Amaal Mallik, Shalmali Kholgade", file: "song/Tera Rastaa Chhodoon Na Song Chennai Express  Shahrukh Khan, Deepika Padukone - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Tera Yaar Hoon Main", artist: "Arijit Singh", file: "song/Tera Yaar Hoon Main - PagalNew - Arijit Singh.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Tere Bina", artist: "Zaeden", file: "song/tere bina - Zaeden  ft. Amyra Dastur  Kunaal Vermaa  VYRLOriginals  Romantic Songs 2019 - VYRLOriginals.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Closer", artist: "The Chainsmokers, Halsey", file: "song/The Chainsmokers - Closer (Official Video) ft. Halsey - ChainsmokersVEVO.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Closer", artist: "The Chainsmokers, Halsey", file: "song/The Chainsmokers Closer Lyrics ft.Halsey.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Stay", artist: "The Kid LAROI, Justin Bieber", file: "song/The Kid LAROI Justin Bieber Stay Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Sweater Weather", artist: "The Neighbourhood", file: "song/The Neighbourhood Sweater Weather Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Hall of Fame", artist: "The Script ft. will.i.am", file: "song/The Script Hall Of Fame Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Die For You", artist: "The Weeknd", file: "song/The Weeknd - Die For You - TheWeekndVEVO.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Timeless", artist: "The Weeknd", file: "song/Timeless.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Timi Sangai", artist: "Apurva Tamang", file: "song/Timi Sangai - Apurva Tamang  Lyric video - Lazy aayu.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Tujhe Kitna Chahne Lage", artist: "Arijit Singh, Mithoon", file: "song/Tujhe Kitna Chahne Lage - PagalNew - Arijit Singh, Mithoon.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Tum Hi Ho", artist: "Arijit Singh", file: "song/Tum Hi Ho - PagalNew - Arijit Singh.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Ve Haaniyaan", artist: "Danny, Avvy Sra", file: "song/Ve Haaniyaan - Official Video  Ravi Dubey & Sargun Mehta  Danny  Avvy Sra  Dreamiyata Music - Dreamiyata Music.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Timi Nacha Na", artist: "Wangden Sherpa", file: "song/Wangden Sherpa - Timi Nacha Na  Lyric video (Mayalu Timi Sangai Sangai) - LyricsVerse.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Winning Speech", artist: "Karan Aujla", file: "song/Winning Speech - PagalNew - Karan Aujla.mp3", art: "IMAGES/logoo.png", folder: "Karan Aujla", durationFormatted: "" },
+    { title: "Kasari", artist: "Yabesh Thapa", file: "song/Yabesh thapa - Kasari [ Lyrics Video ] - Bishal Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Yeh Fitoor Mera", artist: "Arijit Singh", file: "song/Yeh Fitoor Mera - Full Video  Fitoor  Aditya Roy Kapur, Katrina Kaif  Arijit Singh  Amit Trivedi - Zee Music Company.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "You Belong To Me", artist: "Carla Bruni", file: "song/You belong to me - Carla Bruni - Topic.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Blue", artist: "Yung Kai", file: "song/yung kai - blue (Lyrics) - Creative Chaos.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Zaalima", artist: "Arijit Singh, Harshdeep Kaur", file: "song/Zaalima - PagalNew - Arijit Singh, Harshdeep Kaur.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Zaroor", artist: "Aparshakti Khurana, Savi Kahlon", file: "song/Zaroor – Aparshakti Khurana  Savi Kahlon  Official Music Video - Sony Music India.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Zehnaseeb", artist: "Chinmayi Sripada, Shekhar Ravjiani", file: "song/Zehnaseeb Lyric Video - Hasee Toh PhaseeParineeti, SidharthChinmayi S, Shekhar Ravjiani - SonyMusicIndiaVEVO.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Maps", artist: "Maroon 5", file: "songs/100052792.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Kiss of Life", artist: "Sade", file: "songs/1030652052.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Music To Watch Boys To", artist: "Lana Del Rey", file: "songs/107394172.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Kal Chaudavi Ki Raat Thi", artist: "Jagjit Singh", file: "songs/1091930832.mp3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Cold/Mess", artist: "Prateek Kuhad", file: "songs/1099128012.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Home", artist: "Edith Whiskers", file: "songs/1107280572.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Rang Jo Lagyo", artist: "Atif Aslam, Shreya Ghoshal", file: "songs/1115370252.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Hoshwalon Ko Khabar Kya", artist: "Jagjit Singh", file: "songs/1147261472.mp3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Mai", artist: "Videoclub", file: "songs/1169758012.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Line Without a Hook", artist: "Ricky Montgomery", file: "songs/1174664082.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Aankhein Khuli", artist: "Lata Mangeshkar", file: "songs/1203797652.mp3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Tune Jo Na Kaha", artist: "Mohit Chauhan", file: "songs/1203801542 (1).mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Tune Jo Na Kaha", artist: "Mohit Chauhan", file: "songs/1203801542.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Bol Na Halke Halke", artist: "Shankar-Ehsaan-Loy", file: "songs/1203804772.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Main Yahaan Hoon", artist: "Udit Narayan", file: "songs/1203805242.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Runaway", artist: "AURORA", file: "songs/120738706.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Yeh Vada Raha", artist: "Alyssia", file: "songs/12758134.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "I WANNA BE YOUR SLAVE", artist: "Måneskin", file: "songs/1279728532.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Be My Baby", artist: "The Ronettes", file: "songs/12809317.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Pretty Little Baby", artist: "Connie Francis", file: "songs/130105720.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Ocean Eyes", artist: "Billie Eilish", file: "songs/136337268.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Let Down", artist: "Radiohead", file: "songs/138539979.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Alone", artist: "Alan Walker", file: "songs/141822951.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Sunsetz", artist: "Cigarettes After Sex", file: "songs/144010756.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Apocalypse", artist: "Cigarettes After Sex", file: "songs/144010758.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Tera Mera Pyar Amar", artist: "Lata Mangeshkar", file: "songs/14715886.mp3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Abhi Mujh Mein Kahin", artist: "Ajay-Atul", file: "songs/15079096.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "I Love You So", artist: "The Walters", file: "songs/1526991462.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Udaarian - 2.0", artist: "Satinder Sartaaj", file: "songs/1562651502.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Main Zindagi Ka Saath Nibhata Chala Gaya", artist: "Mohammad Rafi", file: "songs/15947837.mp3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Summertime Sadness", artist: "Lana Del Rey", file: "songs/16047072.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Dooron Dooron", artist: "Paresh Pahuja", file: "songs/1611053232.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "The Most Beautiful Thing", artist: "Thomas Headon", file: "songs/1621026332.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Wellerman", artist: "Nathan Evans", file: "songs/1655134296345227964Wellerman_Sea_Shanty_140_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Easy On Me", artist: "Adele", file: "songs/1655246371719072192Easy_On_Me-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "MIDDLE OF THE NIGHT", artist: "Elley Duhé", file: "songs/1655301346603389145MIDDLE_OF_THE_NIGHT_140_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Wait a Minute!", artist: "WILLOW", file: "songs/1655414038910510930Wait_a_Minute-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Slumber Party", artist: "Ashnikko, Princess Nokia", file: "songs/1655485182206428546Slumber_Party_feat_Princess_Nokia_140_audi.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Goumi", artist: "Myriam Fares", file: "songs/1655545366479547996Goumi-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Big And Chunky", artist: "will.i.am", file: "songs/1655594239025861245Big_And_Chunky-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Paro", artist: "Nej, Nasraddine Mona, Laamri Najoua", file: "songs/1655770931947297113Paro-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Sway", artist: "Michael Bublé", file: "songs/1655806334256713835Sway-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Le", artist: "Charlie Puth, Jung Kook, BTS", file: "songs/1656154528484764979Left_and_Right_Feat_Jung_Kook_of_BTS_140_a.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Somebody That I Used To Know", artist: "Gotye, Kimbra", file: "songs/1656497014510117461Somebody_That_I_Used_To_Know_140_audio_only.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Dancin", artist: "Aaron Smith, Krono, Luvli", file: "songs/1656535605468094484Dancin_Krono_Remix_140_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Nothing Breaks Like a Heart", artist: "Mark Ronson, Miley Cyrus", file: "songs/1656538116114851987Nothing_Breaks_Like_a_Heart_140_audio_only_.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Calypso RMX", artist: "Reggae", file: "songs/1656677981476329574Calypso_RMX-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Sauce", artist: "Naïka", file: "songs/1656704444780545315Sauce-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Pump It", artist: "The Black Eyed Peas", file: "songs/1656720778028073865Pump_It-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "All Time Low", artist: "Jon Bellion", file: "songs/1656764861848425148All_Time_Low-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Habibi", artist: "Ricky Rich, Dardan", file: "songs/1656844498689009275Habibi_Albanian_Remix_140_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Breakfast", artist: "Dove Cameron", file: "songs/1656990053795651988Breakfast-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Under The Influence", artist: "Chris Brown", file: "songs/1656997006393665302Under_The_Influence_140_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "น้ำแดงน้ำส้ม (NAM DANG NAM SOM)", artist: "Jarvis", file: "songs/1657024989987671255NAM_DANG_NAM_SOM-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Sunroof", artist: "Nicky Youre, dazy", file: "songs/1657025450572243394Sunroof-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "No Guidance", artist: "Chris Brown, Drake", file: "songs/1657224180318489699No_Guidance-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "All Star", artist: "Smash Mouth", file: "songs/1657228325435070649All_Star-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Paro", artist: "Nej, Mona Nasraddine, Najoua Laamri", file: "songs/1657257786434963298Paro_Speed_Up-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "All That Glitters", artist: "Earl", file: "songs/1657261319235328836All_That_Glitters-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Locked out of Heaven", artist: "Bruno Mars", file: "songs/1657271671598256152Locked_out_of_Heaven_140_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Снова ночь", artist: "Mull3", file: "songs/1657337547645634530_-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Love Me Back", artist: "Trinidad Cardona, Robinson", file: "songs/1657409545400738501Love_Me_Back_Fayahh_Beat_140_audio_only_med.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Space Song", artist: "Beach House", file: "songs/1657728680665509069Space_Song-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Safety Net", artist: "Ariana Grande, Ty Dolla $ign", file: "songs/1657829739837975571safety_net-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Sweet Dreams (Are Made of This)", artist: "Eurythmics, Annie Lennox, Dave Stewart", file: "songs/1657842204688917579Sweet_Dreams_Are_Made_of_This_140_audio_onl.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Jiggle Jiggle", artist: "Duke, Jones, Louis Theroux", file: "songs/1657863072859983787Jiggle_Jiggle-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Title", artist: "Meghan Trainor", file: "songs/1657881400524050564Title-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Habibi", artist: "Ricky Rich, Dardan, Zuna", file: "songs/1657956592735424748Habibi-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "You Broke Me First", artist: "Tate McRae", file: "songs/1657987670059417749you_broke_me_first_140_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "A Man Without Love", artist: "Engelbert Humperdinck", file: "songs/1657992063140487564A_Man_Without_Love_140_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Money Rain", artist: "VTORNIK, Никитин Максим Вадимович", file: "songs/1657993295547196720Money_Rain-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Face Off", artist: "Tech N9ne, Joey Cool, King Iso", file: "songs/1658012189902683694Face_Off-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Running Up That Hill", artist: "Kate Bush", file: "songs/1658245792863504649Running_Up_That_Hill_A_Deal_With_God_2018_Rem.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Queen of Hearts", artist: "Starla Edney, Cristian Tarcea, Silviu Oeru Teodor", file: "songs/1658338603623362010Queen_of_Hearts-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "On The Floor", artist: "Jennifer Lopez, Pitbull", file: "songs/1658350980216791053On_The_Floor_Radio_Edit_140_audio_only_medi.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Enemy", artist: "Imagine Dragons, JID, Arcane", file: "songs/1658592927305073821Enemy_from_the_series_Arcane_League_of_Legend.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "About Damn Time", artist: "Lizzo", file: "songs/1658606311117306419About_Damn_Time-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "I See Red", artist: "Everybody Loves An Outlaw", file: "songs/1658874718657704323I_See_Red-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Dame", artist: "Freebot, Aneth, Aneth Oliva", file: "songs/1658939931728462694Dame-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Ice On My Baby", artist: "Yung Bleu, Kevin Gates", file: "songs/1659151555301450666Ice_On_My_Baby_Remix_140_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Ara", artist: "Zeynep Bastik", file: "songs/1659187369489830910Ara-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Ice On My Baby", artist: "Yung Bleu", file: "songs/1659335776640362460Ice_On_My_Baby-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Love Nwantiti", artist: "LillyC", file: "songs/1659452040505627215Love_Nwantiti-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Kala Chashma", artist: "Amar Arshi, Badshah, Neha Kakkar", file: "songs/1659470760872885881Kala_Chashma-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "1, 2, 3", artist: "Sofia Reyes, Jason Derulo, De La Ghetto", file: "songs/16595422720655058231_2_3_feat_Jason_Derulo_De_La_Ghetto_140_a.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Dirty Mind", artist: "3OH!3", file: "songs/1659604956002836700Dirty_Mind-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "The Way I Are", artist: "Timbaland, Keri Hilson, D.O.E.", file: "songs/1659776034255713934The_Way_I_Are_Radio_Edit_140_audio_only_med.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Maniac", artist: "Conan Gray", file: "songs/1659984126354653318Maniac-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Do It To It", artist: "ACRAZE, Cherish", file: "songs/1660230400878139981Do_It_To_It-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "다라리 (DARARI)", artist: "TREASURE", file: "songs/1660245419412314162DARARI-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Eshay", artist: "Gucci Dassy", file: "songs/1660592401311029152Eshay-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Genius", artist: "LSD, Sia, Diplo", file: "songs/1660603108643090634Genius-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "I Ain’t Worried - Acoustic", artist: "OneRepublic", file: "songs/1660708416271938446I_Ain_t_Worried_Acoustic_140_audio_only_m.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Kala Chashma", artist: "Amar Arshi", file: "songs/1660852926256126890Kala_Chashma_Unplugged_MTV_Unplugged_Season_6.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Pink Venom", artist: "BLACKPINK", file: "songs/1660882659996537923Pink_Venom-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Under The Influence", artist: "Chris Brown", file: "songs/1661088518193095173Under_The_Influence_Sped_Up_140_audio_only_.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Kala Chashma", artist: "Amar Arshi", file: "songs/1661390833514019243Kala_Chashma_Club_Mix_DJ_Notorious_140_audi.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Calm Down", artist: "Rema, Selena Gomez", file: "songs/1661510429873579715Calm_Down-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Ooh Ahh (My Life Be Like)", artist: "Grits, TobyMac, Unknown", file: "songs/1661590949862044087Ooh_Ahh_My_Life_Be_Like_feat_Tobymac_140_a.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "On The Floor", artist: "Jennifer Lopez, Pitbull", file: "songs/1661591092235467295On_The_Floor-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Gimme More", artist: "Britney Spears, Lil' Kim", file: "songs/1661591114282244725Gimme_More_Kimme_More_Remix_140_audio_only_.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Gimme More", artist: "Britney Spears", file: "songs/1661591131608943008Gimme_More_Remastered_140_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "All That Glitters", artist: "Christine Set The Scene", file: "songs/1661591630355280042All_That_Glitters_Acoustic_Version_140_audi.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "That's Not My Name", artist: "The Ting Tings", file: "songs/1661591944078165218That_s_Not_My_Name_Radio_Edit_140_audio_onl.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "That's Not My Name", artist: "The Ting Tings", file: "songs/1661591948313651638That_s_Not_My_Name_140_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "I Love You", artist: "Young Slo-Be", file: "songs/1661592124329992095I_Love_You-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "SexyBack", artist: "Justin Timberlake, Timbaland", file: "songs/1661592143837512005SexyBack-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Be Around Me", artist: "Will Joseph Cook, chloe moriondo", file: "songs/1661592228976163214Be_Around_Me_feat_chloe_moriondo_140_audio.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Be Around Me", artist: "Will Joseph Cook", file: "songs/1661592238822606603Be_Around_Me-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "My Bubble Gum", artist: "Rasheeda", file: "songs/1661593089259821939My_Bubble_Gum-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Genius Universalis", artist: "Enemy", file: "songs/1661593146083641788Genius_Universalis_140_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Ba Ba Ben (Wine & Ben Pt. 2)", artist: "DJ Cheem", file: "songs/1661593399542781884Ba_Ba_Ben_Wine_Ben_Pt_2_140_audio_only_med.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Formosa", artist: "Kaio Viana, MC CJ", file: "songs/1661593421410282917Formosa-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Amor De Una Noche", artist: "Ryan Castro", file: "songs/1661593591661227064Amor_De_Una_Noche-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Hamadzayn Em", artist: "Oksy Avdalyan", file: "songs/1661594703974344673Hamadzayn_Em-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "La La La Li La La La", artist: "Stefan De La Barbulesti", file: "songs/1661594729982394865La_La_La_Li_La_La_La_140_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Edge", artist: "REZZ", file: "songs/1661594943678030262Edge-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Wanna Play?", artist: "The Prophet", file: "songs/1661595218220243274Wanna_Play-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "I Took a Nap", artist: "gunnarolla", file: "songs/1661595234132687716I_Took_a_Nap-140_-_audio_only_medium.m4a", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Bahon Main Chale Ao (Anamika)", artist: "The Bollywood Instrumental Band", file: "songs/16893024.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Lamyati Nazeero Kafi Nazarin", artist: "Waseem Ahmed", file: "songs/1811236497.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "We Fell In Love In October", artist: "Girl In Red", file: "songs/1861248217.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Pal Pal Dil Ke Paas", artist: "Kishore Kumar", file: "songs/1919679927.mp3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Slipping Through My Fingers", artist: "ABBA", file: "songs/20535911.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Those Eyes", artist: "New West", file: "songs/2096157227.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Tere Bina", artist: "Zaeden", file: "songs/2103807.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Ek Ajnabee Haseena Se", artist: "Kishore Kumar", file: "songs/2120701717.mp3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "From The Start", artist: "Laufey", file: "songs/2238153377.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Ek Raat", artist: "Vilen", file: "songs/2238856587.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Tera Hone Laga Hoon", artist: "Pritam", file: "songs/2248463337.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Somewhere Only We Know", artist: "Keane", file: "songs/2317363.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "My Love Mine All Mine", artist: "Mitski", file: "songs/2365569495.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Past Lives", artist: "sapientdream", file: "songs/2369102525.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Yezdi", artist: "Nanku", file: "songs/2400722565.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Choo Lo", artist: "The Local Train", file: "songs/2484339821.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Every Breath You Take", artist: "The Police", file: "songs/2525864.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Tera Mera Hai Pyar", artist: "Amir Ameer, Faheem Abdullah", file: "songs/2552080062.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Yeh Vaada Raha", artist: "Kishore Kumar", file: "songs/2560247.mp3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Aadat", artist: "Atif Aslam", file: "songs/2721180072.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Bheegey Hont", artist: "Kunal Ganjawala", file: "songs/2748347801.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Love Me Not", artist: "Ravyn Lenae", file: "songs/2755315691.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "BIRDS OF A FEATHER", artist: "Billie Eilish", file: "songs/2801558052.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "No One Noticed", artist: "The Marías", file: "songs/2816073752 (1).mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "No One Noticed", artist: "The Marías", file: "songs/2816073752.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "SNAP", artist: "Rosa Linn", file: "songs/2847559612.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Ratiyaan", artist: "Hansika Pareek", file: "songs/2876268552.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Lilith", artist: "Saint Avangeline", file: "songs/2917607351.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Die With A Smile", artist: "Lady Gaga", file: "songs/2947516331.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Tera Hi Rahun", artist: "Gajendra Verma", file: "songs/2957095951.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Chan Kithan", artist: "Ali Sethi", file: "songs/2959238271.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Kanha Hum Toh Loote Hai Tere Pyaar Mai", artist: "Sakshi Choudhary", file: "songs/3065211251.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Put Your Records On", artist: "Corinne Bailey Rae", file: "songs/3119484.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Feel Good Inc.", artist: "Gorillaz", file: "songs/3129407.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Finding Her", artist: "Kushagra", file: "songs/3149280691.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Back To Friends", artist: "Sombr", file: "songs/3151351511.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Golden Brown", artist: "The Stranglers", file: "songs/3152622.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Kehne Lagaa", artist: "Rushil Aswal", file: "songs/3158504791.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Chale Aana", artist: "Armaan Malik", file: "songs/3173722561 (1).mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Chale Aana", artist: "Armaan Malik", file: "songs/3173722561.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Kaise Hua", artist: "Vishal Mishra", file: "songs/3174262761.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Besabriyaan", artist: "Armaan Malik", file: "songs/3180271081.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Ye Tune Kya Kiya", artist: "Javed Bashir", file: "songs/3180482641.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Khud Ko Tere", artist: "Mahalakshmi Iyer", file: "songs/3180578501.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Jee Le Zaraa", artist: "Vishal Dadlani", file: "songs/3180585631.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Saudebazi", artist: "Javed Ali", file: "songs/3180689451.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Main Rahoon Ya Na Rahoon", artist: "Armaan Malik", file: "songs/3183390141.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Banjaara", artist: "Mohammed Irfan", file: "songs/3183420071.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Labon Ko", artist: "K.K.", file: "songs/3185245781.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Dhoom Taana", artist: "Vishal-Shekhar", file: "songs/3185317651.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Tum Se Hi", artist: "Pritam", file: "songs/3185543151.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Main Hoon Na", artist: "Sonu Nigam", file: "songs/3192755311.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Shree Hanuman Chalisa", artist: "Hariharan", file: "songs/3201093701.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Paa Liya Hain Pyar Tera", artist: "Udit Narayan", file: "songs/3201910541.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Ranjheya Ve", artist: "Zain Zohaib", file: "songs/3216475011.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Koi Fariyaad", artist: "Jagjit Singh", file: "songs/3217186581.mp3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Deslocado", artist: "Napa", file: "songs/3266585161.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Jeene Laga Hoon", artist: "Atif Aslam, Shreya Ghoshal", file: "songs/3337176531.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Lover Girl", artist: "Laufey", file: "songs/3401301081.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Golden", artist: "HUNTR, X", file: "songs/3412534581.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Sofia", artist: "Clairo", file: "songs/3420418861.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Humsafar", artist: "Akhil Sachdeva", file: "songs/3424994521.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Rukh Se Parda", artist: "Owais Raza Qadri", file: "songs/3526615691.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "I Thought I Saw Your Face Today", artist: "She, Him", file: "songs/3551769431.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Khat", artist: "Navjot Ahuja", file: "songs/3668549692.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Rakhlo Tum Chupaake", artist: "Arpit Bala", file: "songs/3707330502.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Where'd All the Time Go?", artist: "Dr. Dog", file: "songs/378113071.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Meherbaan", artist: "Ash King, Shilpa Rao, Shekhar Ravjiani", file: "songs/3818173721.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Jugraafiya", artist: "Udit Narayan, Shreya Ghoshal", file: "songs/3831742721.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Vaaroon", artist: "Anand Bhaskar", file: "songs/3848165591.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Phir bhi aas lagi hai 2.0", artist: "Sagar Kalra", file: "songs/3886797131.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Kya Hua Tera Wada", artist: "Mohammed Rafi", file: "songs/3886850381.mp3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Itna Na Mujhse Tu Pyar Badha", artist: "Talat Mahmood", file: "songs/426218662.mp3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Jadu Hai Nasha Hai", artist: "Shreya Ghoshal", file: "songs/451798752.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Beqarar Karke Hamen Yun Na Jaiye", artist: "Hemant Kumar", file: "songs/451871602.mp3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Lag Ja Gale Se Phir", artist: "Lata Mangeshkar", file: "songs/452269472.mp3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Maula Mere Maula", artist: "Roop Kumar Rathod", file: "songs/453458762.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Billie Jean", artist: "Michael Jackson", file: "songs/4603408.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "O Mere Dil Ke Chain", artist: "Sanam", file: "songs/470734262.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Hungama Ho Gaya", artist: "Asha Bhosle", file: "songs/474392592.mp3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Chand Si Mehbooba Ho Meri", artist: "Mukesh", file: "songs/482504722.mp3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Lovely", artist: "Billie Eilish", file: "songs/486928932.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Kisi Ki Muskurahaton Se", artist: "Mukesh", file: "songs/492285862.mp3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Ajib Dastan Hai Yeh", artist: "Lata Mangeshkar", file: "songs/492288512.mp3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "The Night We Met", artist: "Lord Huron", file: "songs/499988832.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Heaven Knows I'm Miserable Now", artist: "The Smiths", file: "songs/5093607.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Washing Machine Heart", artist: "Mitski", file: "songs/526540852.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Lights Are On", artist: "Tom Rosenthal", file: "songs/546767842.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Kalam Eneih", artist: "Sherine", file: "songs/573699462.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Fairytale", artist: "Alexander Rybak", file: "songs/578980732.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "It's You", artist: "Ali Gatie", file: "songs/694298872.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Ishq Hua Kaise Hua", artist: "Amir Ameer, Faheem Abdullah", file: "songs/69608172.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Forever Young", artist: "Alphaville", file: "songs/698274.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "No. 1 Party Anthem", artist: "Arctic Monkeys", file: "songs/70322136.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "I Wanna Be Yours", artist: "Arctic Monkeys", file: "songs/70322142.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Runaway", artist: "Kanye West", file: "songs/7667065.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Cry", artist: "Cigarettes After Sex", file: "songs/781948852.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Falling In Love", artist: "Cigarettes After Sex", file: "songs/781948862 (1).mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Falling In Love", artist: "Cigarettes After Sex", file: "songs/781948862 (2).mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Falling In Love", artist: "Cigarettes After Sex", file: "songs/781948862.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Everything I Wanted", artist: "Billie Eilish", file: "songs/803010392.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Breathe", artist: "Olly Alexander (Years & Years)", file: "songs/81364090.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Skyfall", artist: "Adele", file: "songs/82715364.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Falling", artist: "Harry Styles", file: "songs/830336962.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Death Bed", artist: "Powfu", file: "songs/871124582.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Tu Zaroori", artist: "Aparshakti Khurana, Savi Kahlon", file: "songs/89860523.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "The Nights", artist: "Avicii", file: "songs/90632837.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "See You Again", artist: "Wiz Khalifa", file: "songs/95813354.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Tose Naina Lage", artist: "Shilpa Rao", file: "songs/962609882.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Confidence", artist: "Kim", file: "songs/96485040.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Chalana", artist: "Sergio Reis", file: "songs/989007152.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Abhi Mujh Mein Kahin", artist: "Ajay-Atul, Sonu Nigam", file: "songs/Abhi Mujh Mein Kahin (PenduJatt.Com.Se).mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Abhi Na Jao Chhod Kar", artist: "Sadhana Sargam, Mohammed Salamat", file: "songs/Abhi Na Jao Chhod Kar (PenduJatt.Com.Se).mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Pal Pal", artist: "Afusic, Talwiinder", file: "songs/Afusic - Pal Pal (Official Music Video) Prod. @AliSoomroMusic - 128.MP3", art: "IMAGES/logoo.png", folder: "Talwiinder", durationFormatted: "" },
+    { title: "Agg Banke", artist: "Talwiinder", file: "songs/Agg Banke - Talwiinder (DJJOhAL.Com) (1).mp3", art: "IMAGES/logoo.png", folder: "Talwiinder", durationFormatted: "" },
+    { title: "Ae Dil Hai Mushkil", artist: "Pritam, Arijit Singh", file: "songs/Arijit/Ae Dil Hai Mushkil Title Track - PagalNew - Pritam, Arijit Singh - Copy.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Agar Tum Saath Ho", artist: "Alka Yagnik, Arijit Singh", file: "songs/Arijit/Agar Tum Saath Ho - PagalNew - Alka Yagnik, Arijit Singh - Copy.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Apna Bana Le", artist: "Arijit Singh, Sachin-Jigar", file: "songs/Arijit/Apna Bana Le - PagalNew - Arijit Singh, Sachin-Jigar - Copy.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Raabta", artist: "Arijit Singh", file: "songs/Arijit/Arijit Singh - Raabta (Lyrics Video) Agent Vinod  Saif Ali Khan , Kareena Kapoor Khan. - PluginVibes - Copy.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Bulleya", artist: "Pritam, Amit Mishra, Shilpa Rao", file: "songs/Arijit/Bulleya - PagalNew - Pritam, Amit Mishra, Shilpa Rao - Copy.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Chaleya", artist: "Arijit Singh, Shilpa Rao", file: "songs/Arijit/Chaleya - PagalNew - Arijit Singh, Shilpa Rao - Copy.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Dekha Hazaro Dafaa", artist: "Arijit Singh, Palak Muchhal", file: "songs/Arijit/Dekha Hazaro Dafaa - PagalNew - Arijit Singh, Palak Muchhal - Copy.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Gehra Hua", artist: "Arijit Singh, Armaan Khan", file: "songs/Arijit/Gehra Hua - PagalNew - Arijit Singh, Armaan Khan - Copy.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Hawayein", artist: "Pritam, Arijit Singh", file: "songs/Arijit/Hawayein - PagalNew - Pritam, Arijit Singh - Copy.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Ilahi", artist: "Pritam, Arijit Singh", file: "songs/Arijit/Ilahi - PagalNew - Pritam, Arijit Singh - Copy.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Kalank", artist: "Arijit Singh, Shilpa Rao", file: "songs/Arijit/Kalank (Bonus Track) - PagalNew - Arijit Singh, Shilpa Rao - Copy.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Khairiyat", artist: "Arijit Singh", file: "songs/Arijit/Khairiyat (Bonus Track) - PagalNew - Arijit Singh - Copy.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Mast Magan", artist: "Shankar-Ehsaan-Loy, Arijit Singh, Chinmayi Sripada", file: "songs/Arijit/Mast Magan - PagalNew - Shankar-Ehsaan-Loy, Arijit Singh, Chinmayi Sripada - Copy.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Qaafirana", artist: "Arijit Singh, Nikhita Gandhi", file: "songs/Arijit/Qaafirana - PagalNew - Arijit Singh, Nikhita Gandhi - Copy.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Sanam Re", artist: "Arijit Singh, Mithoon", file: "songs/Arijit/Sanam Re - PagalNew - Arijit Singh, Mithoon - Copy.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Satranga", artist: "Arijit Singh, Shreyas Puranik", file: "songs/Arijit/Satranga - PagalNew - Arijit Singh, Shreyas Puranik - Copy.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Shayad", artist: "Pritam, Arijit Singh", file: "songs/Arijit/Shayad - PagalNew - Pritam, Arijit Singh - Copy.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Tera Yaar Hoon Main", artist: "Arijit Singh", file: "songs/Arijit/Tera Yaar Hoon Main - PagalNew - Arijit Singh - Copy.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Tujhe Kitna Chahne Lage", artist: "Arijit Singh, Mithoon", file: "songs/Arijit/Tujhe Kitna Chahne Lage - PagalNew - Arijit Singh, Mithoon - Copy.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Tum Hi Ho", artist: "Arijit Singh", file: "songs/Arijit/Tum Hi Ho - PagalNew - Arijit Singh - Copy.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Zaalima", artist: "Arijit Singh, Harshdeep Kaur", file: "songs/Arijit/Zaalima - PagalNew - Arijit Singh, Harshdeep Kaur - Copy.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
+    { title: "Badan Pe Sitare Lapete Huye", artist: "Mohammad Rafi", file: "songs/Badan Pe Sitare Lapete Huye (Remastered)  Mohammad Rafi  Prince  Sargam - 128.MP3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Banjaare", artist: "Bairan", file: "songs/Banjaare - Bairan (Lyrics) - 128.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Bargad", artist: "Surf, Arpit Bala", file: "songs/Bargad - Surf X Arpit Bala  Lyrics - 128.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Bheegi Bheegi Raaton Mein", artist: "Adnan Sami", file: "songs/Bheegi Bheegi Raaton Mein (Cover)  Rajesh Khanna  Ajnabee  Sargam - 128.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Boyfriend", artist: "Dino James, Sez on the Beat, Bluish music", file: "songs/Boyfriend (PenduJatt.Com.Se).mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Havana", artist: "Camila Cabello, Young Thug", file: "songs/Camila_Cabello_Havana_Audio_ft._Young_Thug_HCjNJDNzw8Y_140.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Chala Jata Hoon", artist: "Kishore Kumar", file: "songs/Chala Jata Hoon (HD)  Mere Jeevan Saathi (1972)  Rajesh Khanna, Tanuja  Kishore Kumar  RD Burman - 128.MP3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Attention", artist: "Charlie Puth", file: "songs/Charlie_Puth_Attention_Live_on_the_Honda_Stage_at_the_i_2_uJxAtiQgM.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Chithi Na Koi Sandesh", artist: "Hero And king Of Jhankar Studio, Jagjit Singh", file: "songs/Chithi_Na_Koi_Sandesh_Super_Jhankar_Beats_PenduJatt_Com_Se.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Chura Liya Hai Tumne", artist: "Asha Bhosle, Mohammed Rafi", file: "songs/Chura Liya Hai Tumne  Nostalgic 1970s Style Cover  Asha Bhosle & Mohammed Rafi   Surgana - 128.MP3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Chura Liya Hai Tumne Jo Dil Ko", artist: "Asha Bhosle, Mohammed Rafi", file: "songs/Chura Liya Hai Tumne Jo Dil Ko  Lyrical  Zeenat Aman  Asha Bhosle  Mohammed Rafi  R. D. Burman - 128.MP3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Chura Liya Hai Tumne Jo Dil Ko", artist: "Asha Bhosle, Mohammed Rafi", file: "songs/Chura Liya Hai Tumne Jo Dil Ko  Lyrical  Zeenat Aman  Asha Bhosle - 128.MP3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Dekha Yeh Khwab Toh", artist: "Lata Mangeshkar, Kishore Kumar", file: "songs/Dekha Ye Khwab Toh Silsila – Khwabon Se Bhara Old Bollywood Song - 128.MP3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Dhundhala", artist: "Yashraj, Talwiinder", file: "songs/Dhundhala - Yashraj & Talwiinder (DJJOhAL.Com) (1).mp3", art: "IMAGES/logoo.png", folder: "Talwiinder", durationFormatted: "" },
+    { title: "Dil Lena Khel", artist: "Dino James, R. D. Burman, Bluish music", file: "songs/Dil Lena Khel (PenduJatt.Com.Se).mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Dil Ye Pukare", artist: "Lata Mangeshkar", file: "songs/Dil Ye Pukare  Old Hindi Romantic Song  Heart Touching 60s-70s Vibe Love Song - 128.MP3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Ek Ajnabee Haseena Se", artist: "Kishore Kumar", file: "songs/Ek Ajnabee Haseena Se – Lofi Rap Rework  Adhoori Mulakaat  Rajesh Khanna Retro Vibes - 128.MP3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Memories", artist: "Maroon 5", file: "songs/english_hits/Maroon 5 Memories Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Dandelions", artist: "Ruth B.", file: "songs/english_hits/Ruth B.Dandelions Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Closer", artist: "The Chainsmokers, Halsey", file: "songs/english_hits/The Chainsmokers Closer Lyrics ft.Halsey.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
+    { title: "Gaani", artist: "Talwiinder", file: "songs/Gaani - Talwiinder (DJJOhAL.Com) (1).mp3", art: "IMAGES/logoo.png", folder: "Talwiinder", durationFormatted: "" },
+    { title: "Gallan 4", artist: "Talwiinder", file: "songs/Gallan 4 - Talwiinder (DJJOhAL.Com) (1).mp3", art: "IMAGES/logoo.png", folder: "Talwiinder", durationFormatted: "" },
+    { title: "Haseen", artist: "Talwiinder", file: "songs/Haseen - Talwiinder (DJJOhAL.Com) (1).mp3", art: "IMAGES/logoo.png", folder: "Talwiinder", durationFormatted: "" },
+    { title: "Haseen", artist: "Talwiinder", file: "songs/HASEEN - TALWIINDER, .mp3", art: "IMAGES/logoo.png", folder: "Talwiinder", durationFormatted: "" },
+    { title: "Heer", artist: "Talwiinder", file: "songs/Heer (Afro Radio Edit) - Talwiinder (DJJOhAL.Com) (1).mp3", art: "IMAGES/logoo.png", folder: "Talwiinder", durationFormatted: "" },
+    { title: "Dil Se Dil", artist: "Shashwat Singh", file: "songs/HINDI HITS/Dil Se Dil - Official Music Video  Sita Ramam  Vishal Chandrashekhar  Shashwat Singh  Mandar C. - Sony Music India.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Ehsaas", artist: "Faheem Abdullah", file: "songs/HINDI HITS/Ehsaas (Lyric Video) Faheem Abdullah  Vaibhav Pani  Hyder Dar - VYRLOriginals.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Ishq", artist: "Amir Ameer, Faheem Abdullah", file: "songs/HINDI HITS/Ishq Official Lyrical Video I Amir Ameer  Faheem Abdullah  Rauhan Malik I Love Song 2024 - Artiste First.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Tera Rastaa Chhodoon Na", artist: "Amaal Mallik, Shalmali Kholgade", file: "songs/HINDI HITS/Tera Rastaa Chhodoon Na Song Chennai Express  Shahrukh Khan, Deepika Padukone - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Timi Nacha Na", artist: "Wangden Sherpa", file: "songs/HINDI HITS/Wangden Sherpa - Timi Nacha Na [Official Lyric Visualizer] Prod. Frwny - Wangden Sherpa.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Hum Bhool Gaye Har Baat", artist: "Lata Mangeshkar", file: "songs/Hum Bhool Gaye Har Baat (PenduJatt.Com.Se).mp3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Itna Na Mujhse Tu Pyar Badha", artist: "Lata Mangeshkar, Talat Mahmood", file: "songs/Itna Na Mujhse Tu Pyar Badha  Chhaya  Lata Mangeshkar, Talat Mahmood, Sunil Dutt, Asha Parekh - 128.MP3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Jo Tu Nahi", artist: "K.K.", file: "songs/Jo Tu Nahi To Aisa Main Chehra Maand Slowed and Reverb - 128.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Kahani Suno 2.0", artist: "Kaifi Khalil", file: "songs/Kaifi Khalil - Kahani Suno 2.0 [Official Music Video] - 128.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Kanha", artist: "Rekha Bhardwaj, Shaarib Sabri, Toshi Sabri", file: "songs/Kanha (PenduJatt.Com.Se).mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Khayaal", artist: "Talwiinder", file: "songs/Khayaal - Talwiinder (DJJOhAL.Com) (1).mp3", art: "IMAGES/logoo.png", folder: "Talwiinder", durationFormatted: "" },
+    { title: "Mere Sapno Ki Rani", artist: "Kishore Kumar", file: "songs/Kishore Kumar  Mere Sapno Ki Rani Kab Aayegi Tu  Rajesh Khanna  Sharmila Tagore - 128.MP3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Kisi Ki Muskurahaton Pe Ho Nisar", artist: "Mukesh", file: "songs/Kisi Ki Muskurahaton Pe Ho Nisar  Raj Kapoor  Anari  Mukesh  Evergreen Hindi Songs HD - 128.MP3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Kun Faya Kun", artist: "A.R. Rahman, Javed Ali, Mohit Chauhan", file: "songs/Kun Faya Kun (PenduJatt.Com.Se).mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Kya Hua Tera Wada", artist: "Mohammed Rafi", file: "songs/Kya Hua Tera Wada-Lyrical  क्या हुआ तेरा वादा  Hum Kisise kum nahi  Mohammed Rafi  Rishi Kapoor - 128.MP3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Kya Khoob Lagti Ho", artist: "Mukesh, Kanchan", file: "songs/Kya Khoob Lagti Ho (Cover)  Mukesh and Kanchan  Dharmatma  Feroz Khan  Sargam - 128.MP3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "La La Li La La La", artist: "Aca Xoca", file: "songs/lala_li_lala_song_aca_xoca_la_la_la_li_la_la_la_song_ne_TcjB0sWhvxg.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Likhe Jo Khat Tujhe", artist: "Mohammed Rafi", file: "songs/Likhe Jo Khat Tujhe  Old is Gold Romantic Hindi Song  60s–70s Melodious Bollywood Classic - 128.MP3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Maai Teri Yaad", artist: "Swanand Kirkire", file: "songs/Maai Teri Yaad (PenduJatt.Com.Se).mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "MERE MEHBOOB QAYAMAT HOGI Originalमेरे मेहबूब क़यामत Kishore Kumar Mr X In Bombay", artist: "Kishore Kumar", file: "songs/MERE MEHBOOB QAYAMAT HOGI Original Full Song 4K  मेरे मेहबूब क़यामत  Kishore Kumar  Mr X In Bombay - 128.MP3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Mere Samne Wali Khidki Mein", artist: "Kishore Kumar", file: "songs/Mere Samne Wali Khidki Mein - Padosan - Saira Banu, Sunil Dutt & Kishore Kumar - Old Hindi Songs - 128.MP3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Meri Meheboob", artist: "Mohammed Rafi", file: "songs/Meri Meheboob  Timeless Disco  Reimagined - 128.MP3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Nakhre", artist: "Talwiinder", file: "songs/Nakhre - Talwiinder (DJJOhAL.Com) (1).mp3", art: "IMAGES/logoo.png", folder: "Talwiinder", durationFormatted: "" },
+    { title: "O Mere Dil Ke Chain", artist: "Kishore Kumar", file: "songs/O Mere Dil Ke Chain – Kishore Kumar  Evergreen Romantic Classic - 128.MP3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "O Mere Saajan", artist: "Ajay-Atul, Shweta Mohan, Javed Ali", file: "songs/O Mere Saajan  [From Ranabaali] (PenduJatt.Com.Se).mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Paheli", artist: "Anurag Saikia, Raghav Chaitanya", file: "songs/Paheli (PenduJatt.Com.Se).mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Pal Pal", artist: "Afusic, Talwiinder", file: "songs/Pal Pal - Talwiinder  .mp3", art: "IMAGES/logoo.png", folder: "Talwiinder", durationFormatted: "" },
+    { title: "Pal Pal Dil Ke Paas", artist: "Kishore Kumar", file: "songs/Pal Pal Dil Ke Paas 💖  Kishore Kumar  Evergreen Hindi Love Song  Full Lyrics - 128.MP3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Pal Pal", artist: "Afusic, Talwiinder", file: "songs/Pal Pal(KoshalWorld.Com).mp3", art: "IMAGES/logoo.png", folder: "Talwiinder", durationFormatted: "" },
+    { title: "Panchii", artist: "Talwiinder", file: "songs/Panchii - Talwiinder (DJJOhAL.Com) (1).mp3", art: "IMAGES/logoo.png", folder: "Talwiinder", durationFormatted: "" },
+    { title: "Panchii", artist: "Talwiinder", file: "songs/Panchii - Talwiinder (DJJOhAL.Com).mp3", art: "IMAGES/logoo.png", folder: "Talwiinder", durationFormatted: "" },
+    { title: "Pyari Amaanat", artist: "Arpit Bala", file: "songs/PYARI AMAANAT - Arpit Bala, @aodgotit  ,  @angadsvirk  (Official Music Video) - 128.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Rai Rai Raa Raa - Hindi", artist: "Raqueeb Alam, A.R. Rahman, Nakash Aziz", file: "songs/Rai Rai Raa Raa  - Hindi (PenduJatt.Com.Se) (1).mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Rai Rai Raa Raa - Hindi", artist: "Raqueeb Alam, A.R. Rahman, Nakash Aziz", file: "songs/Rai Rai Raa Raa  - Hindi (PenduJatt.Com.Se).mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Rakhlo Tum Chupaake", artist: "Arpit Bala", file: "songs/Rakhlo Tum Chupaake - 128.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Rani", artist: "Dino James", file: "songs/Rani (PenduJatt.Com.Se).mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Saiyaara", artist: "Kishore Kumar", file: "songs/Saiyaara 1980 Ft  Kishore Kumar full song Old version Old is Gold with a New Voice! - 128.MP3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Sajde", artist: "Faheem Abdullah", file: "songs/Sajde - Official Music Video  Faheem Abdullah  Huzaif Nazar - 128.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Sufr", artist: "Arpit Bala, Toorjo Dey", file: "songs/Sufr - Bargad (Lyrics) ft. Arpit Bala, toorjo dey - 256.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Sunhari Kirne", artist: "Talwiinder", file: "songs/Sunhari Kirne (PenduJatt.Com.Se).mp3", art: "IMAGES/logoo.png", folder: "Talwiinder", durationFormatted: "" },
+    { title: "Sunn", artist: "Dino James, Sanah Moidutty", file: "songs/Sunn (PenduJatt.Com.Se).mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Nasha", artist: "Talwiinder", file: "songs/Talwiinder - NASHA .mp3", art: "IMAGES/logoo.png", folder: "Talwiinder", durationFormatted: "" },
+    { title: "Wishes", artist: "Talwiinder", file: "songs/Talwinder - Wishes (Remake) - 128.MP3", art: "IMAGES/logoo.png", folder: "Talwiinder", durationFormatted: "" },
+    { title: "Feeling", artist: "Tamanna Afros", file: "songs/Tamanna Afros - Feeling.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Tere Khayalon Mein Dil Kho Gya", artist: "Lata Mangeshkar", file: "songs/Tere Khayalon Mein Dil Kho Gya   Old Hindi Romantic Song  Video 60s-70s Vibe Love Song - 128.MP3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Tu Hai Kahan", artist: "AUR", file: "songs/Tu Hai Kahan by AUR  تو ہے کہاں (Official Music Video) - 128.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Wishes", artist: "Talwiinder", file: "songs/wishes - Talwiinder .mp3", art: "IMAGES/logoo.png", folder: "Talwiinder", durationFormatted: "" },
+    { title: "Yeh Ratein Yeh Mausam", artist: "Kishore Kumar, Asha Bhosle", file: "songs/Yeh Ratein Yeh Mausam  Kishore & Asha's EVERGREEN ROMANCE  Old Hindi Song 🎶 - 128.MP3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+    { title: "Yeh Vaada Raha", artist: "Kishore Kumar, Asha Bhosle", file: "songs/Yeh Vaada Raha (Lyrical Video)  R. D. Burman  Kishore Kumar  Asha Bhosle  Rishi Kapoor - 128.MP3", art: "IMAGES/logoo.png", folder: "Retro Classics", durationFormatted: "" },
+
 ];
+
+function dedupeSongsKeepFirst() {
+    const seen = new Set();
+    const unique = [];
+    let removed = 0;
+
+    const normalize = (v) => String(v || '').toLowerCase().replace(/\s+/g, ' ').trim();
+
+    for (const song of songs) {
+        const key = `${normalize(song.title)}|${normalize(song.artist)}`;
+        if (seen.has(key)) {
+            removed++;
+            continue;
+        }
+        seen.add(key);
+        unique.push(song);
+    }
+
+    if (removed > 0) {
+        songs.length = 0;
+        songs.push(...unique);
+        console.log(`🧹 Removed ${removed} duplicate songs and kept first/original entries.`);
+    }
+}
+
+dedupeSongsKeepFirst();
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ─── STRICT DATA-DRIVEN APPROACH: SANITIZATION + PERSISTENCE ───────────────
@@ -449,6 +1021,9 @@ songs.forEach(song => {
 });
 // ───────────────────────────────────────────────────────────────────────────
 
+const talwiinderSongs = songs.filter(s => s.folder === 'Talwiinder' || (s.artist && s.artist.toLowerCase().includes('talwiinder')));
+const retroClassicsSongs = songs.filter(s => s.folder === 'Retro Classics');
+
 const arijitSongs = songs.filter(song => song.folder === 'Arijit Singh');
 const karanSongs = songs.filter(song => song.folder === 'Karan Aujla');
 const globalHits = songs.filter(song => song.folder === 'Global Hits');
@@ -457,59 +1032,59 @@ const anuvJainSongs = songs.filter(song => song.artist && song.artist.toLowerCas
 const weekndSongs = songs.filter(song => song.artist && (song.artist.toLowerCase().includes('weeknd') || song.artist.toLowerCase().includes('weekend')));
 
 // ─── EMOTION / MOOD PLAYLISTS ─────────────────────────────────────────────
-const sadSongTitles = ['Tum Hi Ho','Agar Tum Saath Ho','Kalank','Khairiyat','Shayad','Tujhe Kitna Chahne Lage','Haareya','Sanam Re','Lovely','Let Her Go','Let Me Down Slowly','Dandelions','Memories','Somewhere Only We Know','Blue','Apocalypse','End Of Beginning','Ordinary','Infinity','Heat Waves','Mockingbird','A Thousand Years','Night Changes','Aahista','Jhol','Kahaan Ho Tum','Co2','Labon Ko','Abhi Kuch Dino Se','Mere Bina','Dooron Dooron','Khoya Khoya','Savera','Nadaaniyan','Baarishein','Jhim Jhim Aune Aakhale','Timro Pratiksa','Kasari','Call Out My Name','Afsos','Heartless','Nothing Without You','Baarishein','Save Your Tears','A Lonely Night'];
+const sadSongTitles = ['Tum Hi Ho','Agar Tum Saath Ho','Kalank','Khairiyat','Shayad','Tujhe Kitna Chahne Lage','Haareya','Sanam Re','Lovely','Let Her Go','Let Me Down Slowly','Dandelions','Memories','Somewhere Only We Know','Blue','Apocalypse','End Of Beginning','Ordinary','Infinity','Heat Waves','Mockingbird','A Thousand Years','Night Changes','Aahista','Jhol','Kahaan Ho Tum','Co2','Labon Ko','Abhi Kuch Dino Se','Mere Bina','Dooron Dooron','Khoya Khoya','Savera','Nadaaniyan','Baarishein','Jhim Jhim Aune Aakhale','Timro Pratiksa','Kasari','Call Out My Name','Afsos','Heartless','Nothing Without You','Save Your Tears','A Lonely Night','Sunsetz','Past Lives','you broke me first','death bed','The Night We Met','Space Song','My Love Mine All Mine','ocean eyes','everything i wanted','BIRDS OF A FEATHER','Falling In Love','Cold/mess','Haseen','Panchii','Khayaal','Gallan 4'];
 const sadSongs = songs.filter(s => sadSongTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
 
-const loveSongTitles = ['Hawayein','Tum Hi Ho','Dekha Hazaro Dafaa','Enna Sona','Raabta','Zaalima','Humsafar','Ishq Bulaava','A Thousand Years','Perfect','Love Story','Lover','Señorita','Stuck with U','Love Me Like You Do','Love Me Harder','Until I Found You','At My Worst','I Like Me Better','Make You Mine','I Think They Call This Love','Double Take','Dandelions','Pehli Nazar Mein','Jeene Laga Hoon','Rang Jo Lagyo','Be Intehaan','Tu Chahiye','Jaan Ban Gaye','Chaar Kadam','Dil Se Dil','Meri Banogi Kya','Ranjheya Ve','Tere Bina','Ve Haaniyaan','Zehnaseeb','Manchala','Dariya','Iraaday','Girls Like You','Cheri Cheri Lady','I Like You So Much','You Belong To Me','Ehsaas','Jo Tum Mere Ho','Arz Kiya Hai','Aaye Haaye','Save Your Tears'];
+const loveSongTitles = ['Hawayein','Tum Hi Ho','Dekha Hazaro Dafaa','Enna Sona','Raabta','Zaalima','Humsafar','Ishq Bulaava','A Thousand Years','Perfect','Love Story','Lover','Señorita','Stuck with U','Love Me Like You Do','Love Me Harder','Until I Found You','At My Worst','I Like Me Better','Make You Mine','I Think They Call This Love','Double Take','Dandelions','Pehli Nazar Mein','Jeene Laga Hoon','Rang Jo Lagyo','Be Intehaan','Tu Chahiye','Jaan Ban Gaye','Chaar Kadam','Dil Se Dil','Meri Banogi Kya','Ranjheya Ve','Tere Bina','Ve Haaniyaan','Zehnaseeb','Manchala','Dariya','Iraaday','Girls Like You','Cheri Cheri Lady','I Like You So Much','You Belong To Me','Ehsaas','Jo Tum Mere Ho','Arz Kiya Hai','Aaye Haaye','Save Your Tears','Die With A Smile','Easy On Me','From The Start','It\'s You','Aadat','Kaise Hua','Besabriyaan','Chan Kithan','Heer','Pal Pal','wishes','Gaani','Nakhre','Dhundhala'];
 const loveSongs = songs.filter(s => loveSongTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
 
-const energeticSongTitles = ['Satranga','Chaleya','Believer','Thunder','Shape of You','Gangnam Style','Unstoppable','Pink Venom','Animals','Beggin','Hall of Fame','Ride It','Espresso','Old Town Road','Attention','Under The Influence','Unholy','52 Bars','Antidote','Winning Speech','MF Gabhru','On Top','I Really Do','Mf Gabhru','Starboy','Feel Good Inc.','Maria','Paper Rings','Darkside','Bella Ciao','I See Red','Harleys In Hawaii','Criminal','100 Million','48 Rhymes','5-7','Courtside','Heartless','Popular','Dominance','Tell Me','Aaye Haaye'];
+const energeticSongTitles = ['Satranga','Chaleya','Believer','Thunder','Shape of You','Gangnam Style','Unstoppable','Pink Venom','Animals','Beggin','Hall of Fame','Ride It','Espresso','Old Town Road','Attention','Under The Influence','Unholy','52 Bars','Antidote','Winning Speech','MF Gabhru','On Top','I Really Do','Starboy','Feel Good Inc.','Maria','Paper Rings','Darkside','Bella Ciao','I See Red','Harleys In Hawaii','Criminal','100 Million','48 Rhymes','5-7','Courtside','Heartless','Popular','Dominance','Tell Me','Aaye Haaye','Enemy','About Damn Time','Do It To It','Pump It','Running Up That Hill','SNAP','Face Off','Locked out of Heaven'];
 const energeticSongs = songs.filter(s => energeticSongTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
 
-const chillSongTitles = ['Faded','Alone','Heat Waves','Sweater Weather','505','I Wanna Be Yours','Blue','Apocalypse','Co2','Infinity','Wrap Me In Plastic','Gat','Sailor Song','Shinunoga E-Wa','End Of Beginning','Timeless','Ordinary','A Lonely Night','Alag Aasmaan','Husn','Afsos','Savera','Khwab','Timi Sangai','Timi Nacha Na','Bardali','Sarangi','Gul','Baarishein','Secrets','Reminder','São Paulo','Jo Tum Mere Ho'];
+const chillSongTitles = ['Faded','Alone','Heat Waves','Sweater Weather','505','I Wanna Be Yours','Blue','Apocalypse','Co2','Infinity','Wrap Me In Plastic','Gat','Sailor Song','Shinunoga E-Wa','End Of Beginning','Timeless','Ordinary','A Lonely Night','Alag Aasmaan','Husn','Afsos','Savera','Khwab','Timi Sangai','Timi Nacha Na','Bardali','Sarangi','Gul','Baarishein','Secrets','Reminder','São Paulo','Jo Tum Mere Ho','Space Song','Past Lives','Sunroof','Sofia','Lover Girl','Line Without a Hook','Haseen','Khayaal','NASHA','Pal Pal'];
 const chillSongs = songs.filter(s => chillSongTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
 
-const punjabiSongTitles = ['52 Bars','Admirin You','Antidote','Boyfriend','For A Reason','I Really Do','Mf Gabhru','On Top','Softly','Winning Speech','Ik Kudi','Sachiya Mohabbatan','Ve Haaniyaan','Rang Lageya','Jogi','100 Million','48 Rhymes','5-7','Aaye Haaye','At Peace','Courtside','Tell Me','Dominance'];
+const punjabiSongTitles = ['52 Bars','Admirin You','Antidote','Boyfriend','For A Reason','I Really Do','Mf Gabhru','On Top','Softly','Winning Speech','Ik Kudi','Sachiya Mohabbatan','Ve Haaniyaan','Rang Lageya','Jogi','100 Million','48 Rhymes','5-7','Aaye Haaye','At Peace','Courtside','Tell Me','Dominance','Agg Banke','Gaani','Gallan 4','Haseen','Heer','Khayaal','Nakhre','Panchii','Pal Pal','NASHA','wishes','Dhundhala','HASEEN','Kanha'];
 const punjabiSongs = songs.filter(s => punjabiSongTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
 
-const nightDriveSongTitles = ['Starboy','The Hills','Heartless','Call Out My Name','Die For You','Timeless','São Paulo','Save Your Tears','Save Your Tears (Remix)','Closer','Sweater Weather','505','I Wanna Be Yours','Apocalypse','Heat Waves','Alone','Faded','Darkside','Night Changes','Unholy','Under The Influence','Reminder','One Of The Girls','Popular','I Feel It Coming','In Your Eyes','Nothing Without You','Secrets','A Lonely Night'];
+const nightDriveSongTitles = ['Starboy','The Hills','Heartless','Call Out My Name','Die For You','Timeless','São Paulo','Save Your Tears','Save Your Tears (Remix)','Closer','Sweater Weather','505','I Wanna Be Yours','Apocalypse','Heat Waves','Alone','Faded','Darkside','Night Changes','Unholy','Under The Influence','Reminder','One Of The Girls','Popular','I Feel It Coming','In Your Eyes','Nothing Without You','Secrets','A Lonely Night','Summertime Sadness','The Night We Met','Space Song','Past Lives','Sofia','No. 1 Party Anthem','Maniac','Edge','NASHA'];
 const nightDriveSongs = songs.filter(s => nightDriveSongTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
 
-const feelGoodSongTitles = ['Shape of You','Espresso','Señorita','Sunflower','Stuck with U','As It Was','Stay','Girls Like You','Eenie Meenie','Harleys In Hawaii','Ride It','Positions','Attention','Make You Mine','Some','I Like Me Better','Sapphire','Chaleya','Apna Bana Le','Tera Yaar Hoon Main','Jeene Laga Hoon','Rang Jo Lagyo','Haareya','Die With A Smile','Feel Good Inc.','Hall of Fame','Unstoppable'];
+const feelGoodSongTitles = ['Shape of You','Espresso','Señorita','Sunflower','Stuck with U','As It Was','Stay','Girls Like You','Eenie Meenie','Harleys In Hawaii','Ride It','Positions','Attention','Make You Mine','Some','I Like Me Better','Sapphire','Chaleya','Apna Bana Le','Tera Yaar Hoon Main','Jeene Laga Hoon','Rang Jo Lagyo','Haareya','Die With A Smile','Feel Good Inc.','Hall of Fame','Unstoppable','Sunroof','Put Your Records On','From The Start','Lover Girl','Dancin','Running Up That Hill','Locked out of Heaven','Left and Right'];
 const feelGoodSongs = songs.filter(s => feelGoodSongTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
 
-const indieSoulTitles = ['Co2','Kahaan Ho Tum','Dandelions','Until I Found You','Double Take','I Think They Call This Love','At My Worst','Lovers','Blue','Ordinary','Sailor Song','Make You Mine','Somewhere Only We Know','Infinity','Afsos','Alag Aasmaan','Husn','Gul','Nadaaniyan','Khwab','Savera','Jhol','Timi Sangai','Bardali','Sarangi','Meri Banogi Kya','Kasari','Timi Nacha Na','Jo Tum Mere Ho','Baarishein','Arz Kiya Hai'];
+const indieSoulTitles = ['Co2','Kahaan Ho Tum','Dandelions','Until I Found You','Double Take','I Think They Call This Love','At My Worst','Lovers','Blue','Ordinary','Sailor Song','Make You Mine','Somewhere Only We Know','Infinity','Afsos','Alag Aasmaan','Husn','Gul','Nadaaniyan','Khwab','Savera','Jhol','Timi Sangai','Bardali','Sarangi','Meri Banogi Kya','Kasari','Timi Nacha Na','Jo Tum Mere Ho','Baarishein','Arz Kiya Hai','Choo Lo','cold/mess','Ek Raat','Past Lives','Line Without a Hook','The Night We Met','My Love Mine All Mine','Sofia','Lights Are On'];
 const indieSoulSongs = songs.filter(s => indieSoulTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
 
 // ─── NEW MOOD PLAYLISTS ───────────────────────────────────────────────────
 
-const partyAnthemTitles = ['Shape of You','Starboy','Gangnam Style','Old Town Road','Espresso','Beggin','Animals','Pink Venom','Believer','Thunder','Unstoppable','Ride It','Under The Influence','Unholy','Girls Like You','Bella Ciao','Hall of Fame','I See Red','Harleys In Hawaii','Eenie Meenie','52 Bars','MF Gabhru','On Top','100 Million','48 Rhymes','Courtside','Dominance','Aaye Haaye','Attention','Positions','Criminal','Paper Rings','Feel Good Inc.','Maria'];
+const partyAnthemTitles = ['Shape of You','Starboy','Gangnam Style','Old Town Road','Espresso','Beggin','Animals','Pink Venom','Believer','Thunder','Unstoppable','Ride It','Under The Influence','Unholy','Girls Like You','Bella Ciao','Hall of Fame','I See Red','Harleys In Hawaii','Eenie Meenie','52 Bars','MF Gabhru','On Top','100 Million','48 Rhymes','Courtside','Dominance','Aaye Haaye','Attention','Positions','Criminal','Paper Rings','Feel Good Inc.','Maria','Do It To It','About Damn Time','Enemy','Pump It','Locked out of Heaven','Kala Chashma','SexyBack','On The Floor'];
 const partyAnthemSongs = songs.filter(s => partyAnthemTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
 
-const rainyDayTitles = ['Tum Hi Ho','Agar Tum Saath Ho','Baarishein','Hawayein','Khairiyat','Shayad','Tujhe Kitna Chahne Lage','Enna Sona','Sanam Re','Qaafirana','Mast Magan','Haareya','Sukoon Mila','Humsafar','Zehnaseeb','Manchala','Let Her Go','A Thousand Years','Blue','End Of Beginning','Somewhere Only We Know','Afsos','Gul','Husn','Kasari','Jhim Jhim Aune Aakhale','Timro Pratiksa','Timi Sangai','Darkhaast','Mere Bina','Dooron Dooron','Mere Nishan','Jaan Ban Gaye'];
+const rainyDayTitles = ['Tum Hi Ho','Agar Tum Saath Ho','Baarishein','Hawayein','Khairiyat','Shayad','Tujhe Kitna Chahne Lage','Enna Sona','Sanam Re','Qaafirana','Mast Magan','Haareya','Sukoon Mila','Humsafar','Zehnaseeb','Manchala','Let Her Go','A Thousand Years','Blue','End Of Beginning','Somewhere Only We Know','Afsos','Gul','Husn','Kasari','Jhim Jhim Aune Aakhale','Timro Pratiksa','Timi Sangai','Darkhaast','Mere Bina','Dooron Dooron','Mere Nishan','Jaan Ban Gaye','Easy On Me','Space Song','death bed','Past Lives','Sunsetz','Haseen','Khayaal','Panchii'];
 const rainyDaySongs = songs.filter(s => rainyDayTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
 
-const workoutTitles = ['Believer','Thunder','Unstoppable','Animals','Beggin','Hall of Fame','Old Town Road','Gangnam Style','Pink Venom','Shape of You','Darkside','I See Red','Bella Ciao','52 Bars','Antidote','MF Gabhru','On Top','Winning Speech','100 Million','48 Rhymes','5-7','Courtside','Dominance','Heartless','Popular','Espresso','Starboy','Mockingbird','Attention','Under The Influence'];
+const workoutTitles = ['Believer','Thunder','Unstoppable','Animals','Beggin','Hall of Fame','Old Town Road','Gangnam Style','Pink Venom','Shape of You','Darkside','I See Red','Bella Ciao','52 Bars','Antidote','MF Gabhru','On Top','Winning Speech','100 Million','48 Rhymes','5-7','Courtside','Dominance','Heartless','Popular','Espresso','Starboy','Mockingbird','Attention','Under The Influence','Enemy','Face Off','Do It To It','About Damn Time','Pump It','Running Up That Hill','Locked out of Heaven'];
 const workoutSongs = songs.filter(s => workoutTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
 
-const bollywoodClassicTitles = ['Tum Hi Ho','Hawayein','Chaleya','Satranga','Pehli Nazar Mein','Jeene Laga Hoon','Enna Sona','Tum Tak','Chaar Kadam','Tu Chahiye','Be Intehaan','Rang Jo Lagyo','Labon Ko','Raanjhanaa','Zehnaseeb','Manchala','Ishq Bulaava','Humsafar','Zaalima','Bulleya','Ilahi','Sanam Re','Dekha Hazaro Dafaa','Kalank','Qaafirana','Mast Magan','Haareya','Sukoon Mila','Darkhaast','Jaan Ban Gaye','Yeh Fitoor Mera','Meherbaan','Sachiya Mohabbatan','Jab Tak','Maine Khud Ko','Jugraafiya','Sadka Kiya','Tujhko Jo Paaya','Abhi Kuch Dino Se','O Rangrez','Dil Ye Bekarar Kyun Hai','Taare Ginn','Kyon','Jogi'];
+const bollywoodClassicTitles = ['Tum Hi Ho','Hawayein','Chaleya','Satranga','Pehli Nazar Mein','Jeene Laga Hoon','Enna Sona','Tum Tak','Chaar Kadam','Tu Chahiye','Be Intehaan','Rang Jo Lagyo','Labon Ko','Raanjhanaa','Zehnaseeb','Manchala','Ishq Bulaava','Humsafar','Zaalima','Bulleya','Ilahi','Sanam Re','Dekha Hazaro Dafaa','Kalank','Qaafirana','Mast Magan','Haareya','Sukoon Mila','Darkhaast','Jaan Ban Gaye','Yeh Fitoor Mera','Meherbaan','Sachiya Mohabbatan','Jab Tak','Maine Khud Ko','Jugraafiya','Sadka Kiya','Tujhko Jo Paaya','Abhi Kuch Dino Se','O Rangrez','Dil Ye Bekarar Kyun Hai','Taare Ginn','Kyon','Jogi','Kaise Hua','Chale Aana','Main Rahoon','Besabriyaan','Aadat','Bheegi Bheegi','Kanha','Maula Mere Maula','Abhi Mujh Mein','Tum Se Hi','Labon Ko','Koi Fariyaad','Kal Chaudavi Ki Raat'];
 const bollywoodClassicSongs = songs.filter(s => bollywoodClassicTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
 
-const morningCoffeeTitles = ['Perfect','Sapphire','Dandelions','Until I Found You','Make You Mine','I Like Me Better','Double Take','I Think They Call This Love','Espresso','At My Worst','Some','Sailor Song','Blue','Ordinary','Lovers','Jeene Laga Hoon','Tera Yaar Hoon Main','Apna Bana Le','Co2','Savera','Meri Banogi Kya','Tere Bina','Ve Haaniyaan','Rang Lageya','Husn','Gul','Jo Tum Mere Ho','Alag Aasmaan','Timi Nacha Na','Bardali','Sarangi','As It Was','Girls Like You','Stuck with U','Die With A Smile'];
+const morningCoffeeTitles = ['Perfect','Sapphire','Dandelions','Until I Found You','Make You Mine','I Like Me Better','Double Take','I Think They Call This Love','Espresso','At My Worst','Some','Sailor Song','Blue','Ordinary','Lovers','Jeene Laga Hoon','Tera Yaar Hoon Main','Apna Bana Le','Co2','Savera','Meri Banogi Kya','Tere Bina','Ve Haaniyaan','Rang Lageya','Husn','Gul','Jo Tum Mere Ho','Alag Aasmaan','Timi Nacha Na','Bardali','Sarangi','As It Was','Girls Like You','Stuck with U','Die With A Smile','Put Your Records On','Sunroof','From The Start','Lover Girl','Left and Right'];
 const morningCoffeeSongs = songs.filter(s => morningCoffeeTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
 
-const lateNightTitles = ['505','I Wanna Be Yours','Apocalypse','Sweater Weather','A Lonely Night','Heat Waves','Call Out My Name','The Hills','Heartless','Die For You','Timeless','São Paulo','Secrets','Reminder','One Of The Girls','Nothing Without You','Faded','Alone','Wrap Me In Plastic','Gat','Shinunoga E-Wa','End Of Beginning','Darkside','Closer','Save Your Tears','In Your Eyes','I Feel It Coming','Under The Influence','Unholy','Infinity','Love Me Harder','Fantasize','Skyfall'];
+const lateNightTitles = ['505','I Wanna Be Yours','Apocalypse','Sweater Weather','A Lonely Night','Heat Waves','Call Out My Name','The Hills','Heartless','Die For You','Timeless','São Paulo','Secrets','Reminder','One Of The Girls','Nothing Without You','Faded','Alone','Wrap Me In Plastic','Gat','Shinunoga E-Wa','End Of Beginning','Darkside','Closer','Save Your Tears','In Your Eyes','I Feel It Coming','Under The Influence','Unholy','Infinity','Love Me Harder','Fantasize','Skyfall','Summertime Sadness','The Night We Met','Space Song','Past Lives','NASHA','Maniac','Golden Brown','Edge'];
 const lateNightSongs = songs.filter(s => lateNightTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
 
-const danceFloorTitles = ['Shape of You','Señorita','Stay','Closer','Espresso','Positions','Harleys In Hawaii','Eenie Meenie','Girls Like You','Ride It','Old Town Road','Attention','Sunflower','Pink Venom','Animals','Gangnam Style','Beggin','Maria','Bella Ciao','Paper Rings','Criminal','Under The Influence','Unholy','Chaleya','Satranga','As It Was','Stuck with U','Feel Good Inc.','Some','100 Million','Aaye Haaye','Dominance','5-7','Courtside','Die With A Smile'];
+const danceFloorTitles = ['Shape of You','Señorita','Stay','Closer','Espresso','Positions','Harleys In Hawaii','Eenie Meenie','Girls Like You','Ride It','Old Town Road','Attention','Sunflower','Pink Venom','Animals','Gangnam Style','Beggin','Maria','Bella Ciao','Paper Rings','Criminal','Under The Influence','Unholy','Chaleya','Satranga','As It Was','Stuck with U','Feel Good Inc.','Some','100 Million','Aaye Haaye','Dominance','5-7','Courtside','Die With A Smile','Dancin','Do It To It','On The Floor','Kala Chashma','SexyBack','Pump It','Locked out of Heaven'];
 const danceFloorSongs = songs.filter(s => danceFloorTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
 
-const rockAltTitles = ['Believer','Thunder','505','I Wanna Be Yours','Sweater Weather','Heat Waves','Mockingbird','Hall of Fame','Darkside','I See Red','Feel Good Inc.','End Of Beginning','Apocalypse','Unstoppable','Faded','Alone','Skyfall','Bella Ciao','Starboy','Heartless','Popular'];
+const rockAltTitles = ['Believer','Thunder','505','I Wanna Be Yours','Sweater Weather','Heat Waves','Mockingbird','Hall of Fame','Darkside','I See Red','Feel Good Inc.','End Of Beginning','Apocalypse','Unstoppable','Faded','Alone','Skyfall','Bella Ciao','Starboy','Heartless','Popular','Enemy','Running Up That Hill','No. 1 Party Anthem','Let Down','Heaven Knows','Golden Brown','Every Breath You Take','Runaway'];
 const rockAltSongs = songs.filter(s => rockAltTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
 
 // ─── NEW GENRE PLAYLISTS ──────────────────────────────────────────────────
 
-const kpopAsianTitles = ['Pink Venom','Maria','Some','Gangnam Style','Shinunoga E-Wa','One Of The Girls','I Like You So Much','Gat'];
+const kpopAsianTitles = ['Pink Venom','Maria','Some','Gangnam Style','Shinunoga E-Wa','One Of The Girls','I Like You So Much','Gat','Left and Right','DARARI','NAM DANG NAM SOM'];
 const kpopAsianSongs = songs.filter(s => kpopAsianTitles.some(t => s.title.toLowerCase().includes(t.toLowerCase())));
 
 // ─── NEW ARTIST PLAYLISTS ─────────────────────────────────────────────────
@@ -520,17 +1095,66 @@ const charliePuthSongs = songs.filter(s => s.artist && s.artist.toLowerCase().in
 const arianaGrandeSongs = songs.filter(s => s.artist && s.artist.toLowerCase().includes('ariana grande'));
 const taylorSwiftSongs = songs.filter(s => s.artist && s.artist.toLowerCase().includes('taylor swift'));
 const mohitChauhanSongs = songs.filter(s => s.artist && s.artist.toLowerCase().includes('mohit chauhan'));
+const arpitBalaSongs = songs.filter(s => s.artist && s.artist.toLowerCase().includes('arpit bala'));
+
+const PLAY_COUNTS_KEY = 'ivory_song_play_counts';
+const songPlayCounts = (() => {
+    try {
+        return JSON.parse(localStorage.getItem(PLAY_COUNTS_KEY)) || {};
+    } catch {
+        return {};
+    }
+})();
+
+function songKey(song) {
+    const t = String(song?.title || '').toLowerCase().replace(/\s+/g, ' ').trim();
+    const a = String(song?.artist || '').toLowerCase().replace(/\s+/g, ' ').trim();
+    return `${t}|${a}`;
+}
+
+function getPlayCount(song) {
+    return songPlayCounts[songKey(song)] || 0;
+}
+
+function bumpPlayCount(song) {
+    const key = songKey(song);
+    if (!key) return;
+    songPlayCounts[key] = (songPlayCounts[key] || 0) + 1;
+    try { localStorage.setItem(PLAY_COUNTS_KEY, JSON.stringify(songPlayCounts)); } catch {}
+}
+
+function getRankedUniqueSongs(list) {
+    const seen = new Set();
+    const uniq = [];
+    (Array.isArray(list) ? list : []).forEach((song) => {
+        const key = songKey(song);
+        if (!key || seen.has(key)) return;
+        seen.add(key);
+        uniq.push(song);
+    });
+    return uniq.sort((a, b) => {
+        const byCount = getPlayCount(b) - getPlayCount(a);
+        if (byCount !== 0) return byCount;
+        return (a.title || '').localeCompare(b.title || '');
+    });
+}
+
+function playRankedCollection(list, title, autoPlay = false) {
+    const ranked = getRankedUniqueSongs(list);
+    renderSongList(ranked, title);
+    if (autoPlay && ranked.length > 0) {
+        playSongAtIndex(songs.indexOf(ranked[0]));
+    }
+}
 
 // ─── PLAY FUNCTIONS ───────────────────────────────────────────────────────
 
 function playArijitSongs(autoPlay = false) {
-    renderSongList(arijitSongs, 'Arijit Singh');
-    if (autoPlay && arijitSongs.length > 0) playSongAtIndex(songs.indexOf(arijitSongs[0]));
+    playRankedCollection(arijitSongs, 'Arijit Singh', autoPlay);
 }
 
 function playKaranSongs(autoPlay = false) {
-    renderSongList(karanSongs, 'Karan Aujla');
-    if (autoPlay && karanSongs.length > 0) playSongAtIndex(songs.indexOf(karanSongs[0]));
+    playRankedCollection(karanSongs, 'Karan Aujla', autoPlay);
 }
 
 function playGlobalHits(autoPlay = false) {
@@ -583,9 +1207,24 @@ function playMohitChauhanSongs(autoPlay = false) {
     if (autoPlay && mohitChauhanSongs.length > 0) playSongAtIndex(songs.indexOf(mohitChauhanSongs[0]));
 }
 
+function playArpitBalaSongs(autoPlay = false) {
+    renderSongList(arpitBalaSongs, 'Arpit Bala');
+    if (autoPlay && arpitBalaSongs.length > 0) playSongAtIndex(songs.indexOf(arpitBalaSongs[0]));
+}
+
 function playKpopAsian(autoPlay = false) {
     renderSongList(kpopAsianSongs, '🎌 K-Pop & Asian Pop');
     if (autoPlay && kpopAsianSongs.length > 0) playSongAtIndex(songs.indexOf(kpopAsianSongs[0]));
+}
+
+function playTalwiinderSongs(autoPlay = false) {
+    renderSongList(talwiinderSongs, 'Talwiinder');
+    if (autoPlay && talwiinderSongs.length > 0) playSongAtIndex(songs.indexOf(talwiinderSongs[0]));
+}
+
+function playRetroClassics(autoPlay = false) {
+    renderSongList(retroClassicsSongs, '🎙️ Retro Classics');
+    if (autoPlay && retroClassicsSongs.length > 0) playSongAtIndex(songs.indexOf(retroClassicsSongs[0]));
 }
 
 function playMood(mood, autoPlay = false) {
@@ -799,6 +1438,8 @@ function renderArtists() {
             ${makeArtistCard('playArianaGrandeSongs','IMAGES/Ariana%20Grande%20.jpg','Ariana Grande','Pop queen.')}
             ${makeArtistCard('playTaylorSwiftSongs','IMAGES/Taylor%20swift.jpg','Taylor Swift','The Eras icon.')}
             ${makeArtistCard('playMohitChauhanSongs','IMAGES/Mohit%20Chauhan%20.jpg','Mohit Chauhan','Soulful storyteller.')}
+            ${makeArtistCard('playTalwiinderSongs','IMAGES/talwinder.jpg','Talwiinder','Soulful Punjabi poetry.')}
+            ${makeArtistCard('playArpitBalaSongs','IMAGES/Arpit%20bala.jpg','Arpit Bala','Indie storyteller.')}
         `;
         if(typeof initTiltEffect === 'function') initTiltEffect();
     } catch (e) {
@@ -883,6 +1524,7 @@ function renderHome() {
                 ${makeGenreCard('playGlobalHits','IMAGES/english_hits.jpg','English Hits','Global language of emotion.')}
                 ${makeGenreCard('playHindiHits','IMAGES/hindi_hits.jpg','Hindi Hits','Latest & Greatest.')}
                 ${makeGenreCard('playKpopAsian','IMAGES/k%20pop%20%26%20asian.jpg','🎌 K-Pop & Asian','From Seoul to Tokyo.')}
+                ${makeGenreCard('playRetroClassics','IMAGES/retro%20classics.jpg','🎙️ Retro Classics','Golden era Bollywood.')}
             </div>`;
         mainView.appendChild(genreSection);
 
@@ -927,6 +1569,8 @@ function renderHome() {
                 ${makeArtistCard('playArianaGrandeSongs','IMAGES/Ariana%20Grande%20.jpg','Ariana Grande','Pop queen.')}
                 ${makeArtistCard('playTaylorSwiftSongs','IMAGES/Taylor%20swift.jpg','Taylor Swift','The Eras icon.')}
                 ${makeArtistCard('playMohitChauhanSongs','IMAGES/Mohit%20Chauhan%20.jpg','Mohit Chauhan','Soulful storyteller.')}
+                ${makeArtistCard('playTalwiinderSongs','IMAGES/talwinder.jpg','Talwiinder','Soulful Punjabi poetry.')}
+                ${makeArtistCard('playArpitBalaSongs','IMAGES/Arpit%20bala.jpg','Arpit Bala','Indie storyteller.')}
             </div>`;
         mainView.appendChild(artistSection);
 
@@ -955,6 +1599,9 @@ function renderSongList(playlistSongs, titleOverride) {
             return;
         }
 
+        const activeTitle = titleOverride || playlistSongs[0]?.folder;
+        currentPlaylistFallbackImage = getPlaylistFallback(activeTitle) || getSectionFallback(playlistSongs[0]);
+
         playlistSongs.forEach((song, i) => {
             const globalIndex = songs.indexOf(song);
             const row = document.createElement('div');
@@ -965,7 +1612,7 @@ function renderSongList(playlistSongs, titleOverride) {
             }
             row.onclick = (e) => playSongAtIndex(globalIndex, e);
             
-            const immediateArt = song.art || song.thumb || getSectionFallback(song);
+            const immediateArt = song.art || song.thumb || getActiveFallbackImage(song);
 
             row.innerHTML = `
                 <span class="song-num">${i + 1}</span>
@@ -991,7 +1638,7 @@ function renderSongList(playlistSongs, titleOverride) {
             if (artEl) {
                 artEl.onerror = function() {
                     this.onerror = null;
-                    this.src = getSectionFallback(song); // show section card image while fetching
+                    this.src = getActiveFallbackImage(song); // show active playlist card image while fetching
                     if (!song.fetchedArt) {
                         song.fetchedArt = true;
                         fetchAlbumArt(song.title, song.artist).then(fetchedArt => {
@@ -1118,6 +1765,7 @@ async function refreshSongs() {
 
 let currentIndex = 0;
 const audio = new Audio();
+let hasCountedCurrentLoad = false;
 
 function loadSong(index) {
 	if (!songs.length) return;
@@ -1669,7 +2317,7 @@ function updateSongbarUI() {
 	// if song has art property use it, otherwise keep default
     if (sb.art) {
         // Show art immediately from the song object (CDN URLs already present)
-        const immediateArt = s.art || s.thumb || getSectionFallback(s);
+        const immediateArt = s.art || s.thumb || getActiveFallbackImage(s);
 
         // Remove strict CORS crossOrigin tag to prevent the browser from outright blocking CDN images without headers!
         sb.art.removeAttribute('crossOrigin');
@@ -1678,7 +2326,7 @@ function updateSongbarUI() {
         sb.art.onload = () => updateThemeFromArt(sb.art);
         sb.art.onerror = function() {
             this.onerror = null;
-            const fallback = getSectionFallback(s);
+            const fallback = getActiveFallbackImage(s);
             this.src = fallback;
             if (sb.brandLogo && hasPlayed) sb.brandLogo.src = fallback;
 
@@ -2265,6 +2913,13 @@ const VisualizerManager = window.VisualizerManager = {
     init() {
         if (this.isInitialized) return;
 
+        const hasButterchurn = typeof window.butterchurn !== 'undefined' && typeof window.butterchurnPresets !== 'undefined';
+        const container = document.getElementById('canvas-container');
+        if (!hasButterchurn || !container) {
+            console.warn('Visualizer skipped: dependencies or container missing.');
+            return;
+        }
+
         // Initialize AudioContext
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         this.audioContext = new AudioContext();
@@ -2277,7 +2932,6 @@ const VisualizerManager = window.VisualizerManager = {
         }
 
         // Setup Canvas
-        const container = document.getElementById('canvas-container');
         container.innerHTML = '<canvas id="viz-canvas"></canvas>';
         const canvas = document.getElementById('viz-canvas');
         
@@ -2636,7 +3290,7 @@ document.addEventListener("DOMContentLoaded", initThreeJS);
 
 function initThreeJS() {
     const container = document.getElementById('canvas-container');
-    if (!container) return; // Wait for element
+    if (!container || typeof THREE === 'undefined') return; // Wait for element + lib
 
     const scene = new THREE.Scene();
     // scene.fog = new THREE.FogExp2(0x050b14, 0.02);
