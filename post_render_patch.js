@@ -52,3 +52,68 @@
     window.music.renderSongList = renderSongList;
   }
 })();
+
+(function applyLyricsFallbackPatch() {
+  if (typeof LyricsManager !== "object" || !LyricsManager) return;
+
+  LyricsManager.fetchLyricsFallback = async function fetchLyricsFallback(artist, title) {
+    var cleanTitle = String(title || "")
+      .replace(/\(.*?\)|\[.*?\]/g, "")
+      .replace(/\b(ft|feat)\.?\b.*$/i, "")
+      .split("-")[0]
+      .trim();
+
+    var artistCandidates = String(artist || "")
+      .split(/,|&|\||\bfeat\.?\b/i)
+      .map(function (value) {
+        return value.trim();
+      })
+      .filter(Boolean);
+
+    var uniqueArtists = Array.from(new Set(artistCandidates.length ? artistCandidates : [String(artist || "").trim()]));
+
+    for (var i = 0; i < uniqueArtists.length; i += 1) {
+      var artistName = uniqueArtists[i];
+      try {
+        var endpoint =
+          "https://api.lyrics.ovh/v1/" +
+          encodeURIComponent(artistName) +
+          "/" +
+          encodeURIComponent(cleanTitle || String(title || ""));
+
+        var response = await fetch(endpoint);
+        if (!response.ok) continue;
+
+        var data = await response.json();
+        var lyrics = data && typeof data.lyrics === "string" ? data.lyrics.trim() : "";
+        if (!lyrics || /not found/i.test(lyrics)) continue;
+
+        return lyrics;
+      } catch (error) {
+        // Try next artist candidate.
+      }
+    }
+
+    return "";
+  };
+
+  var primaryFetchLyrics = LyricsManager.fetchLyrics && LyricsManager.fetchLyrics.bind(LyricsManager);
+  if (typeof primaryFetchLyrics !== "function") return;
+
+  LyricsManager.fetchLyrics = async function patchedFetchLyrics(artist, title, duration) {
+    await primaryFetchLyrics(artist, title, duration);
+
+    // Keep existing lyrics unchanged; fallback only when primary ended with no result.
+    var hasSynced = Array.isArray(this.currentLyrics) && this.currentLyrics.length > 0;
+    var hasPlain =
+      !!(this.container && this.container.querySelector && this.container.querySelector(".lyrics-text")) ||
+      !!(this.fsContainer && this.fsContainer.querySelector && this.fsContainer.querySelector(".lyrics-text"));
+
+    if (hasSynced || hasPlain) return;
+
+    var fallbackLyrics = await this.fetchLyricsFallback(artist, title);
+    if (fallbackLyrics) {
+      this.renderPlain(fallbackLyrics);
+    }
+  };
+})();
