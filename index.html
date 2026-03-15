@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ivory - Premium Music</title>
-    <link rel="stylesheet" href="style.css?v=5.0" />
-    <link rel="stylesheet" href="mobile.css?v=5.0" media="(max-width: 768px)" />
+    <link rel="stylesheet" href="style.css?v=5.1" />
+    <link rel="stylesheet" href="mobile.css?v=5.1" media="(max-width: 768px)" />
   </head>
 
   <body class="intro-mode">
@@ -195,17 +195,37 @@
 
       <!-- Volume / extras (hidden on mobile) -->
       <div class="volume-controls">
-        <button class="icon-btn expand-btn" id="expand-btn" title="Fullscreen Mode">
+        <button class="icon-btn lyrics-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+            <line x1="12" y1="19" x2="12" y2="23"></line>
+            <line x1="8" y1="23" x2="16" y2="23"></line>
+          </svg>
+        </button>
+        <button class="icon-btn queue-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="8" y1="6" x2="21" y2="6"></line>
+            <line x1="8" y1="12" x2="21" y2="12"></line>
+            <line x1="8" y1="18" x2="21" y2="18"></line>
+            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+          </svg>
+        </button>
+        <button class="icon-btn device-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+          </svg>
+        </button>
+        <button class="icon-btn expand-btn" id="expand-btn" title="Full Screen">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="15 3 21 3 21 9"></polyline>
             <polyline points="9 21 3 21 3 15"></polyline>
             <line x1="21" y1="3" x2="14" y2="10"></line>
             <line x1="3" y1="21" x2="10" y2="14"></line>
           </svg>
-          <span class="btn-label expand-label">
-
-            <span>fullscreen</span>
-          </span>
         </button>
         <div class="volume-slider-group">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
@@ -331,7 +351,41 @@
     <!-- IVORY STREAMING CONFIG - Global Music Discovery -->
     <!-- ═══════════════════════════════════════════════ -->
     <script src="STREAMING_CONFIG.js"></script>
+    <script>
+      (function () {
+        function ensureIntroNode() {
+          var intro = document.getElementById("startup-intro");
+          if (intro) return intro;
+
+          intro = document.createElement("div");
+          intro.id = "startup-intro";
+          intro.setAttribute("aria-hidden", "true");
+          intro.innerHTML =
+            '<div class="startup-intro__bg"></div><h2 class="startup-intro__text">MADE WITH LOVE BY SHIVAM</h2>';
+          document.body.insertBefore(intro, document.body.firstChild);
+          return intro;
+        }
+
+        function runIntro() {
+          var intro = ensureIntroNode();
+          intro.classList.remove("is-hidden");
+
+          window.setTimeout(function () {
+            intro.classList.add("is-hidden");
+            window.setTimeout(function () {
+              if (intro && intro.parentNode) intro.parentNode.removeChild(intro);
+            }, 380);
+          }, 1000);
+        }
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", runIntro, { once: true });
+        } else {
+          runIntro();
+        }
+      })();
+    </script>
     <!-- Main Player with Global Search & Streaming -->
-    <script defer src="script.js?v=5.0"></script>
+    <script defer src="script.js?v=5.1"></script>
   </body>
 </html>

@@ -16,9 +16,8 @@ const sectionFallbackImages = {
     'Ariana Grande':         'IMAGES/Ariana Grande .jpg',
     'Taylor Swift':          'IMAGES/Taylor swift.jpg',
     'Mohit Chauhan':         'IMAGES/Mohit Chauhan .jpg',
-    'Arpit Bala':            'IMAGES/Arpit bala.jpg',
-    'Talwiinder':             'IMAGES/talwinder.jpg',
-    'Retro Classics':         'IMAGES/retro classics.jpg',
+    'Talwiinder':             'IMAGES/karan_aujla.jpg',
+    'Retro Classics':         'IMAGES/bollywood.jpg',
         // Moods
     '❤️ Love Songs':         'IMAGES/love_vibes.jpg',
     '💔 Sad Vibes':           'IMAGES/sad_vibes.jpg',
@@ -46,24 +45,6 @@ const sectionFallbackImages = {
 function getSectionFallback(song) {
     if (!song) return 'IMAGES/logoo.png';
     return sectionFallbackImages[song.folder] || 'IMAGES/logoo.png';
-}
-
-const playlistFallbackImages = {
-    ...sectionFallbackImages,
-    '🎙️ Retro Classics': 'IMAGES/retro classics.jpg',
-    '🎌 K-Pop & Asian': 'IMAGES/k pop & asian.jpg',
-    '🎌 K-Pop & Asian Pop': 'IMAGES/k pop & asian.jpg'
-};
-
-let currentPlaylistFallbackImage = null;
-
-function getPlaylistFallback(title) {
-    if (!title) return null;
-    return playlistFallbackImages[title] || null;
-}
-
-function getActiveFallbackImage(song) {
-    return currentPlaylistFallbackImage || getSectionFallback(song);
 }
 
 // Songs array with durations manually added from scan
@@ -838,32 +819,6 @@ const songs = [
 
 ];
 
-function dedupeSongsKeepFirst() {
-    const seen = new Set();
-    const unique = [];
-    let removed = 0;
-
-    const normalize = (v) => String(v || '').toLowerCase().replace(/\s+/g, ' ').trim();
-
-    for (const song of songs) {
-        const key = `${normalize(song.title)}|${normalize(song.artist)}`;
-        if (seen.has(key)) {
-            removed++;
-            continue;
-        }
-        seen.add(key);
-        unique.push(song);
-    }
-
-    if (removed > 0) {
-        songs.length = 0;
-        songs.push(...unique);
-        console.log(`🧹 Removed ${removed} duplicate songs and kept first/original entries.`);
-    }
-}
-
-dedupeSongsKeepFirst();
-
 // ═══════════════════════════════════════════════════════════════════════════
 // ─── STRICT DATA-DRIVEN APPROACH: SANITIZATION + PERSISTENCE ───────────────
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1095,66 +1050,17 @@ const charliePuthSongs = songs.filter(s => s.artist && s.artist.toLowerCase().in
 const arianaGrandeSongs = songs.filter(s => s.artist && s.artist.toLowerCase().includes('ariana grande'));
 const taylorSwiftSongs = songs.filter(s => s.artist && s.artist.toLowerCase().includes('taylor swift'));
 const mohitChauhanSongs = songs.filter(s => s.artist && s.artist.toLowerCase().includes('mohit chauhan'));
-const arpitBalaSongs = songs.filter(s => s.artist && s.artist.toLowerCase().includes('arpit bala'));
-
-const PLAY_COUNTS_KEY = 'ivory_song_play_counts';
-const songPlayCounts = (() => {
-    try {
-        return JSON.parse(localStorage.getItem(PLAY_COUNTS_KEY)) || {};
-    } catch {
-        return {};
-    }
-})();
-
-function songKey(song) {
-    const t = String(song?.title || '').toLowerCase().replace(/\s+/g, ' ').trim();
-    const a = String(song?.artist || '').toLowerCase().replace(/\s+/g, ' ').trim();
-    return `${t}|${a}`;
-}
-
-function getPlayCount(song) {
-    return songPlayCounts[songKey(song)] || 0;
-}
-
-function bumpPlayCount(song) {
-    const key = songKey(song);
-    if (!key) return;
-    songPlayCounts[key] = (songPlayCounts[key] || 0) + 1;
-    try { localStorage.setItem(PLAY_COUNTS_KEY, JSON.stringify(songPlayCounts)); } catch {}
-}
-
-function getRankedUniqueSongs(list) {
-    const seen = new Set();
-    const uniq = [];
-    (Array.isArray(list) ? list : []).forEach((song) => {
-        const key = songKey(song);
-        if (!key || seen.has(key)) return;
-        seen.add(key);
-        uniq.push(song);
-    });
-    return uniq.sort((a, b) => {
-        const byCount = getPlayCount(b) - getPlayCount(a);
-        if (byCount !== 0) return byCount;
-        return (a.title || '').localeCompare(b.title || '');
-    });
-}
-
-function playRankedCollection(list, title, autoPlay = false) {
-    const ranked = getRankedUniqueSongs(list);
-    renderSongList(ranked, title);
-    if (autoPlay && ranked.length > 0) {
-        playSongAtIndex(songs.indexOf(ranked[0]));
-    }
-}
 
 // ─── PLAY FUNCTIONS ───────────────────────────────────────────────────────
 
 function playArijitSongs(autoPlay = false) {
-    playRankedCollection(arijitSongs, 'Arijit Singh', autoPlay);
+    renderSongList(arijitSongs, 'Arijit Singh');
+    if (autoPlay && arijitSongs.length > 0) playSongAtIndex(songs.indexOf(arijitSongs[0]));
 }
 
 function playKaranSongs(autoPlay = false) {
-    playRankedCollection(karanSongs, 'Karan Aujla', autoPlay);
+    renderSongList(karanSongs, 'Karan Aujla');
+    if (autoPlay && karanSongs.length > 0) playSongAtIndex(songs.indexOf(karanSongs[0]));
 }
 
 function playGlobalHits(autoPlay = false) {
@@ -1205,11 +1111,6 @@ function playTaylorSwiftSongs(autoPlay = false) {
 function playMohitChauhanSongs(autoPlay = false) {
     renderSongList(mohitChauhanSongs, 'Mohit Chauhan');
     if (autoPlay && mohitChauhanSongs.length > 0) playSongAtIndex(songs.indexOf(mohitChauhanSongs[0]));
-}
-
-function playArpitBalaSongs(autoPlay = false) {
-    renderSongList(arpitBalaSongs, 'Arpit Bala');
-    if (autoPlay && arpitBalaSongs.length > 0) playSongAtIndex(songs.indexOf(arpitBalaSongs[0]));
 }
 
 function playKpopAsian(autoPlay = false) {
@@ -1438,8 +1339,7 @@ function renderArtists() {
             ${makeArtistCard('playArianaGrandeSongs','IMAGES/Ariana%20Grande%20.jpg','Ariana Grande','Pop queen.')}
             ${makeArtistCard('playTaylorSwiftSongs','IMAGES/Taylor%20swift.jpg','Taylor Swift','The Eras icon.')}
             ${makeArtistCard('playMohitChauhanSongs','IMAGES/Mohit%20Chauhan%20.jpg','Mohit Chauhan','Soulful storyteller.')}
-            ${makeArtistCard('playTalwiinderSongs','IMAGES/talwinder.jpg','Talwiinder','Soulful Punjabi poetry.')}
-            ${makeArtistCard('playArpitBalaSongs','IMAGES/Arpit%20bala.jpg','Arpit Bala','Indie storyteller.')}
+            ${makeArtistCard('playTalwiinderSongs','IMAGES/karan_aujla.jpg','Talwiinder','Soulful Punjabi poetry.')}
         `;
         if(typeof initTiltEffect === 'function') initTiltEffect();
     } catch (e) {
@@ -1524,7 +1424,7 @@ function renderHome() {
                 ${makeGenreCard('playGlobalHits','IMAGES/english_hits.jpg','English Hits','Global language of emotion.')}
                 ${makeGenreCard('playHindiHits','IMAGES/hindi_hits.jpg','Hindi Hits','Latest & Greatest.')}
                 ${makeGenreCard('playKpopAsian','IMAGES/k%20pop%20%26%20asian.jpg','🎌 K-Pop & Asian','From Seoul to Tokyo.')}
-                ${makeGenreCard('playRetroClassics','IMAGES/retro%20classics.jpg','🎙️ Retro Classics','Golden era Bollywood.')}
+                ${makeGenreCard('playRetroClassics','IMAGES/bollywood.jpg','🎙️ Retro Classics','Golden era Bollywood.')}
             </div>`;
         mainView.appendChild(genreSection);
 
@@ -1569,8 +1469,7 @@ function renderHome() {
                 ${makeArtistCard('playArianaGrandeSongs','IMAGES/Ariana%20Grande%20.jpg','Ariana Grande','Pop queen.')}
                 ${makeArtistCard('playTaylorSwiftSongs','IMAGES/Taylor%20swift.jpg','Taylor Swift','The Eras icon.')}
                 ${makeArtistCard('playMohitChauhanSongs','IMAGES/Mohit%20Chauhan%20.jpg','Mohit Chauhan','Soulful storyteller.')}
-                ${makeArtistCard('playTalwiinderSongs','IMAGES/talwinder.jpg','Talwiinder','Soulful Punjabi poetry.')}
-                ${makeArtistCard('playArpitBalaSongs','IMAGES/Arpit%20bala.jpg','Arpit Bala','Indie storyteller.')}
+                ${makeArtistCard('playTalwiinderSongs','IMAGES/karan_aujla.jpg','Talwiinder','Soulful Punjabi poetry.')}
             </div>`;
         mainView.appendChild(artistSection);
 
@@ -1599,9 +1498,6 @@ function renderSongList(playlistSongs, titleOverride) {
             return;
         }
 
-        const activeTitle = titleOverride || playlistSongs[0]?.folder;
-        currentPlaylistFallbackImage = getPlaylistFallback(activeTitle) || getSectionFallback(playlistSongs[0]);
-
         playlistSongs.forEach((song, i) => {
             const globalIndex = songs.indexOf(song);
             const row = document.createElement('div');
@@ -1612,7 +1508,7 @@ function renderSongList(playlistSongs, titleOverride) {
             }
             row.onclick = (e) => playSongAtIndex(globalIndex, e);
             
-            const immediateArt = song.art || song.thumb || getActiveFallbackImage(song);
+            const immediateArt = song.art || song.thumb || getSectionFallback(song);
 
             row.innerHTML = `
                 <span class="song-num">${i + 1}</span>
@@ -1638,7 +1534,7 @@ function renderSongList(playlistSongs, titleOverride) {
             if (artEl) {
                 artEl.onerror = function() {
                     this.onerror = null;
-                    this.src = getActiveFallbackImage(song); // show active playlist card image while fetching
+                    this.src = getSectionFallback(song); // show section card image while fetching
                     if (!song.fetchedArt) {
                         song.fetchedArt = true;
                         fetchAlbumArt(song.title, song.artist).then(fetchedArt => {
@@ -1765,7 +1661,6 @@ async function refreshSongs() {
 
 let currentIndex = 0;
 const audio = new Audio();
-let hasCountedCurrentLoad = false;
 
 function loadSong(index) {
 	if (!songs.length) return;
@@ -2317,7 +2212,7 @@ function updateSongbarUI() {
 	// if song has art property use it, otherwise keep default
     if (sb.art) {
         // Show art immediately from the song object (CDN URLs already present)
-        const immediateArt = s.art || s.thumb || getActiveFallbackImage(s);
+        const immediateArt = s.art || s.thumb || getSectionFallback(s);
 
         // Remove strict CORS crossOrigin tag to prevent the browser from outright blocking CDN images without headers!
         sb.art.removeAttribute('crossOrigin');
@@ -2326,7 +2221,7 @@ function updateSongbarUI() {
         sb.art.onload = () => updateThemeFromArt(sb.art);
         sb.art.onerror = function() {
             this.onerror = null;
-            const fallback = getActiveFallbackImage(s);
+            const fallback = getSectionFallback(s);
             this.src = fallback;
             if (sb.brandLogo && hasPlayed) sb.brandLogo.src = fallback;
 
