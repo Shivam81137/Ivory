@@ -16,8 +16,8 @@ const sectionFallbackImages = {
     'Ariana Grande':         'IMAGES/Ariana Grande .jpg',
     'Taylor Swift':          'IMAGES/Taylor swift.jpg',
     'Mohit Chauhan':         'IMAGES/Mohit Chauhan .jpg',
-    'Talwiinder':             'IMAGES/karan_aujla.jpg',
-    'Retro Classics':         'IMAGES/bollywood.jpg',
+    'Talwiinder':             'IMAGES/talwinder.jpg',
+    'Retro Classics':         'IMAGES/retro classics.jpg',
         // Moods
     '❤️ Love Songs':         'IMAGES/love_vibes.jpg',
     '💔 Sad Vibes':           'IMAGES/sad_vibes.jpg',
@@ -819,6 +819,64 @@ const songs = [
 
 ];
 
+// Promote curated imports from `new song/` so they appear higher in each relevant list.
+const promotedNewFolderSongs = [
+    { title: "Aankhon Mein Doob Jaane Ko", artist: "Alka Yagnik, Sonu Nigam", file: "new song/Aankhon Mein Doob Jaane Ko  THE 9TEEN  K3G  Deewani Hai Dekho - 128.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "", _isNewImport: true },
+    { title: "Ambarsariya", artist: "Sona Mohapatra", file: "new song/Ambarsariya Fukrey Song By Sona Mohapatra  Pulkit Samrat, Priya Anand - 128.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "", _isNewImport: true },
+    { title: "Chahun Main Ya Naa", artist: "Arijit Singh, Palak Muchhal", file: "new song/Arijit Singh, Palak Muchhal - Chahun Main Ya Naa (Lyrics) Aashiqui 2 - 128.MP3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "", _isNewImport: true },
+    { title: "Bairan", artist: "Banjaare", file: "new song/Bairan – Animated Love Story  Banjaare (Official Video) - 128-3.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "", _isNewImport: true },
+    { title: "Bawara Mann", artist: "Jubin Nautiyal, Neeti Mohan", file: "new song/Bawara Mann Full Video  Jolly LL.B 2  Akshay Kumar, Huma Qureshi  Jubin Nautiyal & Neeti Mohan - 128.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "", _isNewImport: true },
+    { title: "Ek Ladki Ko Dekha Toh Aisa Laga", artist: "Darshan Raval, Rochak Kohli", file: "new song/Ek Ladki Ko Dekha Toh Aisa Laga  Title Song  Anil  Sonam  Rajkummar Rao  Juhi  Darshan Rochak - 128.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "", _isNewImport: true },
+    { title: "Ez-Ez", artist: "Dhurandhar", file: "new song/Ez-Ez (From Dhurandhar) - 128.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "", _isNewImport: true },
+    { title: "Gehra Hua", artist: "Arijit Singh", file: "new song/Gehra Hua (From Dhurandhar) - 128.MP3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "", _isNewImport: true },
+    { title: "Ilahi", artist: "Arijit Singh", file: "new song/Ilahi Full Video Song  Yeh Jawaani Hai Deewani  Ranbir Kapoor, Deepika Padukone  Pritam - 128.MP3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "", _isNewImport: true },
+    { title: "Kaun Tujhe", artist: "Palak Muchhal", file: "new song/KAUN TUJHE  Lyrical  M.S. DHONI -THE UNTOLD STORY  Amaal Mallik Palak  Sushant Singh Disha Patani - 128.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "", _isNewImport: true },
+    { title: "Lutt Le Gaya", artist: "Dhurandhar", file: "new song/Lutt Le Gaya (From Dhurandhar) - 128.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "", _isNewImport: true },
+    { title: "Naal Nachna", artist: "Dhurandhar", file: "new song/Naal Nachna (From Dhurandhar) - 128.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "", _isNewImport: true },
+    { title: "Pink Lips", artist: "Meet Bros, Khushboo Grewal", file: "new song/Pink Lips Full Audio Song  Hate Story 2  Sunny Leone  Meet Bros Anjjan Ft. Khushboo Grewal - 128.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "", _isNewImport: true },
+    { title: "Ramba Ho", artist: "Dhurandhar", file: "new song/Ramba Ho (From Dhurandhar) - 128.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "", _isNewImport: true },
+    { title: "Run Down The City - Monica", artist: "Dhurandhar", file: "new song/Run Down The City - Monica (From Dhurandhar) - 128.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "", _isNewImport: true },
+    { title: "Sawaar Loon", artist: "Monali Thakur", file: "new song/SAWAAR LOON LOOTERA VIDEO SONG (Official)  RANVEER SINGH, SONAKSHI SINHA - 128.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "", _isNewImport: true },
+    { title: "Tujh Mein Rab Dikhta Hai", artist: "Roop Kumar Rathod", file: "new song/Tujh Mein Rab Dikhta Hai Song  Rab Ne Bana Di Jodi  Shah Rukh Khan, Anushka Sharma  Roop Kumar - 128.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "", _isNewImport: true },
+    { title: "Tum Hi Ho", artist: "Arijit Singh", file: "new song/Tum Hi Ho (Lyrics)Arijit SinghAashiqui 2@tseries - 128.MP3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "", _isNewImport: true },
+    { title: "Vaaste", artist: "Dhvani Bhanushali, Nikhil D'Souza", file: "new song/Vaaste Song Dhvani Bhanushali, Tanishk Bagchi  Nikhil D'Souza  Bhushan Kumar  Radhika R, Vinay S - 128.MP3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "", _isNewImport: true },
+];
+
+function makeSongKey(song) {
+    const normalize = (value) => (value || "")
+        .toLowerCase()
+        .replace(/\(.*?\)|\[.*?\]/g, "")
+        .replace(/[^a-z0-9\s]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+
+    return `${normalize(song.title)}||${normalize((song.artist || "").split(",")[0])}`;
+}
+
+(function injectAndPromoteNewFolderSongs() {
+    const promoted = [];
+    const promotedSeen = new Set();
+
+    promotedNewFolderSongs.forEach((entry) => {
+        const key = makeSongKey(entry);
+        if (promotedSeen.has(key)) return;
+        promotedSeen.add(key);
+
+        const existingIndex = songs.findIndex((s) => makeSongKey(s) === key);
+        if (existingIndex >= 0) {
+            const [existing] = songs.splice(existingIndex, 1);
+            existing._isNewImport = true;
+            promoted.push(existing);
+        } else {
+            promoted.push(entry);
+        }
+    });
+
+    for (let i = promoted.length - 1; i >= 0; i--) {
+        songs.unshift(promoted[i]);
+    }
+})();
+
 // ═══════════════════════════════════════════════════════════════════════════
 // ─── STRICT DATA-DRIVEN APPROACH: SANITIZATION + PERSISTENCE ───────────────
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1339,7 +1397,7 @@ function renderArtists() {
             ${makeArtistCard('playArianaGrandeSongs','IMAGES/Ariana%20Grande%20.jpg','Ariana Grande','Pop queen.')}
             ${makeArtistCard('playTaylorSwiftSongs','IMAGES/Taylor%20swift.jpg','Taylor Swift','The Eras icon.')}
             ${makeArtistCard('playMohitChauhanSongs','IMAGES/Mohit%20Chauhan%20.jpg','Mohit Chauhan','Soulful storyteller.')}
-            ${makeArtistCard('playTalwiinderSongs','IMAGES/karan_aujla.jpg','Talwiinder','Soulful Punjabi poetry.')}
+            ${makeArtistCard('playTalwiinderSongs','IMAGES/talwinder.jpg','Talwiinder','Soulful Punjabi poetry.')}
         `;
         if(typeof initTiltEffect === 'function') initTiltEffect();
     } catch (e) {
@@ -1424,7 +1482,7 @@ function renderHome() {
                 ${makeGenreCard('playGlobalHits','IMAGES/english_hits.jpg','English Hits','Global language of emotion.')}
                 ${makeGenreCard('playHindiHits','IMAGES/hindi_hits.jpg','Hindi Hits','Latest & Greatest.')}
                 ${makeGenreCard('playKpopAsian','IMAGES/k%20pop%20%26%20asian.jpg','🎌 K-Pop & Asian','From Seoul to Tokyo.')}
-                ${makeGenreCard('playRetroClassics','IMAGES/bollywood.jpg','🎙️ Retro Classics','Golden era Bollywood.')}
+                ${makeGenreCard('playRetroClassics','IMAGES/retro%20classics.jpg','🎙️ Retro Classics','Golden era Bollywood.')}
             </div>`;
         mainView.appendChild(genreSection);
 
@@ -1469,7 +1527,7 @@ function renderHome() {
                 ${makeArtistCard('playArianaGrandeSongs','IMAGES/Ariana%20Grande%20.jpg','Ariana Grande','Pop queen.')}
                 ${makeArtistCard('playTaylorSwiftSongs','IMAGES/Taylor%20swift.jpg','Taylor Swift','The Eras icon.')}
                 ${makeArtistCard('playMohitChauhanSongs','IMAGES/Mohit%20Chauhan%20.jpg','Mohit Chauhan','Soulful storyteller.')}
-                ${makeArtistCard('playTalwiinderSongs','IMAGES/karan_aujla.jpg','Talwiinder','Soulful Punjabi poetry.')}
+                ${makeArtistCard('playTalwiinderSongs','IMAGES/talwinder.jpg','Talwiinder','Soulful Punjabi poetry.')}
             </div>`;
         mainView.appendChild(artistSection);
 
@@ -4351,3 +4409,224 @@ const OnlineMusicEngine = {
     console.log('✅ Global search initialized - Ready to search 200M+ songs!');
 
 })(); // end initSearch
+
+(function initMobileProfessionalUX() {
+    const MOBILE_QUERY = '(max-width: 768px)';
+    let initialized = false;
+
+    const isCoarsePointer = () => {
+        try {
+            return window.matchMedia('(pointer: coarse)').matches;
+        } catch (e) {
+            return false;
+        }
+    };
+
+    const isMobileMode = () => {
+        try {
+            return window.matchMedia(MOBILE_QUERY).matches && (isCoarsePointer() || navigator.maxTouchPoints > 0);
+        } catch (e) {
+            return false;
+        }
+    };
+
+    function ensureRelativePosition(target) {
+        const style = window.getComputedStyle(target);
+        if (style.position === 'static') {
+            target.style.position = 'relative';
+        }
+    }
+
+    function spawnTapRipple(target, clientX, clientY) {
+        if (!target) return;
+        ensureRelativePosition(target);
+
+        const rect = target.getBoundingClientRect();
+        const ripple = document.createElement('span');
+        ripple.className = 'mobile-tap-ripple';
+        ripple.style.left = `${clientX - rect.left}px`;
+        ripple.style.top = `${clientY - rect.top}px`;
+        target.appendChild(ripple);
+
+        window.setTimeout(() => {
+            if (ripple && ripple.parentNode) ripple.parentNode.removeChild(ripple);
+        }, 560);
+    }
+
+    function setupHeaderScrollState() {
+        const contentBody = document.querySelector('.content-body');
+        const topHeader = document.querySelector('.top-header');
+        if (!contentBody || !topHeader) return;
+
+        const updateHeader = () => {
+            topHeader.classList.toggle('is-scrolled', contentBody.scrollTop > 10);
+        };
+
+        contentBody.addEventListener('scroll', updateHeader, { passive: true });
+        updateHeader();
+    }
+
+    function setupTouchInteractions() {
+        const rippleSelectors = [
+            '.music-card',
+            '.song-list-row',
+            '.pill',
+            '.icon-btn',
+            '.play-btn-main',
+            '.circle-btn',
+            '.search-result-item'
+        ].join(', ');
+
+        document.addEventListener('pointerdown', (event) => {
+            if (event.pointerType === 'mouse') return;
+
+            const target = event.target.closest(rippleSelectors);
+            if (!target) return;
+
+            spawnTapRipple(target, event.clientX, event.clientY);
+
+            if (target.classList.contains('music-card')) {
+                target.classList.add('mobile-pressed');
+                window.setTimeout(() => target.classList.remove('mobile-pressed'), 180);
+            }
+        }, { passive: true });
+    }
+
+    function enableMobileProfessionalMode() {
+        if (initialized) return;
+        if (!isMobileMode()) return;
+
+        initialized = true;
+        document.body.classList.add('mobile-pro-enhanced');
+        setupHeaderScrollState();
+        setupTouchInteractions();
+    }
+
+    document.addEventListener('DOMContentLoaded', enableMobileProfessionalMode, { once: true });
+
+    window.addEventListener('resize', () => {
+        if (!initialized && isMobileMode()) {
+            enableMobileProfessionalMode();
+        }
+    }, { passive: true });
+})();
+
+(function initMobileLyricsEnhancer() {
+    const MOBILE_QUERY = '(max-width: 768px)';
+    const STORAGE_SCALE = 'ivory_mobile_lyrics_scale';
+    const STORAGE_FOCUS = 'ivory_mobile_lyrics_focus';
+    const MIN_SCALE = 0.88;
+    const MAX_SCALE = 1.24;
+    const STEP = 0.04;
+
+    let scale = 1;
+    let focusMode = false;
+
+    function isMobile() {
+        try {
+            return window.matchMedia(MOBILE_QUERY).matches;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+    }
+
+    function loadPrefs() {
+        try {
+            const savedScale = parseFloat(localStorage.getItem(STORAGE_SCALE));
+            if (!Number.isNaN(savedScale)) scale = clamp(savedScale, MIN_SCALE, MAX_SCALE);
+            focusMode = localStorage.getItem(STORAGE_FOCUS) === '1';
+        } catch (e) {
+            scale = 1;
+            focusMode = false;
+        }
+    }
+
+    function savePrefs() {
+        try {
+            localStorage.setItem(STORAGE_SCALE, String(scale));
+            localStorage.setItem(STORAGE_FOCUS, focusMode ? '1' : '0');
+        } catch (e) {
+            // ignore storage failures
+        }
+    }
+
+    function applyPrefs(container, focusBtn) {
+        if (container) container.style.setProperty('--mobile-lyrics-scale', scale.toFixed(2));
+        document.body.classList.toggle('mobile-lyrics-focus', focusMode);
+        if (focusBtn) focusBtn.setAttribute('aria-pressed', focusMode ? 'true' : 'false');
+    }
+
+    function centerActiveLyric() {
+        if (!window.LyricsManager || !LyricsManager.container) return;
+        if (LyricsManager.activeLineIndex < 0) return;
+        LyricsManager.highlightLine(LyricsManager.container, LyricsManager.activeLineIndex);
+    }
+
+    function buildToolbar() {
+        const wrapper = document.querySelector('.sidebar .lyrics-scroll-wrapper');
+        const container = document.querySelector('.sidebar #sidebar-lyrics');
+        if (!wrapper || !container) return;
+        if (wrapper.querySelector('.lyrics-mobile-tools')) return;
+
+        const tools = document.createElement('div');
+        tools.className = 'lyrics-mobile-tools';
+        tools.innerHTML = [
+            '<button type="button" class="tool-btn" data-tool="minus" aria-label="Smaller lyrics">A-</button>',
+            '<button type="button" class="tool-btn" data-tool="plus" aria-label="Larger lyrics">A+</button>',
+            '<div class="tool-spacer"></div>',
+            '<button type="button" class="tool-btn" data-tool="center" aria-label="Center active lyric">Center</button>',
+            '<button type="button" class="tool-btn" data-tool="focus" aria-pressed="false" aria-label="Focus mode">Focus</button>'
+        ].join('');
+
+        wrapper.insertBefore(tools, wrapper.firstChild);
+
+        const focusBtn = tools.querySelector('[data-tool="focus"]');
+        applyPrefs(container, focusBtn);
+
+        tools.addEventListener('click', (event) => {
+            const btn = event.target.closest('.tool-btn');
+            if (!btn) return;
+
+            const tool = btn.getAttribute('data-tool');
+            if (tool === 'minus') {
+                scale = clamp(scale - STEP, MIN_SCALE, MAX_SCALE);
+            } else if (tool === 'plus') {
+                scale = clamp(scale + STEP, MIN_SCALE, MAX_SCALE);
+            } else if (tool === 'center') {
+                centerActiveLyric();
+                return;
+            } else if (tool === 'focus') {
+                focusMode = !focusMode;
+            }
+
+            savePrefs();
+            applyPrefs(container, focusBtn);
+        });
+
+        let lastTapAt = 0;
+        container.addEventListener('pointerdown', (event) => {
+            if (event.pointerType === 'mouse') return;
+            const now = Date.now();
+            if (now - lastTapAt < 320) {
+                focusMode = !focusMode;
+                savePrefs();
+                applyPrefs(container, focusBtn);
+            }
+            lastTapAt = now;
+        }, { passive: true });
+    }
+
+    function init() {
+        if (!isMobile()) return;
+        loadPrefs();
+        buildToolbar();
+    }
+
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+})();
+
+
