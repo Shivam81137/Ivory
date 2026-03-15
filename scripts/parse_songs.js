@@ -1,8 +1,17 @@
 const fs = require('fs');
 const path = require('path');
 
-const songDir = path.join(__dirname, '..', 'song');
-const files = fs.readdirSync(songDir).filter(f => f.toLowerCase().endsWith('.mp3'));
+const sourceDirs = [
+    { label: 'song', absolutePath: path.join(__dirname, '..', 'song'), filePrefix: 'song', isNewImport: false },
+    { label: 'new song', absolutePath: path.join(__dirname, '..', 'new song'), filePrefix: 'new song', isNewImport: true }
+];
+
+const files = sourceDirs.flatMap(source => {
+    if (!fs.existsSync(source.absolutePath)) return [];
+    return fs.readdirSync(source.absolutePath)
+        .filter(f => f.toLowerCase().endsWith('.mp3'))
+        .map(filename => ({ source, filename }));
+});
 
 // Already-known files (from songs/Arijit, songs/karan aujla, songs/HINDI HITS, songs/english_hits)
 // We detect dupes by checking if title key words overlap
@@ -36,15 +45,10 @@ function parseSongFilename(filename) {
         return { title, artist };
     }
     
-    // Pattern: "Artist - Song (Official ...) - channel"
-    const artistFirst = name.match(/^([A-Za-z\s\.&,]+?)\s*-\s*([^-]+(?:\([^)]*\))?)\s*(?:-\s*.+)?$/);
-    
     // Simpler: just split by " - " and use first part as title
     const parts = name.split(/\s+[-–]\s+/);
     
     if (parts.length >= 2) {
-        // Heuristic: if first part looks like an artist name (short, no movie/film words)
-        const filmWords = /FULL|VIDEO|Audio|Lyric|Official|Song|Lyrics|HD|MV|Letra|OST|feat\.|ft\./i;
         title = parts[0].trim();
         // Try the last meaningful part as artist
         const channelWords = /VEVO|Topic|T-Series|Sony|Zee|YRF|Tips|256|128|Studio|Records|Music|Films/i;
@@ -59,7 +63,7 @@ function parseSongFilename(filename) {
     
     // Clean up common noise from title
     title = title
-        .replace(/\s*\[.*?\]/g, '')
+        .replace(/\s*\[.*?]/g, '')
         .replace(/\s*\(.*?(?:Lyrics|Video|Audio|Official|Full|HD|MV).*?\)/gi, '')
         .replace(/^\s*['"]/, '').replace(/['"]\s*$/, '')
         .trim();
@@ -110,6 +114,17 @@ function classifyFolder(filename, artist) {
 // Output
 const results = [];
 const skipped = [];
+const generatedSeen = new Set();
+
+function makeGeneratedKey(title, artist) {
+    const normalize = (value) => (value || '')
+        .toLowerCase()
+        .replace(/\(.*?\)|\[.*?]/g, ' ')
+        .replace(/[^a-z0-9\s]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    return `${normalize(title)}||${normalize((artist || '').split(',')[0])}`;
+}
 
 // Known duplicates by filename keywords (already in songs array in songs/ folder)
 const alreadyInSongsFolder = [
@@ -160,29 +175,36 @@ function isAlreadyAdded(filename) {
     return alreadyInSongsFolder.some(k => fnLower.includes(k));
 }
 
-files.forEach(filename => {
+files.forEach(({ source, filename }) => {
     // Skip duplicates and known already-added files
     if (filename.includes('_Duplicate') || filename.includes('Duplicate')) {
-        skipped.push(filename + ' [duplicate]');
+        skipped.push(`${source.label}/${filename} [duplicate]`);
         return;
     }
     if (isAlreadyAdded(filename)) {
-        skipped.push(filename + ' [already in songs/]');
+        skipped.push(`${source.label}/${filename} [already in songs/]`);
         return;
     }
     
     const { title, artist } = parseSongFilename(filename);
     const folder = classifyFolder(filename, artist);
-    const filePath = `song/${filename}`;
-    
-    results.push({ title, artist, file: filePath, folder, filename });
+    const filePath = `${source.filePrefix}/${filename}`;
+    const generatedKey = makeGeneratedKey(title, artist);
+
+    if (generatedSeen.has(generatedKey)) {
+        skipped.push(`${source.label}/${filename} [same generated key]`);
+        return;
+    }
+    generatedSeen.add(generatedKey);
+
+    results.push({ title, artist, file: filePath, folder, filename, isNewImport: source.isNewImport, sourceLabel: source.label });
 });
 
 // Print results as JS entries
-console.log(`// === NEW SONGS FROM song/ FOLDER (${results.length} songs) ===`);
+console.log(`// === GENERATED SONGS FROM song/ + new song/ (${results.length} songs) ===`);
 results.forEach(s => {
-    const escaped = s.filename.replace(/'/g, "\\'");
-    console.log(`    { title: "${s.title}", artist: "${s.artist}", file: "song/${escaped}", art: "IMAGES/logoo.png", folder: "${s.folder}", durationFormatted: "" },`);
+    const importFlag = s.isNewImport ? ', _isNewImport: true' : '';
+    console.log(`    { title: "${s.title}", artist: "${s.artist}", file: "${s.file.replace(/\\/g, '/')}", art: "IMAGES/logoo.png", folder: "${s.folder}", durationFormatted: ""${importFlag} },`);
 });
 
 console.log(`\n// SKIPPED: ${skipped.length}`);
@@ -190,8 +212,9 @@ console.log(`\n// SKIPPED: ${skipped.length}`);
 
 // Save to file too
 const jsLines = results.map(s => {
-    const escaped = s.filename.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-    return `    { title: "${s.title}", artist: "${s.artist}", file: "song/${escaped}", art: "IMAGES/logoo.png", folder: "${s.folder}", durationFormatted: "" },`;
+    const escapedPath = s.file.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    const importFlag = s.isNewImport ? ', _isNewImport: true' : '';
+    return `    { title: "${s.title}", artist: "${s.artist}", file: "${escapedPath}", art: "IMAGES/logoo.png", folder: "${s.folder}", durationFormatted: ""${importFlag} },`;
 });
-fs.writeFileSync(path.join(__dirname, 'new_songs.txt'), jsLines.join('\n'), 'utf8');
-console.log('\nSaved to scripts/new_songs.txt');
+fs.writeFileSync(path.join(__dirname, 'generated_song_entries.txt'), jsLines.join('\n'), 'utf8');
+console.log('\nSaved to scripts/generated_song_entries.txt');

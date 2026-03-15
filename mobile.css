@@ -1567,4 +1567,147 @@
     }
   }
 
-} /* end @media (max-width: 768px) */
+  body.media-session-ready .music-player,
+  .music-player.media-session-ready {
+    background:
+      radial-gradient(circle at top left, rgba(50, 224, 255, 0.24), transparent 42%),
+      radial-gradient(circle at top right, rgba(165, 94, 234, 0.22), transparent 38%),
+      linear-gradient(135deg, rgba(7, 12, 24, 0.96), rgba(13, 22, 38, 0.96));
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow:
+      0 -18px 48px rgba(0, 0, 0, 0.45),
+      0 0 0 1px rgba(50, 224, 255, 0.08) inset,
+      0 0 30px rgba(50, 224, 255, 0.16);
+    backdrop-filter: blur(26px) saturate(1.35);
+    overflow: hidden;
+  }
+
+  body.media-session-ready .music-player::before,
+  .music-player.media-session-ready::before {
+    content: "";
+    position: absolute;
+    inset: -40% auto auto -15%;
+    width: 75%;
+    height: 180%;
+    background: linear-gradient(115deg, transparent 25%, rgba(255, 255, 255, 0.18) 50%, transparent 75%);
+    transform: rotate(16deg);
+    pointer-events: none;
+    animation: notificationGlowSweep 6s linear infinite;
+  }
+
+  body.media-session-ready .music-player::after,
+  .music-player.media-session-ready::after {
+    content: "LOCKSCREEN READY • PLAY • PAUSE • NEXT";
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 6px;
+    display: flex;
+    justify-content: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(50, 224, 255, 0.14), rgba(165, 94, 234, 0.16));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.58rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+
+  body.media-session-ready .player-art,
+  .music-player.media-session-ready .player-art {
+    position: relative;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow:
+      0 16px 30px rgba(0, 0, 0, 0.38),
+      0 0 0 4px rgba(255, 255, 255, 0.04),
+      0 0 24px rgba(50, 224, 255, 0.2);
+    transform: translateY(-1px) scale(1.02);
+  }
+
+  body.media-session-ready .music-player.is-playing .player-art,
+  .music-player.media-session-ready.is-playing .player-art {
+    animation: mediaSessionArtPulse 3.2s ease-in-out infinite;
+  }
+
+  body.media-session-ready .song-title,
+  .music-player.media-session-ready .song-title {
+    background: linear-gradient(90deg, #ffffff, #b6f2ff 55%, #efe1ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 18px rgba(50, 224, 255, 0.12);
+    letter-spacing: 0.02em;
+  }
+
+  body.media-session-ready .song-artist,
+  .music-player.media-session-ready .song-artist {
+    color: rgba(236, 245, 255, 0.84);
+  }
+
+  body.media-session-ready .song-info,
+  .music-player.media-session-ready .song-info {
+    position: relative;
+    gap: 4px;
+  }
+
+  body.media-session-ready .song-info::after,
+  .music-player.media-session-ready .song-info::after {
+    content: "Notification controls synced with current song";
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    max-width: 100%;
+    margin-top: 4px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  body.media-session-ready .control-btn,
+  .music-player.media-session-ready .control-btn,
+  body.media-session-ready .play-btn-main,
+  .music-player.media-session-ready .play-btn-main {
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24), 0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  }
+
+  body.media-session-ready .mobile-progress-strip,
+  .music-player.media-session-ready .mobile-progress-strip {
+    background: linear-gradient(90deg, rgba(50, 224, 255, 0.08), rgba(165, 94, 234, 0.1));
+    border-radius: 999px;
+    padding: 6px 10px 0;
+  }
+}
+
+@keyframes mediaSessionArtPulse {
+  0%, 100% {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow:
+      0 16px 30px rgba(0, 0, 0, 0.38),
+      0 0 0 4px rgba(255, 255, 255, 0.04),
+      0 0 24px rgba(50, 224, 255, 0.2);
+  }
+  50% {
+    transform: translateY(-2px) scale(1.045);
+    box-shadow:
+      0 20px 36px rgba(0, 0, 0, 0.45),
+      0 0 0 4px rgba(255, 255, 255, 0.06),
+      0 0 34px rgba(165, 94, 234, 0.28);
+  }
+}
+
+@keyframes notificationGlowSweep {
+  0% { transform: translateX(-135%) rotate(16deg); }
+  100% { transform: translateX(235%) rotate(16deg); }
+}

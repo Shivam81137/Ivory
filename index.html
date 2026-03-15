@@ -29,6 +29,16 @@
 
       <main class="main-view">
         <header class="top-header">
+          <div class="mobile-hero" style="display: none" aria-hidden="true">
+            <div class="mobile-hero__meta">
+              <p class="mobile-hero__kicker">Good vibes only</p>
+              <h2 class="mobile-hero__title">Your Premium Mix</h2>
+            </div>
+            <button class="mobile-hero__avatar" id="mobile-profile-btn" aria-label="Open profile sheet">
+              <span>SV</span>
+            </button>
+          </div>
+
           <div class="nav-controls">
             <button
               class="circle-btn mobile-menu-btn"
@@ -102,6 +112,50 @@
           <!-- Sections injected dynamically by renderHome() -->
         </div>
       </main>
+    </div>
+
+    <section id="mobile-mini-player" class="mobile-mini-player" style="display: none" aria-label="Mini player">
+      <button class="mobile-mini-player__surface" id="mobile-mini-expand" aria-label="Open full screen player">
+        <img src="IMAGES/logoo.png" alt="Now playing" id="mobile-mini-art" class="mobile-mini-player__art" />
+        <span class="mobile-mini-player__text">
+          <strong id="mobile-mini-title">No song playing</strong>
+          <small id="mobile-mini-artist">Tap play on any card</small>
+        </span>
+      </button>
+      <button class="mobile-mini-player__play" id="mobile-mini-play" aria-label="Play or pause">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+        </svg>
+      </button>
+    </section>
+
+    <nav class="mobile-bottom-nav" id="mobile-bottom-nav" style="display: none" aria-label="Mobile navigation">
+      <button class="mobile-nav-tab is-active" data-target="home" aria-label="Home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 10v10h14V10"></path></svg>
+        <span>Home</span>
+      </button>
+      <button class="mobile-nav-tab" data-target="search" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+        <span>Search</span>
+      </button>
+      <button class="mobile-nav-tab" data-target="library" aria-label="Library">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M4 6h16"></path><path d="M4 12h16"></path><path d="M4 18h10"></path></svg>
+        <span>Library</span>
+      </button>
+      <button class="mobile-nav-tab" data-target="favorites" aria-label="Favorites">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="m12 21-7-7a4.6 4.6 0 0 1 0-6.5 4.6 4.6 0 0 1 6.5 0L12 8l.5-.5a4.6 4.6 0 0 1 6.5 0 4.6 4.6 0 0 1 0 6.5z"></path></svg>
+        <span>Favorites</span>
+      </button>
+    </nav>
+
+    <div class="mobile-bottom-sheet" id="mobile-bottom-sheet" aria-hidden="true">
+      <div class="mobile-bottom-sheet__backdrop" data-sheet-close></div>
+      <section class="mobile-bottom-sheet__panel" role="dialog" aria-modal="true" aria-labelledby="mobile-sheet-title">
+        <div class="mobile-bottom-sheet__handle"></div>
+        <h3 id="mobile-sheet-title">Quick Panel</h3>
+        <p id="mobile-sheet-body">Premium controls and shortcuts go here.</p>
+        <button class="mobile-bottom-sheet__close" data-sheet-close>Close</button>
+      </section>
     </div>
 
     <!-- Music Player Bar -->
@@ -343,9 +397,7 @@
       </div>
     </div>
 
-    <script async src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script async src="https://unpkg.com/butterchurn@2.6.0/lib/butterchurn.min.js"></script>
-    <script async src="https://unpkg.com/butterchurn-presets@2.4.7/lib/butterchurnPresets.min.js"></script>
+    <!-- Heavy visual libs are loaded on-demand by script.js for better low-network startup -->
     <!-- YouTube IFrame API loaded on-demand by script.js when needed -->
     <!-- ═══════════════════════════════════════════════ -->
     <!-- IVORY STREAMING CONFIG - Global Music Discovery -->
@@ -387,5 +439,6 @@
     </script>
     <!-- Main Player with Global Search & Streaming -->
     <script defer src="script.js?v=5.2"></script>
+    <script defer src="post_render_patch.js?v=1"></script>
   </body>
 </html>

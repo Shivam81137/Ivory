@@ -47,6 +47,51 @@ function getSectionFallback(song) {
     return sectionFallbackImages[song.folder] || 'IMAGES/logoo.png';
 }
 
+const RuntimePerf = (() => {
+    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection || null;
+    const type = conn && conn.effectiveType ? String(conn.effectiveType).toLowerCase() : '';
+    const saveData = !!(conn && conn.saveData);
+
+    const verySlow = saveData || type === 'slow-2g' || type.endsWith('2g');
+    const slow = verySlow || type === '3g';
+
+    return {
+        isSlowNetwork: () => slow,
+        isVerySlowNetwork: () => verySlow,
+        shouldFetchRemoteArt: () => !verySlow,
+        canRunHeavyVisuals: () => !slow
+    };
+})();
+
+const LazyLibs = (() => {
+    const cache = new Map();
+    function load(src) {
+        if (!src) return Promise.reject(new Error('missing src'));
+        if (cache.has(src)) return cache.get(src);
+        const p = new Promise((resolve, reject) => {
+            const existing = document.querySelector(`script[src="${src}"]`);
+            if (existing) {
+                existing.addEventListener('load', () => resolve(true), { once: true });
+                existing.addEventListener('error', () => reject(new Error('load fail')), { once: true });
+                if (existing.getAttribute('data-loaded') === '1') resolve(true);
+                return;
+            }
+            const s = document.createElement('script');
+            s.src = src;
+            s.async = true;
+            s.onload = () => {
+                s.setAttribute('data-loaded', '1');
+                resolve(true);
+            };
+            s.onerror = () => reject(new Error(`load fail: ${src}`));
+            document.head.appendChild(s);
+        });
+        cache.set(src, p);
+        return p;
+    }
+    return { load };
+})();
+
 // Songs array with durations manually added from scan
 const songs = [
     { title: "Ae Dil Hai Mushkil", artist: "Pritam, Arijit Singh", file: "songs/Arijit/Ae Dil Hai Mushkil Title Track - PagalNew - Pritam, Arijit Singh.mp3", art: "https://c.saavncdn.com/257/Ae-Dil-Hai-Mushkil-Hindi-2016-500x500.jpg", folder: "Arijit Singh", durationFormatted: "4:29" },
@@ -1654,7 +1699,7 @@ function renderSongList(playlistSongs, titleOverride) {
 
 let _durationFetchQueue = [];
 let _durationFetchActive = 0;
-const MAX_CONCURRENT_DURATION_FETCHES = 3;
+const MAX_CONCURRENT_DURATION_FETCHES = RuntimePerf.isSlowNetwork() ? 1 : 3;
 
 function fetchSongDuration(song, index) {
     _durationFetchQueue.push({ song, index });
@@ -1719,6 +1764,143 @@ async function refreshSongs() {
 
 let currentIndex = 0;
 const audio = new Audio();
+const supportsMediaSession = typeof navigator !== 'undefined' && 'mediaSession' in navigator;
+const MEDIA_ARTWORK_SIZES = [96, 128, 192, 256, 384, 512];
+
+function resolveMediaArtworkUrl(src) {
+    const fallback = DEFAULT_LOGO_PATH;
+    const value = src || fallback;
+    try {
+        return new URL(value, window.location.href).href;
+    } catch (e) {
+        return value;
+    }
+}
+
+function inferArtworkMime(src) {
+    const value = (src || '').toLowerCase();
+    if (value.endsWith('.png')) return 'image/png';
+    if (value.endsWith('.webp')) return 'image/webp';
+    if (value.endsWith('.gif')) return 'image/gif';
+    return 'image/jpeg';
+}
+
+function buildMediaSessionArtwork(song) {
+    const cover = resolveMediaArtworkUrl(song?.art || song?.thumb || getSectionFallback(song) || DEFAULT_LOGO_PATH);
+    const type = inferArtworkMime(cover);
+    return MEDIA_ARTWORK_SIZES.map((size) => ({
+        src: cover,
+        sizes: `${size}x${size}`,
+        type
+    }));
+}
+
+function updateMediaSessionPositionState() {
+    if (!supportsMediaSession || typeof navigator.mediaSession.setPositionState !== 'function') return;
+    if (!Number.isFinite(audio.duration) || audio.duration <= 0) return;
+
+    try {
+        navigator.mediaSession.setPositionState({
+            duration: audio.duration,
+            playbackRate: audio.playbackRate || 1,
+            position: Math.min(audio.currentTime || 0, audio.duration)
+        });
+    } catch (e) {
+        // Some browsers expose the API but reject unsupported values.
+    }
+}
+
+function syncMediaSession() {
+    if (!supportsMediaSession) return;
+    const song = songs?.[currentIndex];
+    if (!song) return;
+
+    try {
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: song.title || 'Unknown title',
+            artist: song.artist || 'Unknown artist',
+            album: song.folder || 'Ivory',
+            artwork: buildMediaSessionArtwork(song)
+        });
+    } catch (e) {
+        try {
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: song.title || 'Unknown title',
+                artist: song.artist || 'Unknown artist',
+                album: song.folder || 'Ivory'
+            });
+        } catch (err) {
+            // Ignore unsupported metadata construction.
+        }
+    }
+
+    try {
+        navigator.mediaSession.playbackState = audio.src ? (audio.paused ? 'paused' : 'playing') : 'none';
+    } catch (e) {
+        // Ignore playbackState issues on partial implementations.
+    }
+
+    updateMediaSessionPositionState();
+
+    document.body.classList.add('media-session-ready');
+    document.querySelector('.music-player')?.classList.add('media-session-ready');
+    document.title = `${song.title || 'Ivory'} • ${song.artist || 'Premium Music'}`;
+}
+
+function registerMediaSessionHandlers() {
+    if (!supportsMediaSession) return;
+
+    const safeHandler = (action, handler) => {
+        try {
+            navigator.mediaSession.setActionHandler(action, handler);
+        } catch (e) {
+            // Unsupported action on this browser.
+        }
+    };
+
+    safeHandler('play', async () => {
+        playSong();
+        syncMediaSession();
+    });
+    safeHandler('pause', () => {
+        pauseSong();
+        syncMediaSession();
+    });
+    safeHandler('previoustrack', () => {
+        prevSong();
+        syncMediaSession();
+    });
+    safeHandler('nexttrack', () => {
+        nextSong();
+        syncMediaSession();
+    });
+    safeHandler('seekbackward', (details) => {
+        const offset = details?.seekOffset || 10;
+        audio.currentTime = Math.max((audio.currentTime || 0) - offset, 0);
+        updateMediaSessionPositionState();
+    });
+    safeHandler('seekforward', (details) => {
+        const offset = details?.seekOffset || 10;
+        const duration = Number.isFinite(audio.duration) ? audio.duration : Number.MAX_SAFE_INTEGER;
+        audio.currentTime = Math.min((audio.currentTime || 0) + offset, duration);
+        updateMediaSessionPositionState();
+    });
+    safeHandler('seekto', (details) => {
+        if (!details || typeof details.seekTime !== 'number') return;
+        if (details.fastSeek && typeof audio.fastSeek === 'function') {
+            audio.fastSeek(details.seekTime);
+        } else {
+            audio.currentTime = details.seekTime;
+        }
+        updateMediaSessionPositionState();
+    });
+    safeHandler('stop', () => {
+        pauseSong();
+        audio.currentTime = 0;
+        updateMediaSessionPositionState();
+        syncMediaSession();
+    });
+}
 
 function loadSong(index) {
 	if (!songs.length) return;
@@ -1790,6 +1972,8 @@ function loadSong(index) {
 // ── Next-track preloading for smooth transitions ──
 let _preloadAudio = null;
 function _preloadNextTrack() {
+    if (RuntimePerf.isSlowNetwork()) return;
+
     // Clean up previous preload
     if (_preloadAudio) {
         _preloadAudio.onloadedmetadata = null;
@@ -1882,6 +2066,8 @@ function jsonpFetch(url, callbackParam) {
 const _artFetchPending = new Map(); // Deduplication: prevent concurrent fetches for same song
 
 async function fetchAlbumArt(title, artist) {
+    if (!RuntimePerf.shouldFetchRemoteArt()) return null;
+
     const cacheKey = `${title}||${artist}`;
 
     // Check in-memory cache first (from localStorage)
@@ -2510,6 +2696,10 @@ audio.addEventListener("durationchange", () => {
 audio.addEventListener("play", updateSongbarUI);
 audio.addEventListener("pause", updateSongbarUI);
 audio.addEventListener("ended", handleSongEnd);
+audio.addEventListener('timeupdate', updateMediaSessionPositionState);
+audio.addEventListener('durationchange', updateMediaSessionPositionState);
+audio.addEventListener('ratechange', updateMediaSessionPositionState);
+audio.addEventListener('seeked', updateMediaSessionPositionState);
 
 // volume control
 if (sb.volume) {
@@ -3087,6 +3277,38 @@ function nextSong() {
     loadSong(currentIndex);
     playSong();
 }
+
+registerMediaSessionHandlers();
+
+const _baseLoadSongForMediaSession = loadSong;
+loadSong = function(index) {
+    const result = _baseLoadSongForMediaSession(index);
+    syncMediaSession();
+    queueMicrotask(() => syncMediaSession());
+    return result;
+};
+
+const _baseUpdateSongbarUIForMediaSession = updateSongbarUI;
+updateSongbarUI = function() {
+    const result = _baseUpdateSongbarUIForMediaSession();
+    syncMediaSession();
+    return result;
+};
+
+const _basePlaySongForMediaSession = playSong;
+playSong = function() {
+    const result = _basePlaySongForMediaSession();
+    document.querySelector('.music-player')?.classList.add('media-session-ready');
+    syncMediaSession();
+    return result;
+};
+
+const _basePauseSongForMediaSession = pauseSong;
+pauseSong = function() {
+    const result = _basePauseSongForMediaSession();
+    syncMediaSession();
+    return result;
+};
 
 
 
