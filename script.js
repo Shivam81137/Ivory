@@ -1,4 +1,4 @@
-﻿console.log("Script loaded successfully.");
+console.log("Script loaded successfully.");
 
 // ── SECTION FALLBACK IMAGES ─────────────────────────────────────────────────
 // Maps folder/section names → their section card image so that if a song's
@@ -1075,6 +1075,8 @@ function sanitizeSongsArt() {
 
 // ─── 2. localStorage PERSISTENCE Functions ────────────────────────────────
 const SAVED_SONG_KEY = 'ivory_current_song';
+// Clear any previously saved song so page always starts fresh
+try { localStorage.removeItem(SAVED_SONG_KEY); } catch(e) {}
 
 function saveSongToLocalStorage(songIndex) {
     try {
@@ -3393,11 +3395,7 @@ function playSong() {
         player.classList.add('is-playing');
     }
     audio.play().catch(e => console.error("Play error:", e));
-    
-    // Persist current song to localStorage on play
-    if (currentIndex >= 0 && currentIndex < songs.length) {
-        saveSongToLocalStorage(currentIndex);
-    }
+
 }
 
 function pauseSong() {
@@ -3904,8 +3902,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // STEP 1: SANITIZE all image URLs BEFORE rendering anything
         sanitizeSongsArt();
 
-        // STEP 2: RESTORE song from localStorage if available
-        restoreSavedSong();
+        // STEP 2: (Disabled) — Always start fresh on page load
+        // restoreSavedSong();
 
         // STEP 3: Safely render UI
         safeRenderHome();
@@ -4518,14 +4516,30 @@ const OnlineMusicEngine = {
     const dropdown     = document.getElementById('search-results');
     if (!searchInput || !dropdown) return;
 
+    // ── CRITICAL: Move dropdown to body so it escapes .main-view stacking context ──
+    // On mobile, fixed elements that are DOM children of scroll containers
+    // can have their touch events intercepted by underlying content.
+    document.body.appendChild(dropdown);
+
     let debounceTimer  = null;
     let lastQuery      = '';
     let isLoading      = false;
 
     // ── Helpers ──────────────────────────────────────────
+    const searchContainer = searchInput.closest('.search-container');
+
+    function positionDropdown() {
+        if (!searchContainer || !dropdown.classList.contains('active')) return;
+        const rect = searchContainer.getBoundingClientRect();
+        dropdown.style.top  = (rect.bottom + 8) + 'px';
+        dropdown.style.left = rect.left + 'px';
+        dropdown.style.width = Math.max(rect.width, 360) + 'px';
+    }
+
     function showDropdown(html) {
         dropdown.innerHTML = html;
         dropdown.classList.add('active');
+        positionDropdown();
     }
 
     function hideDropdown() {
@@ -4533,6 +4547,11 @@ const OnlineMusicEngine = {
         dropdown.innerHTML = '';
         lastQuery = '';
     }
+
+    // Reposition on scroll / resize so the fixed dropdown stays anchored
+    const mainView = document.querySelector('.main-view');
+    if (mainView) mainView.addEventListener('scroll', positionDropdown, { passive: true });
+    window.addEventListener('resize', positionDropdown, { passive: true });
 
     function renderLoading() {
         showDropdown(`
@@ -4543,63 +4562,18 @@ const OnlineMusicEngine = {
     }
 
     function bindResultAction(item, handler) {
-        let fired = false;
-        let touchStart = null;
-        let touchMoved = false;
-        const moveThreshold = 8;
-        const run = (event) => {
-            if (fired) return;
-            fired = true;
-            if (event) {
-                if (event.cancelable) event.preventDefault();
-                event.stopPropagation();
-            }
+        // Simple click handler — works on both mobile and desktop.
+        // Modern mobile browsers fire click on tap without 300ms delay
+        // when touch-action:manipulation is set (which we have in CSS).
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             handler();
-        };
-        const onPointerDown = (event) => {
-            if (event.pointerType !== 'touch') return;
-            touchStart = { x: event.clientX, y: event.clientY };
-            touchMoved = false;
-        };
-        const onPointerMove = (event) => {
-            if (!touchStart) return;
-            const dx = event.clientX - touchStart.x;
-            const dy = event.clientY - touchStart.y;
-            if (Math.hypot(dx, dy) > moveThreshold) touchMoved = true;
-        };
-        const onPointerUp = (event) => {
-            if (event.pointerType === 'touch' && touchMoved) return;
-            run(event);
-            touchStart = null;
-            touchMoved = false;
-        };
-        const onTouchStart = (event) => {
-            if (!event.touches || event.touches.length !== 1) return;
-            const t = event.touches[0];
-            touchStart = { x: t.clientX, y: t.clientY };
-            touchMoved = false;
-        };
-        const onTouchMove = (event) => {
-            if (!touchStart || !event.touches || !event.touches.length) return;
-            const t = event.touches[0];
-            const dx = t.clientX - touchStart.x;
-            const dy = t.clientY - touchStart.y;
-            if (Math.hypot(dx, dy) > moveThreshold) touchMoved = true;
-        };
-        const onTouchEnd = (event) => {
-            if (touchStart && !touchMoved) run(event);
-            touchStart = null;
-            touchMoved = false;
-        };
-        item.addEventListener('pointerdown', onPointerDown);
-        item.addEventListener('pointermove', onPointerMove);
-        item.addEventListener('pointerup', onPointerUp);
-        item.addEventListener('touchstart', onTouchStart, { passive: false });
-        item.addEventListener('touchmove', onTouchMove, { passive: false });
-        item.addEventListener('touchend', onTouchEnd, { passive: false });
-        item.addEventListener('click', run);
-        item.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter' || event.key === ' ') run(event);
+        });
+
+        // Keyboard accessibility
+        item.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(); }
         });
     }
 
@@ -4671,6 +4645,7 @@ const OnlineMusicEngine = {
         }
 
         dropdown.classList.add('active');
+        positionDropdown();
     }
 
     // ── Play a local song by its index in the global songs[] array ──
@@ -4757,23 +4732,25 @@ const OnlineMusicEngine = {
             'local': '💿'
         }[source] || '🌐';
 
-        const qualityLabel = quality === 'preview' ? '⏱️ 30s' : quality === 'high' ? '🎵 HQ' : '🎵 FULL';
+        const qualityLabel = quality === 'preview' ? '30s' : quality === 'high' ? 'HQ' : 'FULL';
 
-        const badge = `<span style="
-            font-size:0.6rem;font-weight:700;padding:3px 8px;border-radius:10px;
-            background:linear-gradient(90deg,#32e0ff22,#a55eea22);
-            border:1px solid rgba(50,224,255,0.3);color:#32e0ff;
-            white-space:nowrap;flex-shrink:0;letter-spacing:.5px;margin:0 4px">
-            ${sourceEmoji} ${qualityLabel}</span>`;
+        const badge = `<span class="search-badge">${sourceEmoji} ${qualityLabel}</span>`;
+
+        const playIcon = `<div class="search-play-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                <polygon points="6 3 20 12 6 21 6 3"></polygon>
+            </svg>
+        </div>`;
 
         return { html: `
-            <div class="search-result-item" style="gap:12px;cursor:pointer">
-                <img class="search-img" src="${imgSrc}" alt="" style="width:45px;height:45px;object-fit:cover;border-radius:4px" onerror="this.src='IMAGES/logoo.png'">
-                <div class="search-info" style="overflow:hidden;flex:1">
-                    <div class="search-title" style="font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(title)}</div>
-                    <div class="search-artist" style="font-size:0.85rem;opacity:0.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(artist)}${sub ? ` · ${escHtml(sub)}` : ''}</div>
+            <div class="search-result-item">
+                <img class="search-img" src="${imgSrc}" alt="" onerror="this.src='IMAGES/logoo.png'">
+                <div class="search-info">
+                    <div class="search-title">${escHtml(title)}</div>
+                    <div class="search-artist">${escHtml(artist)}${sub ? ` · ${escHtml(sub)}` : ''}</div>
                 </div>
                 ${badge}
+                ${playIcon}
             </div>`, onClick };
     }
 
@@ -4851,6 +4828,7 @@ const OnlineMusicEngine = {
                     <span>⚠️ Search temporary unavailable, try again</span>
                 </div>`;
                 dropdown.classList.add('active');
+                positionDropdown();
             }
         }
     }
@@ -4866,7 +4844,10 @@ const OnlineMusicEngine = {
     // Focus reveals dropdown if something was typed
     searchInput.addEventListener('focus', () => {
         const q = searchInput.value.trim();
-        if (q && dropdown.innerHTML) dropdown.classList.add('active');
+        if (q && dropdown.innerHTML) {
+            dropdown.classList.add('active');
+            positionDropdown();
+        }
     });
 
     // Keyboard: Escape closes, Enter searches
@@ -4881,9 +4862,11 @@ const OnlineMusicEngine = {
         }
     });
 
-    // Click outside closes
+    // Click outside closes — check both search container AND the dropdown itself
     document.addEventListener('click', e => {
-        if (!e.target.closest('.search-container')) hideDropdown();
+        if (!e.target.closest('.search-container') && !e.target.closest('#search-results')) {
+            hideDropdown();
+        }
     });
 
     console.log('✅ Global search initialized - Ready to search 200M+ songs!');
