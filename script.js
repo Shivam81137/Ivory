@@ -922,6 +922,128 @@ function makeSongKey(song) {
     }
 })();
 
+function normalizeSongToken(value) {
+    return String(value || '')
+        .toLowerCase()
+        .replace(/\(.*?\)|\[.*?\]/g, '')
+        .replace(/[^a-z0-9]+/g, ' ')
+        .trim();
+}
+
+function getPrimaryArtist(artist) {
+    if (!artist) return '';
+    return String(artist).split(',')[0].trim();
+}
+
+function buildDedupeKey(song) {
+    if (!song) return '';
+    if (song._isOnline && song._onlineId) {
+        return `online||${song._source || 'src'}||${song._onlineId}`;
+    }
+    const titleKey = normalizeSongToken(song.title);
+    if (!titleKey) return '';
+    const artistKey = normalizeSongToken(getPrimaryArtist(song.artist));
+    const folderKey = normalizeSongToken(song.folder);
+    const fileName = String(song.file || '').split('/').pop();
+    const fileKey = normalizeSongToken(fileName);
+    const locationKey = [folderKey, fileKey].filter(Boolean).join('||');
+    return `${titleKey}||${artistKey}||${locationKey || 'unknown'}`;
+}
+
+function scoreSong(song) {
+    if (!song) return -1;
+    let score = 0;
+    if (!song._isOnline) score += 2;
+    if (song.title) score += 4;
+    if (song.artist) score += 2;
+    if (song.file) score += 3;
+    if (song.durationFormatted) score += 1;
+    const art = String(song.art || '');
+    if (art && !/logoo\.png/i.test(art)) score += 1;
+    return score;
+}
+
+function autoOrderSongs(list) {
+    const folderCounts = new Map();
+    list.forEach((song) => {
+        const key = normalizeSongToken(song.folder) || 'unknown';
+        folderCounts.set(key, (folderCounts.get(key) || 0) + 1);
+    });
+
+    const preferredFolders = [
+        'arijit singh',
+        'karan aujla',
+        'hindi hits',
+        'global hits',
+        'retro classics',
+        'talwiinder'
+    ];
+    const preferredIndex = new Map(preferredFolders.map((name, idx) => [name, idx]));
+
+    const rankFolder = (song) => {
+        const key = normalizeSongToken(song.folder);
+        const index = preferredIndex.has(key) ? preferredIndex.get(key) : 999;
+        const count = folderCounts.get(key || 'unknown') || 0;
+        return { index, count, key };
+    };
+
+    return list.slice().sort((a, b) => {
+        const aOnline = a._isOnline ? 1 : 0;
+        const bOnline = b._isOnline ? 1 : 0;
+        if (aOnline !== bOnline) return aOnline - bOnline;
+
+        const aFolder = rankFolder(a);
+        const bFolder = rankFolder(b);
+        if (aFolder.index !== bFolder.index) return aFolder.index - bFolder.index;
+        if (aFolder.count !== bFolder.count) return bFolder.count - aFolder.count;
+        if (aFolder.key === bFolder.key) {
+            const aNew = a._isNewImport ? 0 : 1;
+            const bNew = b._isNewImport ? 0 : 1;
+            if (aNew !== bNew) return aNew - bNew;
+        }
+
+        const aArtist = normalizeSongToken(getPrimaryArtist(a.artist));
+        const bArtist = normalizeSongToken(getPrimaryArtist(b.artist));
+        if (aArtist !== bArtist) return aArtist.localeCompare(bArtist);
+
+        const aTitle = normalizeSongToken(a.title);
+        const bTitle = normalizeSongToken(b.title);
+        if (aTitle !== bTitle) return aTitle.localeCompare(bTitle);
+
+        const aFile = normalizeSongToken(a.file);
+        const bFile = normalizeSongToken(b.file);
+        return aFile.localeCompare(bFile);
+    });
+}
+
+function cleanSongsData() {
+    const cleaned = [];
+    const seen = new Map();
+
+    songs.forEach((song) => {
+        if (!song || !song.title || !song.file) return;
+        const key = buildDedupeKey(song);
+        if (!key) return;
+
+        const existingIndex = seen.get(key);
+        if (existingIndex === undefined) {
+            cleaned.push(song);
+            seen.set(key, cleaned.length - 1);
+            return;
+        }
+
+        const current = cleaned[existingIndex];
+        if (scoreSong(song) > scoreSong(current)) {
+            cleaned[existingIndex] = song;
+        }
+    });
+
+    const ordered = autoOrderSongs(cleaned);
+    songs.splice(0, songs.length, ...ordered);
+}
+
+cleanSongsData();
+
 // ═══════════════════════════════════════════════════════════════════════════
 // ─── STRICT DATA-DRIVEN APPROACH: SANITIZATION + PERSISTENCE ───────────────
 // ═══════════════════════════════════════════════════════════════════════════
@@ -994,10 +1116,38 @@ function restoreSavedSong() {
     if (!saved) return;
     
     try {
-        // Verify saved index is still valid
-        if (saved.index >= 0 && saved.index < songs.length) {
+        const isMatch = (idx) => {
+            if (idx < 0 || idx >= songs.length) return false;
+            const song = songs[idx];
+            if (!song) return false;
+            if (saved.file && song.file === saved.file) return true;
+            const titleKey = normalizeSongToken(song.title);
+            const artistKey = normalizeSongToken(getPrimaryArtist(song.artist));
+            const savedTitle = normalizeSongToken(saved.title);
+            const savedArtist = normalizeSongToken(getPrimaryArtist(saved.artist));
+            return titleKey && titleKey === savedTitle && artistKey === savedArtist;
+        };
+
+        let targetIndex = Number.isInteger(saved.index) ? saved.index : -1;
+        if (!isMatch(targetIndex)) {
+            if (saved.file) {
+                const byFile = songs.findIndex(s => s.file === saved.file);
+                if (isMatch(byFile)) targetIndex = byFile;
+            }
+        }
+        if (!isMatch(targetIndex)) {
+            const savedTitle = normalizeSongToken(saved.title);
+            const savedArtist = normalizeSongToken(getPrimaryArtist(saved.artist));
+            const byTitleArtist = songs.findIndex(s =>
+                normalizeSongToken(s.title) === savedTitle &&
+                normalizeSongToken(getPrimaryArtist(s.artist)) === savedArtist
+            );
+            if (isMatch(byTitleArtist)) targetIndex = byTitleArtist;
+        }
+
+        if (isMatch(targetIndex)) {
             console.log(`🔄 Restoring saved song: "${saved.title}" (ready to play, not auto-showing player)`);
-            currentIndex = saved.index;
+            currentIndex = targetIndex;
             // Only load metadata — do NOT remove intro-mode or show the player bar.
             // The app always starts full-screen on refresh; player slides up only when
             // the user explicitly plays a song.
@@ -4328,6 +4478,137 @@ const OnlineMusicEngine = {
             </div>`);
     }
 
+    function bindResultAction(item, handler) {
+        let fired = false;
+        let touchStart = null;
+        let touchMoved = false;
+        const moveThreshold = 8;
+        const run = (event) => {
+            if (fired) return;
+            fired = true;
+            if (event) {
+                if (event.cancelable) event.preventDefault();
+                event.stopPropagation();
+            }
+            handler();
+        };
+        const onPointerDown = (event) => {
+            if (event.pointerType !== 'touch') return;
+            touchStart = { x: event.clientX, y: event.clientY };
+            touchMoved = false;
+        };
+        const onPointerMove = (event) => {
+            if (!touchStart) return;
+            const dx = event.clientX - touchStart.x;
+            const dy = event.clientY - touchStart.y;
+            if (Math.hypot(dx, dy) > moveThreshold) touchMoved = true;
+        };
+        const onPointerUp = (event) => {
+            if (event.pointerType === 'touch' && touchMoved) return;
+            run(event);
+            touchStart = null;
+            touchMoved = false;
+        };
+        const onTouchStart = (event) => {
+            if (!event.touches || event.touches.length !== 1) return;
+            const t = event.touches[0];
+            touchStart = { x: t.clientX, y: t.clientY };
+            touchMoved = false;
+        };
+        const onTouchMove = (event) => {
+            if (!touchStart || !event.touches || !event.touches.length) return;
+            const t = event.touches[0];
+            const dx = t.clientX - touchStart.x;
+            const dy = t.clientY - touchStart.y;
+            if (Math.hypot(dx, dy) > moveThreshold) touchMoved = true;
+        };
+        const onTouchEnd = (event) => {
+            if (touchStart && !touchMoved) run(event);
+            touchStart = null;
+            touchMoved = false;
+        };
+        item.addEventListener('pointerdown', onPointerDown);
+        item.addEventListener('pointermove', onPointerMove);
+        item.addEventListener('pointerup', onPointerUp);
+        item.addEventListener('touchstart', onTouchStart, { passive: false });
+        item.addEventListener('touchmove', onTouchMove, { passive: false });
+        item.addEventListener('touchend', onTouchEnd, { passive: false });
+        item.addEventListener('click', run);
+        item.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') run(event);
+        });
+    }
+
+    function renderResults(localMatches, onlineTracks, query) {
+        const hasLocal = Array.isArray(localMatches) && localMatches.length > 0;
+        const hasOnline = Array.isArray(onlineTracks) && onlineTracks.length > 0;
+        dropdown.innerHTML = '';
+
+        if (hasLocal) {
+            const hdr = document.createElement('div');
+            hdr.innerHTML = divider('💿 Your Library');
+            dropdown.appendChild(hdr);
+
+            localMatches.forEach(({ s, i }) => {
+                const { html, onClick } = buildItem({
+                    imgSrc: s.art || 'IMAGES/logoo.png',
+                    title:  s.title,
+                    artist: s.artist,
+                    sub:    s.folder,
+                    source: 'local',
+                    quality: 'full',
+                    onClick: () => playLocalResult(i)
+                });
+                const el = document.createElement('div');
+                el.innerHTML = html;
+                const item = el.firstElementChild;
+                item.style.cursor = 'pointer';
+                item.setAttribute('role', 'button');
+                item.setAttribute('tabindex', '0');
+                bindResultAction(item, onClick);
+                dropdown.appendChild(item);
+            });
+        }
+
+        if (hasOnline) {
+            const hdr = document.createElement('div');
+            hdr.innerHTML = divider('🌐 Online Results · Stream Now');
+            dropdown.appendChild(hdr);
+
+            onlineTracks.slice(0, 20).forEach(t => {
+                const { html, onClick } = buildItem({
+                    imgSrc:   t.artworkUrl || 'IMAGES/logoo.png',
+                    title:    t.trackName,
+                    artist:   t.artistName,
+                    sub:      t.collectionName,
+                    source:   t.source,
+                    quality:  t.quality,
+                    onClick:  () => playOnlineResult(t)
+                });
+                const el = document.createElement('div');
+                el.innerHTML = html;
+                const item = el.firstElementChild;
+                item.style.cursor = 'pointer';
+                item.setAttribute('role', 'button');
+                item.setAttribute('tabindex', '0');
+                bindResultAction(item, onClick);
+                dropdown.appendChild(item);
+            });
+        }
+
+        if (!hasLocal && !hasOnline) {
+            dropdown.innerHTML = `<div class="search-result-item" style="pointer-events:none;justify-content:center;padding:30px;color:#aaa;text-align:center">
+                <div>
+                    <div style="font-size:1.2em;margin-bottom:8px">🔍</div>
+                    <div>No results found</div>
+                    <div style="font-size:0.85rem;opacity:0.6;margin-top:4px">for "${escHtml(query)}"</div>
+                </div>
+            </div>`;
+        }
+
+        dropdown.classList.add('active');
+    }
+
     // ── Play a local song by its index in the global songs[] array ──
     function playLocalResult(globalIndex) {
         playSongAtIndex(globalIndex);
@@ -4469,11 +4750,13 @@ const OnlineMusicEngine = {
 
         console.log('🔍 User search:', q);
 
-        // Show loading immediately
-        renderLoading();
-
-        // Get local results instantly
         const localMatches = searchLocal(q);
+
+        if (localMatches.length > 0) {
+            renderResults(localMatches, [], q);
+        } else {
+            renderLoading();
+        }
 
         try {
             isLoading = true;
@@ -4490,104 +4773,15 @@ const OnlineMusicEngine = {
 
             console.log('📊 Search results - Local:', localMatches.length, 'Online:', onlineTracks.length);
 
-            // Rebuild dropdown with both results
-            dropdown.innerHTML = '';
-
-            // Show local results first
-            if (localMatches.length > 0) {
-                const hdr = document.createElement('div');
-                hdr.innerHTML = divider('💿 Your Library');
-                dropdown.appendChild(hdr);
-
-                localMatches.forEach(({ s, i }) => {
-                    const { html, onClick } = buildItem({
-                        imgSrc: s.art || 'IMAGES/logoo.png',
-                        title:  s.title,
-                        artist: s.artist,
-                        sub:    s.folder,
-                        source: 'local',
-                        quality: 'full',
-                        onClick: () => playLocalResult(i)
-                    });
-                    const el = document.createElement('div');
-                    el.innerHTML = html;
-                    const item = el.firstElementChild;
-                    item.style.cursor = 'pointer';
-                    item.addEventListener('click', onClick);
-                    dropdown.appendChild(item);
-                });
-            }
-
-            // Show online results
-            if (onlineTracks.length > 0) {
-                const hdr = document.createElement('div');
-                hdr.innerHTML = divider('🌐 Online Results · Stream Now');
-                dropdown.appendChild(hdr);
-
-                onlineTracks.slice(0, 20).forEach(t => {
-                    const { html, onClick } = buildItem({
-                        imgSrc:   t.artworkUrl || 'IMAGES/logoo.png',
-                        title:    t.trackName,
-                        artist:   t.artistName,
-                        sub:      t.collectionName,
-                        source:   t.source,
-                        quality:  t.quality,
-                        onClick:  () => playOnlineResult(t)
-                    });
-                    const el = document.createElement('div');
-                    el.innerHTML = html;
-                    const item = el.firstElementChild;
-                    item.style.cursor = 'pointer';
-                    item.addEventListener('click', onClick);
-                    dropdown.appendChild(item);
-                });
-            }
-
-            // No results at all
-            if (localMatches.length === 0 && onlineTracks.length === 0) {
-                dropdown.innerHTML = `<div class="search-result-item" style="pointer-events:none;justify-content:center;padding:30px;color:#aaa;text-align:center">
-                    <div>
-                        <div style="font-size:1.2em;margin-bottom:8px">🔍</div>
-                        <div>No results found</div>
-                        <div style="font-size:0.85rem;opacity:0.6;margin-top:4px">for "${escHtml(q)}"</div>
-                    </div>
-                </div>`;
-            }
-
-            dropdown.classList.add('active');
+            renderResults(localMatches, onlineTracks, q);
 
         } catch (err) {
             isLoading = false;
             console.error('❌ Search error:', err);
 
             if (localMatches.length > 0) {
-                // Still show local results if online fails
                 console.log('Showing local results only due to error');
-                dropdown.innerHTML = '';
-
-                const hdr = document.createElement('div');
-                hdr.innerHTML = divider('💿 Your Library');
-                dropdown.appendChild(hdr);
-
-                localMatches.forEach(({ s, i }) => {
-                    const { html, onClick } = buildItem({
-                        imgSrc: s.art || 'IMAGES/logoo.png',
-                        title:  s.title,
-                        artist: s.artist,
-                        sub:    s.folder,
-                        source: 'local',
-                        quality: 'full',
-                        onClick: () => playLocalResult(i)
-                    });
-                    const el = document.createElement('div');
-                    el.innerHTML = html;
-                    const item = el.firstElementChild;
-                    item.style.cursor = 'pointer';
-                    item.addEventListener('click', onClick);
-                    dropdown.appendChild(item);
-                });
-
-                dropdown.classList.add('active');
+                renderResults(localMatches, [], q);
             } else {
                 dropdown.innerHTML = `<div class="search-result-item" style="pointer-events:none;justify-content:center;padding:20px;color:#aaa">
                     <span>⚠️ Search temporary unavailable, try again</span>
@@ -4602,7 +4796,7 @@ const OnlineMusicEngine = {
         const q = searchInput.value.trim();
         clearTimeout(debounceTimer);
         if (!q) { hideDropdown(); return; }
-        debounceTimer = setTimeout(() => doSearch(q), 300); // Reduced debounce for faster feel
+        debounceTimer = setTimeout(() => doSearch(q), 180);
     });
 
     // Focus reveals dropdown if something was typed
@@ -4849,6 +5043,93 @@ const OnlineMusicEngine = {
     }
 
     document.addEventListener('DOMContentLoaded', init, { once: true });
+})();
+
+(function initMobileModeControls() {
+    const isMobile = () => !!(window.matchMedia && window.matchMedia('(max-width: 768px)').matches);
+
+    const syncModeClasses = () => {
+        if (!isMobile()) return;
+        const shuffleBtn = document.getElementById('sb-shuffle');
+        const repeatBtn = document.getElementById('sb-repeat');
+        const fsOverlay = document.getElementById('fullscreen-overlay');
+
+        document.body.classList.toggle('mode-shuffle-on', !!(shuffleBtn && shuffleBtn.classList.contains('active')));
+        document.body.classList.toggle('mode-repeat-on', !!(repeatBtn && repeatBtn.classList.contains('active')));
+        document.body.classList.toggle('mode-fullscreen-on', !!(fsOverlay && fsOverlay.classList.contains('active')));
+    };
+
+    const addReshufflePulse = () => {
+        const player = document.querySelector('.music-player');
+        if (!player) return;
+        player.classList.remove('reshuffle-flash');
+        void player.offsetWidth;
+        player.classList.add('reshuffle-flash');
+        setTimeout(() => player.classList.remove('reshuffle-flash'), 540);
+    };
+
+    const bind = () => {
+        const shuffleBtn = document.getElementById('sb-shuffle');
+        const repeatBtn = document.getElementById('sb-repeat');
+        const expandBtn = document.getElementById('expand-btn');
+        const fsClose = document.getElementById('fs-close');
+        const fsOverlay = document.getElementById('fullscreen-overlay');
+
+        if (shuffleBtn && !shuffleBtn.dataset.mobileModeBound) {
+            let lastTap = 0;
+            shuffleBtn.dataset.mobileModeBound = '1';
+            shuffleBtn.addEventListener('click', () => {
+                const now = Date.now();
+                const isQuickSecondTap = now - lastTap < 420;
+                lastTap = now;
+
+                if (isQuickSecondTap && shuffleBtn.classList.contains('active') && typeof nextSong === 'function') {
+                    addReshufflePulse();
+                    nextSong();
+                    if (typeof updateSongbarUI === 'function') updateSongbarUI();
+                }
+                requestAnimationFrame(syncModeClasses);
+            });
+        }
+
+        if (repeatBtn && !repeatBtn.dataset.mobileModeBound) {
+            repeatBtn.dataset.mobileModeBound = '1';
+            repeatBtn.addEventListener('click', () => requestAnimationFrame(syncModeClasses));
+        }
+
+        if (expandBtn && !expandBtn.dataset.mobileModeBound) {
+            expandBtn.dataset.mobileModeBound = '1';
+            expandBtn.addEventListener('click', () => {
+                expandBtn.classList.add('active');
+                requestAnimationFrame(syncModeClasses);
+            });
+        }
+
+        if (fsClose && !fsClose.dataset.mobileModeBound) {
+            fsClose.dataset.mobileModeBound = '1';
+            fsClose.addEventListener('click', () => {
+                const btn = document.getElementById('expand-btn');
+                if (btn) btn.classList.remove('active');
+                requestAnimationFrame(syncModeClasses);
+            });
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key !== 'Escape') return;
+            if (!fsOverlay || !fsOverlay.classList.contains('active')) return;
+            const btn = document.getElementById('expand-btn');
+            if (btn) btn.classList.remove('active');
+            requestAnimationFrame(syncModeClasses);
+        });
+
+        syncModeClasses();
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', bind, { once: true });
+    } else {
+        bind();
+    }
 })();
 
 
