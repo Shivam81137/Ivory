@@ -2722,6 +2722,17 @@ function updateSongbarUI() {
 		fs.play.innerHTML = audio.paused ? PLAY_ICON_LG : PAUSE_ICON_LG;
     }
 
+    const mini = {
+        art: document.getElementById('mobile-mini-art'),
+        title: document.getElementById('mobile-mini-title'),
+        artist: document.getElementById('mobile-mini-artist'),
+        play: document.getElementById('mobile-mini-play')
+    };
+    if (mini.art) mini.art.src = s.art || s.thumb || getSectionFallback(s);
+    if (mini.title) mini.title.textContent = s.title || 'Unknown title';
+    if (mini.artist) mini.artist.textContent = s.artist || 'Unknown artist';
+    if (mini.play) mini.play.innerHTML = audio.paused ? PLAY_ICON_SM : PAUSE_ICON_SM;
+
     // Update active song highlight in list
     document.querySelector('.active-song')?.classList.remove('active-song');
     const activeRow = document.getElementById(`song-row-${currentIndex}`);
@@ -3912,28 +3923,80 @@ document.addEventListener('DOMContentLoaded', () => {
 const fsOverlay = document.getElementById('fullscreen-overlay');
 const expandBtn = document.getElementById('expand-btn');
 const fsCloseBtn = document.getElementById('fs-close');
+const mobileMiniExpandBtn = document.getElementById('mobile-mini-expand');
+const mobileMiniPlayBtn = document.getElementById('mobile-mini-play');
 
-// Toggle Overlay
-if (expandBtn && fsOverlay) {
-    expandBtn.addEventListener('click', () => {
-        fsOverlay.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+function setFullscreenState(isOpen) {
+    if (!fsOverlay) return;
+    fsOverlay.classList.toggle('active', !!isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
 
+    if (isOpen) {
         // Re-sync lyrics position in fullscreen after it becomes visible
         requestAnimationFrame(() => {
             LyricsManager.sync(audio.currentTime || 0);
-            // Force scroll the fullscreen lyrics to the active line
             if (LyricsManager.fsContainer && LyricsManager.activeLineIndex >= 0) {
                 LyricsManager.highlightLine(LyricsManager.fsContainer, LyricsManager.activeLineIndex);
             }
         });
+    }
+}
+
+function bindPressAction(element, key, handler) {
+    if (!element || element.dataset[key]) return;
+    element.dataset[key] = '1';
+
+    let lastTouchLikePress = 0;
+
+    // Mobile reliability: handle direct touch/pointer release and bypass delayed click quirks.
+    element.addEventListener('pointerup', (event) => {
+        if (event.pointerType === 'mouse') return;
+        event.preventDefault();
+        lastTouchLikePress = Date.now();
+        handler(event);
+    }, { passive: false });
+
+    element.addEventListener('click', (event) => {
+        if (Date.now() - lastTouchLikePress < 350) return;
+        handler(event);
+    });
+
+    // iOS fallback where click/pointer synthesis can be inconsistent in overlays.
+    element.addEventListener('touchend', (event) => {
+        if (Date.now() - lastTouchLikePress < 350) return;
+        event.preventDefault();
+        lastTouchLikePress = Date.now();
+        handler(event);
+    }, { passive: false });
+}
+
+// Toggle Overlay
+if (expandBtn && fsOverlay) {
+    bindPressAction(expandBtn, 'fsOpenBound', () => {
+        setFullscreenState(true);
     });
 }
 
 if (fsCloseBtn && fsOverlay) {
-    fsCloseBtn.addEventListener('click', () => {
-        fsOverlay.classList.remove('active');
-        document.body.style.overflow = '';
+    bindPressAction(fsCloseBtn, 'fsCloseBound', () => {
+        setFullscreenState(false);
+    });
+}
+
+if (mobileMiniExpandBtn && fsOverlay) {
+    bindPressAction(mobileMiniExpandBtn, 'mobileFsOpenBound', () => {
+        setFullscreenState(true);
+    });
+}
+
+if (mobileMiniPlayBtn) {
+    bindPressAction(mobileMiniPlayBtn, 'mobileMiniPlayBound', () => {
+        if (audio.paused) {
+            playSong();
+        } else {
+            pauseSong();
+        }
+        if (typeof updateSongbarUI === 'function') updateSongbarUI();
     });
 }
 
@@ -3948,7 +4011,7 @@ const fsControls = {
 };
 
 if (fsControls.play) {
-    fsControls.play.addEventListener('click', () => {
+    bindPressAction(fsControls.play, 'fsPlayBound', () => {
         if (audio.paused) {
             playSong();
             // icon updates via audio 'play' event
@@ -3956,18 +4019,19 @@ if (fsControls.play) {
             pauseSong();
             // icon updates via audio 'pause' event
         }
+        updateSongbarUI();
     });
 }
 
 if (fsControls.prev) {
-    fsControls.prev.addEventListener('click', () => {
+    bindPressAction(fsControls.prev, 'fsPrevBound', () => {
         prevSong();
         updateSongbarUI();
     });
 }
 
 if (fsControls.next) {
-    fsControls.next.addEventListener('click', () => {
+    bindPressAction(fsControls.next, 'fsNextBound', () => {
         nextSong();
         updateSongbarUI();
     });
