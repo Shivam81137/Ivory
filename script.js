@@ -1914,7 +1914,7 @@ async function refreshSongs() {
     renderPlaylist();
 }
 
-let currentIndex = 0;
+let currentIndex = -1;
 const audio = new Audio();
 const supportsMediaSession = typeof navigator !== 'undefined' && 'mediaSession' in navigator;
 const MEDIA_ARTWORK_SIZES = [96, 128, 192, 256, 384, 512];
@@ -2593,10 +2593,11 @@ let _lastPlayState = null; // Track last play/pause state to avoid redundant inn
 
 // When a song loads, update songbar
 function updateSongbarUI() {
-	if (!songs || !songs.length) {
-		if (sb.title) sb.title.textContent = "No track";
-		if (sb.artist) sb.artist.textContent = "—";
+	if (!songs || !songs.length || currentIndex < 0 || currentIndex >= songs.length) {
+		if (sb.title) sb.title.textContent = "Ivory";
+		if (sb.artist) sb.artist.textContent = "Select a song to play";
 		if (sb.art) sb.art.src = "IMAGES/logoo.png";
+		document.title = 'Ivory | Premium Music';
 		return;
 	}
 	const s = songs[currentIndex];
