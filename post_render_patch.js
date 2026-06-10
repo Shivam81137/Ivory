@@ -5,22 +5,48 @@
   function prioritizeAndDedupeList(list) {
     if (!Array.isArray(list) || list.length === 0) return [];
 
-    var promoted = [];
-    var regular = [];
-
-    list.forEach(function (song) {
-      if (!song) return;
-      if (song._isNewImport) promoted.push(song);
-      else regular.push(song);
-    });
-
+    // Deduplicate first
     var seen = new Set();
-    return promoted.concat(regular).filter(function (song) {
+    var deduped = list.filter(function (song) {
+      if (!song) return false;
       var key = makeSongKey(song);
       if (!key || seen.has(key)) return false;
       seen.add(key);
       return true;
     });
+
+    // Check if the list is specifically for Global Hits or Hindi Hits category
+    var isGlobalHitsCategory = deduped.length > 0 && deduped.every(function (song) {
+      return song.folder === 'Global Hits';
+    });
+    var isHindiHitsCategory = deduped.length > 0 && deduped.every(function (song) {
+      return song.folder === 'Hindi Hits';
+    });
+
+    if (isGlobalHitsCategory || isHindiHitsCategory) {
+      // Sort strictly by _customOrder if defined
+      return deduped.sort(function (a, b) {
+        var aOrder = typeof a._customOrder === 'number' ? a._customOrder : 10000;
+        var bOrder = typeof b._customOrder === 'number' ? b._customOrder : 10000;
+        if (aOrder !== bOrder) return aOrder - bOrder;
+        
+        // Secondary sort to maintain stable order for remaining songs
+        var aNew = a._isNewImport ? 0 : 1;
+        var bNew = b._isNewImport ? 0 : 1;
+        if (aNew !== bNew) return aNew - bNew;
+        
+        return 0; // maintain original relative order
+      });
+    }
+
+    // Default promotion logic for other categories
+    var promoted = [];
+    var regular = [];
+    deduped.forEach(function (song) {
+      if (song._isNewImport) promoted.push(song);
+      else regular.push(song);
+    });
+    return promoted.concat(regular);
   }
 
   var baseRenderPlaylist = renderPlaylist;

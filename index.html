@@ -1,9 +1,10 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ivory - Premium Music</title>
+    <link rel="manifest" href="manifest.json?v=1.1" />
     <link rel="stylesheet" href="style.css?v=5.2" />
     <link rel="stylesheet" href="mobile.css?v=5.2" media="(max-width: 768px)" />
   </head>
@@ -437,8 +438,28 @@
         }
       })();
     </script>
+    <!-- PWA Install Banner -->
+    <div id="pwa-install-banner" class="pwa-banner">
+      <div class="pwa-banner-content">
+        <img src="IMAGES/logoo.png" alt="Ivory App Icon" class="pwa-banner-icon">
+        <div class="pwa-banner-text">
+          <h3>Install Ivory Music</h3>
+          <p>Get premium standalone playback & controls</p>
+        </div>
+      </div>
+      <div class="pwa-banner-actions">
+        <button id="pwa-install-btn" class="pwa-btn pwa-btn-primary">Install</button>
+        <button id="pwa-close-btn" class="pwa-btn pwa-btn-close" aria-label="Close banner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
     <!-- Main Player with Global Search & Streaming -->
-    <script defer src="script.js?v=5.2"></script>
-    <script defer src="post_render_patch.js?v=1"></script>
+    <script defer src="script.js?v=5.4"></script>
+    <script defer src="post_render_patch.js?v=2"></script>
   </body>
 </html>
