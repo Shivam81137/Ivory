@@ -2338,3 +2338,49 @@ body.intro-mode .music-player {
   }
 }
 
+/* ==========================================================================
+   Live Birthday Countdown - Love Theme Styles
+   ========================================================================== */
+.bday-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 75, 110, 0.12) !important;
+  color: #ff6b8b !important;
+  border: 1px solid rgba(255, 75, 110, 0.3) !important;
+  padding: 8px 18px !important;
+  border-radius: 50px !important;
+  font-size: 0.82rem !important;
+  font-weight: 600 !important;
+  font-variant-numeric: tabular-nums !important;
+  box-shadow: 0 0 12px rgba(255, 75, 110, 0.15) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  transition: all 0.3s ease !important;
+  cursor: default;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.bday-timer:hover {
+  background: rgba(255, 75, 110, 0.2) !important;
+  border-color: rgba(255, 75, 110, 0.55) !important;
+  box-shadow: 0 0 16px rgba(255, 75, 110, 0.3) !important;
+  transform: scale(1.03);
+}
+
+.bday-heart {
+  display: inline-block;
+  animation: heartPulse 1.2s infinite ease-in-out;
+  transform-origin: center;
+}
+
+@keyframes heartPulse {
+  0% { transform: scale(1); }
+  14% { transform: scale(1.25); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.25); }
+  70% { transform: scale(1); }
+}
+
+

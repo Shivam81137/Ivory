@@ -5588,4 +5588,44 @@ const OnlineMusicEngine = {
     });
 })();
 
+// ── LIVE BIRTHDAY COUNTDOWN TIMER (LOVE THEME) ────────────────────────
+(function initBirthdayTimer() {
+    function updateTimer() {
+        const timerText = document.getElementById('bday-countdown-text');
+        if (!timerText) return;
+        
+        const now = new Date();
+        let targetYear = now.getFullYear();
+        let targetDate = new Date(targetYear, 6, 23); // Month is 0-indexed: 6 = July
+        
+        // If birthday has already passed this year, point to next year
+        if (now > targetDate) {
+            targetDate = new Date(targetYear + 1, 6, 23);
+        }
+        
+        const diff = targetDate - now;
+        if (diff <= 0) {
+            timerText.textContent = "Happy Birthday! ❤️";
+            return;
+        }
+        
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        // Beautiful live string formatting
+        timerText.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+    
+    // Run update every second and once immediately on script load / DOM ready
+    setInterval(updateTimer, 1000);
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', updateTimer);
+    } else {
+        updateTimer();
+    }
+})();
+
+
 
