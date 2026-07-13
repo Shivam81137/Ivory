@@ -1210,28 +1210,28 @@
     50%  { opacity: 1;   transform: scaleX(1) translateX(0); }
     100% { opacity: 0.3; transform: scaleX(0.5) translateX(5%); }
   }
-  /* ── Add a shimmer overlay using ::after ── */
+  /* ── Background Rotating Earth Animation ── */
   .music-player::after {
     content: '' !important;
     display: block !important;
     position: absolute !important;
-    top: 0 !important;
-    left: -100% !important;
-    width: 60% !important;
-    height: 100% !important;
-    background: linear-gradient(
-      105deg,
-      transparent 30%,
-      rgba(56,189,248,0.025) 50%,
-      transparent 70%
-    ) !important;
-    animation: shimmerSlide 6s ease-in-out infinite !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 260px !important;
+    height: 260px !important;
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzhiZGY4IiBzdHJva2Utd2lkdGg9IjAuNSI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiLz48ZWxsaXBzZSBjeD0iMTIiIGN5PSIxMiIgcng9IjEwIiByeT0iNCIgdHJhbnNmb3JtPSJyb3RhdGUoOTAgMTIgMTIpIi8+PGVsbGlwc2UgY3g9IjEyIiBjeT0iMTIiIHJ4PSIxMCIgcnk9IjQiLz48cGF0aCBkPSJNMCAxMmgyNE0xMiAwdjI0Ii8+PC9zdmc+") !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: contain !important;
+    opacity: 0.22 !important;
+    animation: rotateEarthBg 50s linear infinite !important;
     pointer-events: none !important;
     z-index: 1 !important;
+    transform: translate(-50%, -50%) !important;
   }
-  @keyframes shimmerSlide {
-    0%   { left: -60%; }
-    40%, 100% { left: 140%; }
+  @keyframes rotateEarthBg {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
   }
 
   /* Show when active */
@@ -1259,10 +1259,11 @@
     align-items: center !important;
     padding: 0 !important;
     gap: 12px !important;
-    /* Min-width 0 prevents flex child from blowing out of grid boundaries */
     min-width: 0 !important;
     max-width: 100% !important;
     margin: 0 !important;
+    position: relative !important;
+    z-index: 2 !important;
   }
 
   /* ── Album Art ── */
@@ -1362,6 +1363,8 @@
     padding: 2px 0 0 0 !important;
     gap: 8px !important;
     width: 100% !important;
+    position: relative !important;
+    z-index: 2 !important;
   }
 
   .music-player .control-buttons {
@@ -1468,6 +1471,8 @@
     padding: 0 !important;
     margin: 0 !important;
     min-width: 0 !important;
+    position: relative !important;
+    z-index: 2 !important;
   }
   .volume-controls .lyrics-btn,
   .volume-controls .queue-btn,
@@ -1532,46 +1537,63 @@
     height: 5px !important;
   }
   .music-player .desktop-playback-bar input[type='range']::-webkit-slider-runnable-track {
-    height: 4px !important;
+    height: 2px !important;
     border-radius: 999px !important;
     background: linear-gradient(
       to right,
       #38bdf8 0%,
       #0a84ff var(--val,0%),
-      rgba(255,255,255,0.08) var(--val,0%)
+      rgba(255,255,255,0.12) var(--val,0%)
     ) !important;
-    box-shadow: 0 0 6px rgba(10,132,255,0.4) !important;
+    box-shadow: 0 0 4px rgba(10,132,255,0.3) !important;
+    transition: height 0.2s ease !important;
+  }
+  .music-player .desktop-playback-bar input[type='range']:active::-webkit-slider-runnable-track,
+  .music-player .desktop-playback-bar input[type='range']:hover::-webkit-slider-runnable-track {
+    height: 4px !important;
   }
   .music-player .desktop-playback-bar input[type='range']::-webkit-slider-thumb {
     -webkit-appearance: none !important;
-    width: 12px !important;
-    height: 12px !important;
+    width: 0px !important;
+    height: 0px !important;
     border-radius: 50% !important;
     background: #fff !important;
-    margin-top: -4px !important;
-    box-shadow: 0 0 6px rgba(10,132,255,0.8) !important;
-    transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1) !important;
+    margin-top: -1px !important;
+    box-shadow: 0 0 8px rgba(56,189,248,1) !important;
+    transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1) !important;
+    opacity: 0 !important;
   }
-  .music-player .desktop-playback-bar input[type='range']:active::-webkit-slider-thumb {
-    transform: scale(1.5) !important;
+  .music-player .desktop-playback-bar input[type='range']:active::-webkit-slider-thumb,
+  .music-player .desktop-playback-bar input[type='range']:hover::-webkit-slider-thumb {
+    width: 8px !important;
+    height: 8px !important;
+    margin-top: -2px !important;
+    opacity: 1 !important;
   }
   .music-player .desktop-playback-bar input[type='range']::-moz-range-track {
-    height: 4px !important;
+    height: 2px !important;
     border-radius: 999px !important;
-    background: rgba(255,255,255,0.1) !important;
+    background: rgba(255,255,255,0.12) !important;
   }
   .music-player .desktop-playback-bar input[type='range']::-moz-range-progress {
-    height: 4px !important;
+    height: 2px !important;
     background: #0a84ff !important;
     border-radius: 999px !important;
   }
   .music-player .desktop-playback-bar input[type='range']::-moz-range-thumb {
-    width: 12px !important;
-    height: 12px !important;
+    width: 0px !important;
+    height: 0px !important;
     border: none !important;
     border-radius: 50% !important;
     background: #fff !important;
     box-shadow: 0 0 6px rgba(10,132,255,0.8) !important;
+    opacity: 0 !important;
+    transition: all 0.2s !important;
+  }
+  .music-player .desktop-playback-bar input[type='range']:hover::-moz-range-thumb {
+    width: 8px !important;
+    height: 8px !important;
+    opacity: 1 !important;
   }
 
   /* ─────────────────────────────────────────────────
