@@ -1351,11 +1351,11 @@
     left: 50% !important;
     width: 260px !important;
     height: 260px !important;
-    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzhiZGY4IiBzdHJva2Utd2lkdGg9IjAuNiI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiLz48ZWxsaXBzZSBjeD0iMTIiIGN5PSIxMiIgcng9IjEwIiByeT0iNCIgdHJhbnNmb3JtPSJyb3RhdGUoOTAgMTIgMTIpIi8+PGVsbGlwc2UgY3g9IjEyIiBjeT0iMTIiIHJ4PSIxMCIgcnk9IjQiLz48cGF0aCBkPSJNMCAxMmgyNE0xMiAwdjI0Ii8+PC9zdmc+") !important;
+    background-image: url("earth.svg") !important;
     background-repeat: no-repeat !important;
     background-position: center !important;
     background-size: contain !important;
-    opacity: 0.16 !important;
+    opacity: 0.18 !important;
     animation: rotateEarthBg 50s linear infinite !important;
     pointer-events: none !important;
     z-index: 1 !important;
