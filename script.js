@@ -3947,7 +3947,7 @@ async function fetchLyrics(artist, title) {
 }
 
 // --- 3D BIO-TECH BACKGROUND ---
-document.addEventListener("DOMContentLoaded", initThreeJS);
+// document.addEventListener("DOMContentLoaded", initThreeJS);
 
 function initThreeJS() {
     const container = document.getElementById('canvas-container');
@@ -4069,12 +4069,13 @@ function init3DEarth() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
 
-    // Append securely beneath UI
+    // Append securely beneath UI with subtle opacity to keep text highly legible
     renderer.domElement.style.position = 'fixed';
     renderer.domElement.style.top = '0';
     renderer.domElement.style.left = '0';
     renderer.domElement.style.pointerEvents = 'none';
     renderer.domElement.style.zIndex = '-9';
+    renderer.domElement.style.opacity = '0.35';
     document.body.appendChild(renderer.domElement);
 
     const earthGroup = new THREE.Group();
@@ -4140,11 +4141,11 @@ function init3DEarth() {
     earthGroup.add(atmosMesh);
 
     // 4. Lighting
-    const sunLight = new THREE.DirectionalLight(0xffffff, 2.5); // Bright sun
-    sunLight.position.set(-40, 20, -20); // Sun coming from the top left
+    const sunLight = new THREE.DirectionalLight(0xffffff, 2.8); // Brighter sun
+    sunLight.position.set(-20, 20, 20); // Sun coming from the front left to illuminate more of the front face
     scene.add(sunLight);
 
-    const ambientLight = new THREE.AmbientLight(0x0c0c0c); // Even darker shadowed side for dramatic contrast
+    const ambientLight = new THREE.AmbientLight(0x121212); // Slightly lighter shadow fill for better details
     scene.add(ambientLight);
 
     // Sun Sprite (Lens Flare / Glow)
@@ -4165,7 +4166,7 @@ function init3DEarth() {
     });
     const sunSprite = new THREE.Sprite(sunMat);
     sunSprite.scale.set(60, 60, 1);
-    sunSprite.position.set(-50, 25, -25); // Set the sun burst behind the left side
+    sunSprite.position.set(-45, 22, -20); // Sun burst adjusted
     scene.add(sunSprite);
 
     // 5. Starfield
@@ -4182,11 +4183,17 @@ function init3DEarth() {
     const stars = new THREE.Points(starGeo, starMat);
     scene.add(stars);
 
-    // 6. Positioning - Shifted Earth to the right side of the screen
-    earthGroup.position.set(18, -2, -32); // Positioned to dominate the right periphery
-    earthMesh.rotation.y = 1.0; // Start with America / Atlantic view
-    earthMesh.rotation.x = 0.3; // Slight tilt
-    cloudMesh.rotation.y = 1.0;
+    // 6. Positioning - Dynamic positioning for desktop/mobile view
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) {
+        earthGroup.position.set(0, -6, -42); // Centered, slightly lowered & pushed back for mobile layout
+    } else {
+        earthGroup.position.set(18, -2, -32); // Positioned to dominate the right periphery on desktop
+    }
+    earthMesh.rotation.y = 2.2; // Show beautiful continent layouts (Europe/Africa/Asia)
+    earthMesh.rotation.x = 0.45; // Gorgeous tilt showing polar contours
+    earthMesh.rotation.z = -0.15;
+    cloudMesh.rotation.y = 2.2;
 
     camera.position.set(0, 0, 3);
     camera.lookAt(0, 0, -32); // Looking relatively straight ahead
@@ -4202,9 +4209,9 @@ function init3DEarth() {
     function animate() {
         requestAnimationFrame(animate);
 
-        // Rotate Earth slowly for that monolithic feel
-        earthMesh.rotation.y += 0.0003;
-        cloudMesh.rotation.y += 0.0004;
+        // Rotate Earth faster (smooth interactive speed)
+        earthMesh.rotation.y += 0.0016;
+        cloudMesh.rotation.y += 0.0020;
 
         // Dynamic camera parallax (sweeping view)
         camera.position.x += (mouseX * 8 - camera.position.x) * 0.03;

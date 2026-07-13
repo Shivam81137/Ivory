@@ -58,14 +58,9 @@
     transition: height 0.38s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Once a song plays, the player bar is visible — shrink the layout */
+  /* Once a song plays, keep the layout full screen height */
   body:not(.intro-mode) .app-layout {
-    height: calc(100dvh - 132px);
-  }
-
-  /* Professional mobile playbar cleanup (applied last to override older styles) */
-  body:not(.intro-mode) .app-layout {
-    height: calc(100dvh - (108px + env(safe-area-inset-bottom, 0px)));
+    height: 100dvh !important;
   }
 
   .music-player {
@@ -2130,7 +2125,7 @@
 
   /* Final mobile playbar overrides: clean, minimal, useful-only */
   body:not(.intro-mode) .app-layout {
-    height: calc(100dvh - (108px + env(safe-area-inset-bottom, 0px)));
+    height: 100dvh !important;
   }
 
   .music-player {
@@ -2626,8 +2621,12 @@
   transition: padding-bottom 0.3s ease;
 }
 
-body:not(.intro-mode) .content-body {
-  padding-bottom: 168px !important;
+body:not(.intro-mode):not(.media-session-ready) .content-body {
+  padding-bottom: 24px !important;
+}
+
+body.media-session-ready .content-body {
+  padding-bottom: 120px !important;
 }
 
 /* Hidden initially when in intro mode */
