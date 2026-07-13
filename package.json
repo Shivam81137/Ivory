@@ -1,0 +1,27 @@
+{
+  "name": "ivory",
+  "version": "1.0.0",
+  "description": "Ivory is a modern, responsive music streaming web application designed to deliver a seamless listening experience. It features a sleek user interface, comprehensive track discovery, and synchronized real-time lyrics, all powered by external APIs.",
+  "main": "post_render_patch.js",
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/input.css -o ./dist/tailwind.css --minify",
+    "dev:css": "tailwindcss -i ./src/input.css -o ./dist/tailwind.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shivam81137/Ivory.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Shivam81137/Ivory/issues"
+  },
+  "homepage": "https://github.com/Shivam81137/Ivory#readme",
+  "devDependencies": {
+    "autoprefixer": "^10.5.2",
+    "postcss": "^8.5.18",
+    "tailwindcss": "^3.4.19"
+  }
+}

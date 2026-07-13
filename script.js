@@ -2408,7 +2408,18 @@ function loadSong(index) {
 	}
 	
 	console.log(`Loaded: ${song.title} — ${song.artist} ${song._isOnline ? '(🌐)' : ''}`);
-    
+
+	// Show the player bar immediately when a song is loaded (mobile + desktop)
+	const playerEl = document.querySelector('.music-player');
+	if (playerEl && !playerEl.classList.contains('active')) {
+		playerEl.classList.add('active');
+	}
+	// Remove intro-mode so player is visible
+	if (document.body.classList.contains('intro-mode')) {
+		document.body.classList.remove('intro-mode');
+	}
+
+
     // Fetch lyrics and canvas
     audio.onloadedmetadata = () => {
         LyricsManager.fetchLyrics(song.artist, song.title, audio.duration);
