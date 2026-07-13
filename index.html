@@ -35,7 +35,11 @@
               <p class="mobile-hero__kicker">Good vibes only</p>
               <h2 class="mobile-hero__title">Your Premium Mix</h2>
             </div>
-            <button class="mobile-hero__avatar" id="mobile-profile-btn" aria-label="Open profile sheet">
+            <button
+              class="mobile-hero__avatar"
+              id="mobile-profile-btn"
+              aria-label="Open profile sheet"
+            >
               <span>SV</span>
             </button>
           </div>
@@ -115,53 +119,136 @@
       </main>
     </div>
 
-    <section id="mobile-mini-player" class="mobile-mini-player" style="display: none" aria-label="Mini player">
-      <button class="mobile-mini-player__surface" id="mobile-mini-expand" aria-label="Open full screen player">
-        <img src="IMAGES/logoo.png" alt="Now playing" id="mobile-mini-art" class="mobile-mini-player__art" />
+    <section
+      id="mobile-mini-player"
+      class="mobile-mini-player"
+      style="display: none"
+      aria-label="Mini player"
+    >
+      <button
+        class="mobile-mini-player__surface"
+        id="mobile-mini-expand"
+        aria-label="Open full screen player"
+      >
+        <img
+          src="IMAGES/logoo.png"
+          alt="Now playing"
+          id="mobile-mini-art"
+          class="mobile-mini-player__art"
+        />
         <span class="mobile-mini-player__text">
           <strong id="mobile-mini-title">No song playing</strong>
           <small id="mobile-mini-artist">Tap play on any card</small>
         </span>
       </button>
-      <button class="mobile-mini-player__play" id="mobile-mini-play" aria-label="Play or pause">
+      <button
+        class="mobile-mini-player__play"
+        id="mobile-mini-play"
+        aria-label="Play or pause"
+      >
         <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
           <polygon points="5 3 19 12 5 21 5 3"></polygon>
         </svg>
       </button>
     </section>
 
-    <nav class="mobile-bottom-nav" id="mobile-bottom-nav" style="display: none" aria-label="Mobile navigation">
-      <button class="mobile-nav-tab is-active" data-target="home" aria-label="Home">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 10v10h14V10"></path></svg>
+    <nav
+      class="mobile-bottom-nav"
+      id="mobile-bottom-nav"
+      style="display: none"
+      aria-label="Mobile navigation"
+    >
+      <button
+        class="mobile-nav-tab is-active"
+        data-target="home"
+        aria-label="Home"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          width="18"
+          height="18"
+        >
+          <path d="M3 10.5 12 3l9 7.5"></path>
+          <path d="M5 10v10h14V10"></path>
+        </svg>
         <span>Home</span>
       </button>
       <button class="mobile-nav-tab" data-target="search" aria-label="Search">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          width="18"
+          height="18"
+        >
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m20 20-3.5-3.5"></path>
+        </svg>
         <span>Search</span>
       </button>
       <button class="mobile-nav-tab" data-target="library" aria-label="Library">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M4 6h16"></path><path d="M4 12h16"></path><path d="M4 18h10"></path></svg>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          width="18"
+          height="18"
+        >
+          <path d="M4 6h16"></path>
+          <path d="M4 12h16"></path>
+          <path d="M4 18h10"></path>
+        </svg>
         <span>Library</span>
       </button>
-      <button class="mobile-nav-tab" data-target="favorites" aria-label="Favorites">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="m12 21-7-7a4.6 4.6 0 0 1 0-6.5 4.6 4.6 0 0 1 6.5 0L12 8l.5-.5a4.6 4.6 0 0 1 6.5 0 4.6 4.6 0 0 1 0 6.5z"></path></svg>
+      <button
+        class="mobile-nav-tab"
+        data-target="favorites"
+        aria-label="Favorites"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          width="18"
+          height="18"
+        >
+          <path
+            d="m12 21-7-7a4.6 4.6 0 0 1 0-6.5 4.6 4.6 0 0 1 6.5 0L12 8l.5-.5a4.6 4.6 0 0 1 6.5 0 4.6 4.6 0 0 1 0 6.5z"
+          ></path>
+        </svg>
         <span>Favorites</span>
       </button>
     </nav>
 
-    <div class="mobile-bottom-sheet" id="mobile-bottom-sheet" aria-hidden="true">
+    <div
+      class="mobile-bottom-sheet"
+      id="mobile-bottom-sheet"
+      aria-hidden="true"
+    >
       <div class="mobile-bottom-sheet__backdrop" data-sheet-close></div>
-      <section class="mobile-bottom-sheet__panel" role="dialog" aria-modal="true" aria-labelledby="mobile-sheet-title">
+      <section
+        class="mobile-bottom-sheet__panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="mobile-sheet-title"
+      >
         <div class="mobile-bottom-sheet__handle"></div>
         <h3 id="mobile-sheet-title">Quick Panel</h3>
         <p id="mobile-sheet-body">Premium controls and shortcuts go here.</p>
-        <button class="mobile-bottom-sheet__close" data-sheet-close>Close</button>
+        <button class="mobile-bottom-sheet__close" data-sheet-close>
+          Close
+        </button>
       </section>
     </div>
 
     <!-- Music Player Bar -->
     <footer class="music-player">
-
       <!-- Progress bar strip (top of bar on mobile) -->
       <div class="mobile-progress-strip">
         <div class="playback-bar">
@@ -192,8 +279,15 @@
           <p class="song-artist" id="sb-artist">---</p>
         </div>
         <button class="icon-btn like-btn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+            ></path>
           </svg>
         </button>
       </div>
@@ -202,7 +296,14 @@
       <div class="player-controls">
         <div class="control-buttons">
           <button class="icon-btn shuffle-btn" id="sb-shuffle">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              width="20"
+              height="20"
+            >
               <polyline points="16 3 21 3 21 8"></polyline>
               <line x1="4" y1="20" x2="21" y2="3"></line>
               <polyline points="21 16 21 21 16 21"></polyline>
@@ -214,22 +315,49 @@
           <button class="icon-btn prev-btn" id="sb-prev">
             <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
               <polygon points="19 20 9 12 19 4 19 20"></polygon>
-              <line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2"></line>
+              <line
+                x1="5"
+                y1="19"
+                x2="5"
+                y2="5"
+                stroke="currentColor"
+                stroke-width="2"
+              ></line>
             </svg>
           </button>
           <button class="play-btn-main" id="sb-play">
-            <svg class="play-icon-svg" viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
+            <svg
+              class="play-icon-svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              width="28"
+              height="28"
+            >
               <polygon points="5 3 19 12 5 21 5 3"></polygon>
             </svg>
           </button>
           <button class="icon-btn next-btn" id="sb-next">
             <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
               <polygon points="5 4 15 12 5 20 5 4"></polygon>
-              <line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2"></line>
+              <line
+                x1="19"
+                y1="5"
+                x2="19"
+                y2="19"
+                stroke="currentColor"
+                stroke-width="2"
+              ></line>
             </svg>
           </button>
           <button class="icon-btn repeat-btn" id="sb-repeat">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              width="20"
+              height="20"
+            >
               <polyline points="17 1 21 5 17 9"></polyline>
               <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
               <polyline points="7 23 3 19 7 15"></polyline>
@@ -242,8 +370,15 @@
         <!-- Desktop progress bar (hidden on mobile, replaced by mobile-progress-strip) -->
         <div class="playback-bar desktop-playback-bar">
           <span class="time current" id="sb-current-d">0:00</span>
-          <input type="range" class="progress-bar-range" id="sb-progress-d"
-                 value="0" min="0" max="100" step="0.1" />
+          <input
+            type="range"
+            class="progress-bar-range"
+            id="sb-progress-d"
+            value="0"
+            min="0"
+            max="100"
+            step="0.1"
+          />
           <span class="time total" id="sb-duration-d">0:00</span>
         </div>
       </div>
@@ -251,15 +386,27 @@
       <!-- Volume / extras (hidden on mobile) -->
       <div class="volume-controls">
         <button class="icon-btn lyrics-btn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"
+            ></path>
             <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
             <line x1="12" y1="19" x2="12" y2="23"></line>
             <line x1="8" y1="23" x2="16" y2="23"></line>
           </svg>
         </button>
         <button class="icon-btn queue-btn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <line x1="8" y1="6" x2="21" y2="6"></line>
             <line x1="8" y1="12" x2="21" y2="12"></line>
             <line x1="8" y1="18" x2="21" y2="18"></line>
@@ -269,13 +416,23 @@
           </svg>
         </button>
         <button class="icon-btn device-btn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
             <line x1="12" y1="18" x2="12.01" y2="18"></line>
           </svg>
         </button>
         <button class="icon-btn expand-btn" id="expand-btn" title="Full Screen">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <polyline points="15 3 21 3 21 9"></polyline>
             <polyline points="9 21 3 21 3 15"></polyline>
             <line x1="21" y1="3" x2="14" y2="10"></line>
@@ -283,11 +440,28 @@
           </svg>
         </button>
         <div class="volume-slider-group">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            width="20"
+            height="20"
+          >
             <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            <path
+              d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"
+            ></path>
           </svg>
-          <input type="range" class="vol-slider-range" id="sb-volume" value="0.8" min="0" max="1" step="0.01" />
+          <input
+            type="range"
+            class="vol-slider-range"
+            id="sb-volume"
+            value="0.8"
+            min="0"
+            max="1"
+            step="0.01"
+          />
         </div>
       </div>
     </footer>
@@ -426,13 +600,16 @@
           window.setTimeout(function () {
             intro.classList.add("is-hidden");
             window.setTimeout(function () {
-              if (intro && intro.parentNode) intro.parentNode.removeChild(intro);
+              if (intro && intro.parentNode)
+                intro.parentNode.removeChild(intro);
             }, 380);
           }, 1000);
         }
 
         if (document.readyState === "loading") {
-          document.addEventListener("DOMContentLoaded", runIntro, { once: true });
+          document.addEventListener("DOMContentLoaded", runIntro, {
+            once: true,
+          });
         } else {
           runIntro();
         }
@@ -441,16 +618,33 @@
     <!-- PWA Install Banner -->
     <div id="pwa-install-banner" class="pwa-banner">
       <div class="pwa-banner-content">
-        <img src="IMAGES/logoo.png" alt="Ivory App Icon" class="pwa-banner-icon">
+        <img
+          src="IMAGES/logoo.png"
+          alt="Ivory App Icon"
+          class="pwa-banner-icon"
+        />
         <div class="pwa-banner-text">
           <h3>Install Ivory Music</h3>
           <p>Get premium standalone playback & controls</p>
         </div>
       </div>
       <div class="pwa-banner-actions">
-        <button id="pwa-install-btn" class="pwa-btn pwa-btn-primary">Install</button>
-        <button id="pwa-close-btn" class="pwa-btn pwa-btn-close" aria-label="Close banner">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+        <button id="pwa-install-btn" class="pwa-btn pwa-btn-primary">
+          Install
+        </button>
+        <button
+          id="pwa-close-btn"
+          class="pwa-btn pwa-btn-close"
+          aria-label="Close banner"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            width="16"
+            height="16"
+          >
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
