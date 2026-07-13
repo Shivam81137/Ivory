@@ -2685,13 +2685,31 @@ body:not(.intro-mode) #mobile-mini-player {
    Live Birthday Countdown - Mobile overrides
    ========================================================================== */
 .bday-timer {
-  padding: 5px 12px !important;
-  font-size: 0.72rem !important;
-  gap: 5px !important;
+  padding: 5px 10px !important;
+  font-size: 0.7rem !important;
+  gap: 4px !important;
   height: 28px !important;
   align-self: center;
 }
 
 .bday-heart {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
+}
+
+.love-theme-row {
+  display: flex !important;
+  padding: 0 14px !important;
+  margin-top: 2px !important;
+  margin-bottom: 14px !important;
+  width: 100% !important;
+}
+
+.love-theme-btn {
+  width: 100% !important;
+  justify-content: center !important;
+  padding: 6px 12px !important;
+  font-size: 0.76rem !important;
+  gap: 6px !important;
+  height: 32px !important;
+  border-radius: 10px !important;
 }

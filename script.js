@@ -5627,5 +5627,176 @@ const OnlineMusicEngine = {
     }
 })();
 
+// ── LIVE BEATING HEARTS VISUALIZER ENGINE (LOVE THEME) ─────────────────
+(function initLoveHeartsVisualizer() {
+    let canvas = document.getElementById('love-theme-canvas');
+    if (!canvas) {
+        canvas = document.createElement('canvas');
+        canvas.id = 'love-theme-canvas';
+        canvas.style.position = 'fixed';
+        canvas.style.inset = '0';
+        canvas.style.zIndex = '-8';
+        canvas.style.pointerEvents = 'none';
+        canvas.style.opacity = '0';
+        canvas.style.transition = 'opacity 1.5s ease';
+        document.body.appendChild(canvas);
+    }
+    
+    const ctx = canvas.getContext('2d');
+    let hearts = [];
+    let active = false;
+    let animationFrame = null;
+    
+    // Resize handler
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+    
+    const colors = [
+        '#ff4a75', // Hot rose
+        '#ff0a54', // Pink red
+        '#ff477e', // Rose pink
+        '#ff7096', // Pastel rose
+        '#ff85a1', // Light pink
+        '#f72585'  // Neon magenta
+    ];
+    
+    class Heart {
+        constructor() {
+            this.reset();
+            // Start at random y height initially so they don't all spawn from the bottom on start
+            this.y = Math.random() * canvas.height;
+        }
+        
+        reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = canvas.height + 40;
+            this.baseSize = 10 + Math.random() * 25;
+            this.size = this.baseSize;
+            this.speedY = 0.6 + Math.random() * 1.5;
+            this.wobbleSpeed = 0.01 + Math.random() * 0.03;
+            this.wobbleRange = 5 + Math.random() * 15;
+            this.phase = Math.random() * Math.PI * 2;
+            this.color = colors[Math.floor(Math.random() * colors.length)];
+            this.alpha = 0.15 + Math.random() * 0.45;
+            this.scaleMultiplier = 1.0;
+        }
+        
+        update(bass) {
+            this.y -= this.speedY * (bass * 0.8 + 0.2); // move faster on beats
+            this.phase += this.wobbleSpeed;
+            this.x += Math.sin(this.phase) * 0.4;
+            
+            // Pulse size with the music bass
+            this.size = this.baseSize * (1.0 + (bass - 1.0) * 1.2);
+            
+            if (this.y < -this.size - 20) {
+                this.reset();
+            }
+        }
+        
+        draw() {
+            ctx.save();
+            ctx.globalAlpha = this.alpha;
+            ctx.fillStyle = this.color;
+            ctx.shadowBlur = 12;
+            ctx.shadowColor = this.color;
+            
+            ctx.beginPath();
+            ctx.moveTo(this.x, this.y);
+            // Perfect heart path
+            ctx.bezierCurveTo(
+                this.x - this.size / 2, this.y - this.size / 2, 
+                this.x - this.size, this.y + this.size / 3, 
+                this.x, this.y + this.size
+            );
+            ctx.bezierCurveTo(
+                this.x + this.size, this.y + this.size / 3, 
+                this.x + this.size / 2, this.y - this.size / 2, 
+                this.x, this.y
+            );
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+        }
+    }
+    
+    function initHearts() {
+        hearts = [];
+        const count = Math.min(60, Math.floor(window.innerWidth / 15));
+        for (let i = 0; i < count; i++) {
+            hearts.push(new Heart());
+        }
+    }
+    
+    function loop() {
+        if (!active) return;
+        animationFrame = requestAnimationFrame(loop);
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Calculate dynamic bass level from visualizer if running
+        let bass = 1.0;
+        if (window.ivoryVisualizer && window.ivoryVisualizer.dataArray) {
+            const data = window.ivoryVisualizer.dataArray;
+            let sum = 0;
+            // low frequencies
+            const checkBins = Math.min(12, data.length);
+            for (let i = 0; i < checkBins; i++) {
+                sum += data[i];
+            }
+            const avg = sum / checkBins;
+            bass = 1.0 + (avg / 255.0) * 0.8; // Max size scaling up to 1.8x
+        }
+        
+        for (let heart of hearts) {
+            heart.update(bass);
+            heart.draw();
+        }
+    }
+    
+    window.toggleLoveTheme = function(btn) {
+        active = !active;
+        const loveBtn = btn || document.getElementById('love-theme-btn');
+        
+        if (active) {
+            canvas.style.opacity = '0.75';
+            initHearts();
+            loop();
+            if (loveBtn) {
+                loveBtn.classList.add('active');
+            }
+            // Trigger floating heart burst!
+            createHeartBurst();
+        } else {
+            canvas.style.opacity = '0';
+            if (loveBtn) {
+                loveBtn.classList.remove('active');
+            }
+            setTimeout(() => {
+                if (!active) {
+                    cancelAnimationFrame(animationFrame);
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }, 1500);
+        }
+    };
+    
+    // Heart burst helper on activation
+    function createHeartBurst() {
+        for (let i = 0; i < 20; i++) {
+            const h = new Heart();
+            h.y = canvas.height * 0.6 + Math.random() * canvas.height * 0.3;
+            h.alpha = 0.8;
+            h.speedY = 3 + Math.random() * 4;
+            hearts.push(h);
+        }
+    }
+})();
+
+
 
 
