@@ -1342,29 +1342,32 @@
     50%  { opacity: 1;   transform: scaleX(1) translateX(0); }
     100% { opacity: 0.3; transform: scaleX(0.5) translateX(5%); }
   }
-  /* ── Background Rotating Earth Animation ── */
+  /* ── Background Rotating Sunflower Animation ── */
   .music-player::after {
     content: '' !important;
     display: block !important;
     position: absolute !important;
     top: 50% !important;
     left: 50% !important;
-    width: 260px !important;
-    height: 260px !important;
-    background-image: url("earth.svg") !important;
+    width: 220px !important;
+    height: 220px !important;
+    background-image: url("sunflower.svg") !important;
     background-repeat: no-repeat !important;
     background-position: center !important;
     background-size: contain !important;
-    opacity: 0.18 !important;
-    animation: rotateEarthBg 50s linear infinite !important;
+    opacity: 0.28 !important; /* Make it clearly visible and beautiful */
+    animation: rotateSunflower 25s linear infinite !important;
     pointer-events: none !important;
     z-index: 1 !important;
-    transform: translate3d(-50%, -50%, 0) !important;
+    transform: translate3d(-50%, -50%, 0) scale(1) !important;
     will-change: transform !important;
   }
-  @keyframes rotateEarthBg {
-    0% { transform: translate3d(-50%, -50%, 0) rotate(0deg); }
-    100% { transform: translate3d(-50%, -50%, 0) rotate(360deg); }
+  @keyframes rotateSunflower {
+    0% { transform: translate3d(-50%, -50%, 0) rotate(0deg) scale(1); }
+    25% { transform: translate3d(-50%, -50%, 0) rotate(90deg) scale(1.08); }
+    50% { transform: translate3d(-50%, -50%, 0) rotate(180deg) scale(1); }
+    75% { transform: translate3d(-50%, -50%, 0) rotate(270deg) scale(1.08); }
+    100% { transform: translate3d(-50%, -50%, 0) rotate(360deg) scale(1); }
   }
 
   /* Show when active */
