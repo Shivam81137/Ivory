@@ -5779,7 +5779,7 @@ const OnlineMusicEngine = {
     
     function initParticles() {
         particles = [];
-        const count = Math.min(75, Math.floor(window.innerWidth / 14));
+        const count = Math.min(35, Math.floor(window.innerWidth / 20));
         for (let i = 0; i < count; i++) {
             particles.push(new BirthdayParticle());
         }

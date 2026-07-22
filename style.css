@@ -636,94 +636,71 @@ body {
   box-shadow: 0 0 0 4px rgba(50, 224, 255, 0.07);
 }
 
-/* CLASSY ROYAL BLUE SEARCH BAR */
+/* SEARCH BAR */
 .search-container {
   display: flex;
   align-items: center;
   position: relative;
-  background: linear-gradient(135deg, rgba(13, 27, 62, 0.85), rgba(26, 47, 85, 0.65));
-  border-radius: 50px;
-  padding: 0 18px;
-  height: 44px;
-  width: 340px;
-  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  border: 1px solid rgba(50, 224, 255, 0.32);
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 8px 16px;
+  width: 300px;
+  transition: 0.3s;
+  border: 1px solid transparent;
   margin: 0 20px;
   flex-grow: 1;
-  max-width: 440px;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 6px 22px rgba(5, 11, 20, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  max-width: 400px;
 }
 
 .search-container:hover {
-  background: linear-gradient(135deg, rgba(16, 33, 75, 0.9), rgba(30, 56, 102, 0.75));
-  border-color: rgba(50, 224, 255, 0.55);
-  box-shadow: 0 8px 26px rgba(5, 11, 20, 0.65), 0 0 18px rgba(50, 224, 255, 0.25);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .search-container:focus-within {
-  background: linear-gradient(135deg, rgba(18, 38, 85, 0.95), rgba(35, 65, 115, 0.8));
-  border-color: rgba(50, 224, 255, 0.9);
-  box-shadow: 0 0 25px rgba(50, 224, 255, 0.45), 0 10px 32px rgba(5, 11, 20, 0.75);
-  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--cyan-accent);
+  box-shadow: 0 0 10px rgba(50, 224, 255, 0.2);
 }
 
 .search-icon-input {
   width: 18px;
   height: 18px;
-  color: #32e0ff;
-  opacity: 1;
-  margin-right: 12px;
+  opacity: 0.6;
+  margin-right: 10px;
   flex-shrink: 0;
-  transition: transform 0.3s ease, color 0.3s ease;
-  filter: drop-shadow(0 0 6px rgba(50, 224, 255, 0.6));
-}
-
-.search-container:focus-within .search-icon-input {
-  color: #80e8ff;
-  transform: scale(1.15);
 }
 
 #song-search {
   background: transparent;
   border: none;
-  color: #ffffff;
+  color: white;
   width: 100%;
-  height: 100%;
   outline: none;
   font-family: inherit;
-  font-size: 0.94rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
+  font-size: 0.9rem;
 }
 
 #song-search::placeholder {
-  color: rgba(225, 240, 255, 0.75);
-  font-style: normal;
-  font-weight: 400;
+  color: rgba(255, 255, 255, 0.5);
 }
 
-/* THE NEW TEXT STYLE & CLASSY SEARCH DROPDOWN */
+/* THE NEW TEXT STYLE */
 .search-dropdown {
   position: fixed;
-  background: linear-gradient(180deg, rgba(10, 20, 48, 0.96), rgba(6, 12, 30, 0.98));
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-radius: 16px;
+  background: rgba(13, 27, 62, 0.97);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 12px;
   max-height: 420px;
   overflow-y: auto;
-  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.85), 0 0 20px rgba(50, 224, 255, 0.15);
-  border: 1px solid rgba(50, 224, 255, 0.22);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   z-index: 9999;
   display: none;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(50, 224, 255, 0.3) transparent;
 }
 
 .search-dropdown.active {
   display: block;
-  animation: fadeIn 0.2s ease-out;
 }
 
 .search-result-item {
@@ -2512,10 +2489,8 @@ body.intro-mode .music-player {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: opacity 0.3s ease, visibility 0.3s ease;
   padding: 20px;
-  will-change: opacity, visibility;
-  transform: translateZ(0);
 }
 
 .letter-modal-overlay.active {
@@ -2546,16 +2521,14 @@ body.intro-mode .music-player {
   box-shadow: 0 16px 45px rgba(0, 0, 0, 0.75), 0 0 25px rgba(255, 105, 180, 0.25) !important;
   padding: 28px 28px 24px;
   color: #ffffff;
-  transform: translate3d(0, 18px, 0) scale(0.96);
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
-  will-change: transform, opacity;
+  transform: scale(0.96) translateY(18px);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 105, 180, 0.4) transparent;
-  contain: layout style;
 }
 
 .letter-modal-overlay.active .letter-modal-card {
-  transform: translate3d(0, 0, 0) scale(1);
+  transform: scale(1) translateY(0);
 }
 
 .letter-modal-close {
