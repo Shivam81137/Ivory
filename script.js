@@ -5595,33 +5595,40 @@ const OnlineMusicEngine = {
     });
 })();
 
-// ── LIVE BIRTHDAY COUNTDOWN TIMER (LOVE THEME) ────────────────────────
+// ── LIVE BIRTHDAY COUNTDOWN TIMER & CELEBRATION (LOVE THEME) ──────────
 (function initBirthdayTimer() {
     function updateTimer() {
         const timerText = document.getElementById('bday-countdown-text');
+        const timerContainer = document.getElementById('bday-timer');
         if (!timerText) return;
         
         const now = new Date();
         let targetYear = now.getFullYear();
-        let targetDate = new Date(targetYear, 6, 23); // Month is 0-indexed: 6 = July
+        let bdayStart = new Date(targetYear, 6, 23, 0, 0, 0); // July 23 00:00:00
+        let bdayEnd = new Date(targetYear, 6, 23, 23, 59, 59, 999); // July 23 23:59:59
         
-        // If birthday has already passed this year, point to next year
-        if (now > targetDate) {
-            targetDate = new Date(targetYear + 1, 6, 23);
+        // If birthday has passed for this year, set next target to next year
+        if (now > bdayEnd) {
+            targetYear++;
+            bdayStart = new Date(targetYear, 6, 23, 0, 0, 0);
+            bdayEnd = new Date(targetYear, 6, 23, 23, 59, 59, 999);
         }
         
-        const diff = targetDate - now;
-        if (diff <= 0) {
-            timerText.textContent = "Happy Birthday! ❤️";
+        // Check if TODAY is her birthday!
+        if (now >= bdayStart && now <= bdayEnd) {
+            timerText.textContent = "HAPPY BIRTHDAY ANVII! 🎉❤️";
+            if (timerContainer) timerContainer.classList.add('is-bday');
             return;
         }
         
+        // Otherwise count down to July 23 start
+        const diff = bdayStart - now;
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
         const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((diff % (1000 * 60)) / 1000);
         
-        // Beautiful live string formatting
+        // Live string formatting
         timerText.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
     }
     
@@ -5634,8 +5641,8 @@ const OnlineMusicEngine = {
     }
 })();
 
-// ── LIVE BEATING HEARTS VISUALIZER ENGINE (LOVE THEME) ─────────────────
-(function initLoveHeartsVisualizer() {
+// ── LIVE BIRTHDAY CELEBRATION VISUALIZER ENGINE (BIRTHDAY MODE) ────────
+(function initBirthdayModeVisualizer() {
     let canvas = document.getElementById('love-theme-canvas');
     if (!canvas) {
         canvas = document.createElement('canvas');
@@ -5650,11 +5657,10 @@ const OnlineMusicEngine = {
     }
     
     const ctx = canvas.getContext('2d');
-    let hearts = [];
+    let particles = [];
     let active = false;
     let animationFrame = null;
     
-    // Resize handler
     function resize() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -5663,44 +5669,50 @@ const OnlineMusicEngine = {
     resize();
     
     const colors = [
-        '#ff4a75', // Hot rose
-        '#ff0a54', // Pink red
-        '#ff477e', // Rose pink
-        '#ff7096', // Pastel rose
-        '#ff85a1', // Light pink
-        '#f72585'  // Neon magenta
+        '#ff4a75', '#ff0a54', '#ff477e', '#ffd700', 
+        '#ff1493', '#00e5ff', '#ff7096', '#7000ff'
     ];
     
-    class Heart {
+    class BirthdayParticle {
         constructor() {
             this.reset();
-            // Start at random y height initially so they don't all spawn from the bottom on start
             this.y = Math.random() * canvas.height;
         }
         
         reset() {
             this.x = Math.random() * canvas.width;
             this.y = canvas.height + 40;
-            this.baseSize = 10 + Math.random() * 25;
+            const isBday = (typeof window.isBirthdayUnlocked === 'function' && window.isBirthdayUnlocked());
+            if (isBday) {
+                const rand = Math.random();
+                this.type = rand < 0.35 ? 'balloon' : rand < 0.65 ? 'heart' : rand < 0.85 ? 'star' : 'confetti';
+            } else {
+                this.type = 'heart';
+            }
+            this.baseSize = this.type === 'confetti' ? 6 + Math.random() * 10 : this.type === 'balloon' ? 14 + Math.random() * 20 : 12 + Math.random() * 22;
             this.size = this.baseSize;
-            this.speedY = 0.6 + Math.random() * 1.5;
-            this.wobbleSpeed = 0.01 + Math.random() * 0.03;
-            this.wobbleRange = 5 + Math.random() * 15;
+            this.speedY = 0.8 + Math.random() * 1.8;
+            this.wobbleSpeed = 0.015 + Math.random() * 0.03;
+            this.wobbleRange = 6 + Math.random() * 16;
             this.phase = Math.random() * Math.PI * 2;
+            this.rotation = this.type === 'balloon' ? 0 : Math.random() * Math.PI * 2;
+            this.rotSpeed = this.type === 'balloon' ? 0 : (Math.random() - 0.5) * 0.08;
             this.color = colors[Math.floor(Math.random() * colors.length)];
-            this.alpha = 0.15 + Math.random() * 0.45;
-            this.scaleMultiplier = 1.0;
+            this.alpha = 0.25 + Math.random() * 0.55;
         }
         
         update(bass) {
-            this.y -= this.speedY * (bass * 0.8 + 0.2); // move faster on beats
+            this.y -= this.speedY * (bass * 0.85 + 0.15);
             this.phase += this.wobbleSpeed;
-            this.x += Math.sin(this.phase) * 0.4;
+            this.x += Math.sin(this.phase) * (this.type === 'balloon' ? 0.8 : 0.5);
+            if (this.type !== 'balloon') {
+                this.rotation += this.rotSpeed;
+            } else {
+                this.rotation = Math.sin(this.phase) * 0.08; // gentle balloon sway
+            }
+            this.size = this.baseSize * (1.0 + (bass - 1.0) * 1.25);
             
-            // Pulse size with the music bass
-            this.size = this.baseSize * (1.0 + (bass - 1.0) * 1.2);
-            
-            if (this.y < -this.size - 20) {
+            if (this.y < -this.size * 3 - 25) {
                 this.reset();
             }
         }
@@ -5709,33 +5721,69 @@ const OnlineMusicEngine = {
             ctx.save();
             ctx.globalAlpha = this.alpha;
             ctx.fillStyle = this.color;
-            ctx.shadowBlur = 12;
+            ctx.shadowBlur = 14;
             ctx.shadowColor = this.color;
             
-            ctx.beginPath();
-            ctx.moveTo(this.x, this.y);
-            // Perfect heart path
-            ctx.bezierCurveTo(
-                this.x - this.size / 2, this.y - this.size / 2, 
-                this.x - this.size, this.y + this.size / 3, 
-                this.x, this.y + this.size
-            );
-            ctx.bezierCurveTo(
-                this.x + this.size, this.y + this.size / 3, 
-                this.x + this.size / 2, this.y - this.size / 2, 
-                this.x, this.y
-            );
-            ctx.closePath();
-            ctx.fill();
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.rotation);
+            
+            if (this.type === 'balloon') {
+                const r = this.size;
+                // Balloon body
+                ctx.beginPath();
+                ctx.ellipse(0, 0, r, r * 1.25, 0, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Balloon highlight sheen
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+                ctx.beginPath();
+                ctx.ellipse(-r * 0.35, -r * 0.4, r * 0.28, r * 0.42, -Math.PI / 4, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Balloon knot
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.moveTo(-r * 0.2, r * 1.22);
+                ctx.lineTo(r * 0.2, r * 1.22);
+                ctx.lineTo(0, r * 1.38);
+                ctx.closePath();
+                ctx.fill();
+                
+                // Wavy balloon string
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(0, r * 1.38);
+                ctx.quadraticCurveTo(Math.sin(this.phase * 2) * 10, r * 1.9, 0, r * 2.5);
+                ctx.stroke();
+            } else if (this.type === 'heart') {
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.bezierCurveTo(-this.size/2, -this.size/2, -this.size, this.size/3, 0, this.size);
+                ctx.bezierCurveTo(this.size, this.size/3, this.size/2, -this.size/2, 0, 0);
+                ctx.closePath();
+                ctx.fill();
+            } else if (this.type === 'star') {
+                ctx.beginPath();
+                for (let i = 0; i < 5; i++) {
+                    ctx.lineTo(Math.cos((18 + i * 72) * Math.PI / 180) * this.size, -Math.sin((18 + i * 72) * Math.PI / 180) * this.size);
+                    ctx.lineTo(Math.cos((54 + i * 72) * Math.PI / 180) * (this.size / 2), -Math.sin((54 + i * 72) * Math.PI / 180) * (this.size / 2));
+                }
+                ctx.closePath();
+                ctx.fill();
+            } else {
+                ctx.fillRect(-this.size / 2, -this.size / 4, this.size, this.size / 2);
+            }
+            
             ctx.restore();
         }
     }
     
-    function initHearts() {
-        hearts = [];
-        const count = Math.min(60, Math.floor(window.innerWidth / 15));
+    function initParticles() {
+        particles = [];
+        const count = Math.min(75, Math.floor(window.innerWidth / 14));
         for (let i = 0; i < count; i++) {
-            hearts.push(new Heart());
+            particles.push(new BirthdayParticle());
         }
     }
     
@@ -5745,43 +5793,42 @@ const OnlineMusicEngine = {
         
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // Calculate dynamic bass level from visualizer if running
         let bass = 1.0;
         if (window.ivoryVisualizer && window.ivoryVisualizer.dataArray) {
             const data = window.ivoryVisualizer.dataArray;
             let sum = 0;
-            // low frequencies
             const checkBins = Math.min(12, data.length);
             for (let i = 0; i < checkBins; i++) {
                 sum += data[i];
             }
             const avg = sum / checkBins;
-            bass = 1.0 + (avg / 255.0) * 0.8; // Max size scaling up to 1.8x
+            bass = 1.0 + (avg / 255.0) * 0.85;
         }
         
-        for (let heart of hearts) {
-            heart.update(bass);
-            heart.draw();
+        for (let p of particles) {
+            p.update(bass);
+            p.draw();
         }
     }
     
     window.toggleLoveTheme = function(btn) {
         active = !active;
-        const loveBtn = btn || document.getElementById('love-theme-btn');
+        const bdayBtn = btn || document.getElementById('love-theme-btn');
         
         if (active) {
-            canvas.style.opacity = '0.75';
-            initHearts();
+            canvas.style.opacity = '0.85';
+            initParticles();
             loop();
-            if (loveBtn) {
-                loveBtn.classList.add('active');
+            if (bdayBtn) {
+                bdayBtn.classList.add('active');
             }
-            // Trigger floating heart burst!
-            createHeartBurst();
+            if (typeof window.triggerHeartBurst === 'function') {
+                window.triggerHeartBurst();
+            }
         } else {
             canvas.style.opacity = '0';
-            if (loveBtn) {
-                loveBtn.classList.remove('active');
+            if (bdayBtn) {
+                bdayBtn.classList.remove('active');
             }
             setTimeout(() => {
                 if (!active) {
@@ -5791,17 +5838,261 @@ const OnlineMusicEngine = {
             }, 1500);
         }
     };
-    
-    // Heart burst helper on activation
-    function createHeartBurst() {
-        for (let i = 0; i < 20; i++) {
-            const h = new Heart();
-            h.y = canvas.height * 0.6 + Math.random() * canvas.height * 0.3;
-            h.alpha = 0.8;
-            h.speedY = 3 + Math.random() * 4;
-            hearts.push(h);
+})();
+
+// ── SECRET LOVE LETTER & PHOTO MEMORY CONTROLLER ─────────────────────
+(function initSecretLetterController() {
+    let currentSlide = 0;
+    const totalSlides = 5; // 5 photo memories
+    let autoSlideTimer = null;
+
+    function isBirthdayUnlocked() {
+        if (window._bypassBdayLock === true) return true;
+        const now = new Date();
+        const targetYear = now.getFullYear();
+        const bdayStart = new Date(targetYear, 6, 23, 0, 0, 0); // July 23 00:00:00
+        const bdayEnd = new Date(targetYear, 6, 23, 23, 59, 59, 999);
+        return now >= bdayStart && now <= bdayEnd;
+    }
+    window.isBirthdayUnlocked = isBirthdayUnlocked;
+
+    function updateSecretLetterButtonUI() {
+        const isUnlocked = isBirthdayUnlocked();
+
+        // Secret Letter button
+        const btn = document.getElementById('secret-envelope-btn');
+        if (btn) {
+            if (isUnlocked) {
+                btn.innerHTML = '💌 Secret Letter';
+                btn.classList.add('unlocked');
+                btn.classList.remove('locked');
+                btn.title = "Open Secret Birthday Letter! 💖";
+            } else {
+                btn.innerHTML = '🔒 Secret Letter';
+                btn.classList.add('locked');
+                btn.classList.remove('unlocked');
+                btn.title = "Unlocks on July 23 at Midnight! 🔒 (Triple-click to preview)";
+            }
+        }
+
+        // Love / Birthday Mode button
+        const loveBtn = document.getElementById('love-theme-btn');
+        if (loveBtn) {
+            if (isUnlocked) {
+                loveBtn.innerHTML = '🎂 Birthday Mode';
+                loveBtn.title = "Toggle Birthday Celebration Mode! 🎂🎉";
+                loveBtn.classList.add('is-bday-mode');
+            } else {
+                loveBtn.innerHTML = '💖 Love Mode';
+                loveBtn.title = "Toggle Beating Hearts visualizer! 💖";
+                loveBtn.classList.remove('is-bday-mode');
+            }
+        }
+
+        // Locked countdown pill
+        const pill = document.getElementById('locked-countdown-pill');
+        if (pill) {
+            const now = new Date();
+            const bdayStart = new Date(now.getFullYear(), 6, 23, 0, 0, 0);
+            const diff = bdayStart - now;
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                pill.textContent = `⏳ Unlocks in ${days}d ${hours}h ${minutes}m ${seconds}s`;
+            } else {
+                pill.textContent = `🎉 Ready to Unlock!`;
+            }
         }
     }
+
+    function openLockedModal() {
+        const modal = document.getElementById('letter-locked-modal');
+        if (modal) {
+            modal.classList.add('active');
+            modal.setAttribute('aria-hidden', 'false');
+        } else {
+            // Fallback if modal node missing: unlock directly for preview
+            window._bypassBdayLock = true;
+            openSecretLetter();
+            return;
+        }
+        
+        const btn = document.getElementById('secret-envelope-btn');
+        if (btn) {
+            btn.classList.remove('shake');
+            void btn.offsetWidth;
+            btn.classList.add('shake');
+            setTimeout(() => btn.classList.remove('shake'), 600);
+        }
+    }
+
+    function closeLockedModal() {
+        const modal = document.getElementById('letter-locked-modal');
+        if (!modal) return;
+        modal.classList.remove('active');
+        modal.setAttribute('aria-hidden', 'true');
+    }
+
+    function startAutoSlide() {
+        stopAutoSlide();
+        autoSlideTimer = setInterval(() => {
+            nextMemorySlide(false);
+        }, 3600); // Auto switch every 3.6 seconds
+    }
+
+    function stopAutoSlide() {
+        if (autoSlideTimer) {
+            clearInterval(autoSlideTimer);
+            autoSlideTimer = null;
+        }
+    }
+
+    let clickCount = 0;
+    let clickTimer = null;
+
+    function openSecretLetter(event) {
+        // Fast triple click or Shift key unlocks for Shivam developer preview!
+        clickCount++;
+        clearTimeout(clickTimer);
+        clickTimer = setTimeout(() => { clickCount = 0; }, 800);
+
+        if ((event && event.shiftKey) || clickCount >= 3) {
+            window._bypassBdayLock = true;
+            clickCount = 0;
+            console.log('🔓 Developer preview unlocked!');
+        }
+
+        if (!isBirthdayUnlocked()) {
+            openLockedModal();
+            return;
+        }
+
+        closeLockedModal();
+        const modal = document.getElementById('secret-letter-modal');
+        if (!modal) return;
+        modal.classList.add('active');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+
+        // Auto-enable Birthday Mode floating particles if not active
+        if (typeof window.toggleLoveTheme === 'function') {
+            const bdayBtn = document.getElementById('love-theme-btn');
+            if (bdayBtn && !bdayBtn.classList.contains('active')) {
+                window.toggleLoveTheme(bdayBtn);
+            }
+        }
+
+        // Start auto slideshow
+        startAutoSlide();
+
+        // Trigger celebratory heart burst
+        triggerHeartBurst();
+    }
+
+    function closeSecretLetter() {
+        const modal = document.getElementById('secret-letter-modal');
+        if (!modal) return;
+        modal.classList.remove('active');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+
+        // Stop auto slideshow
+        stopAutoSlide();
+
+        // Pause any playing memory videos when modal is closed
+        const videos = modal.querySelectorAll('video');
+        videos.forEach(v => v.pause());
+    }
+
+    function setMemorySlide(idx, userInitiated = true) {
+        currentSlide = (idx + totalSlides) % totalSlides;
+
+        const slides = document.querySelectorAll('.gallery-slide');
+        const dots = document.querySelectorAll('.gallery-dots .dot');
+
+        slides.forEach((slide, i) => {
+            if (i === currentSlide) {
+                slide.classList.add('active');
+            } else {
+                slide.classList.remove('active');
+                const video = slide.querySelector('video');
+                if (video) video.pause();
+            }
+        });
+
+        dots.forEach((dot, i) => {
+            if (i === currentSlide) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+
+        if (userInitiated) {
+            startAutoSlide();
+        }
+    }
+
+    function nextMemorySlide(userInitiated = true) {
+        setMemorySlide(currentSlide + 1, userInitiated);
+    }
+
+    function prevMemorySlide(userInitiated = true) {
+        setMemorySlide(currentSlide - 1, userInitiated);
+    }
+
+    function triggerHeartBurst() {
+        const hearts = ['🎈', '💖', '💕', '❤️', '💙', '💗', '✨', '🌸', '🥳', '🎁', '🎂'];
+        const container = document.body;
+
+        for (let i = 0; i < 30; i++) {
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart-particle';
+            heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+            heart.style.left = `${Math.random() * 100}vw`;
+            heart.style.top = `${80 + Math.random() * 20}vh`;
+            heart.style.fontSize = `${1.2 + Math.random() * 1.5}rem`;
+            heart.style.animationDuration = `${2 + Math.random() * 1.5}s`;
+            heart.style.animationDelay = `${Math.random() * 0.4}s`;
+            
+            container.appendChild(heart);
+            setTimeout(() => {
+                if (heart && heart.parentNode) heart.parentNode.removeChild(heart);
+            }, 3500);
+        }
+    }
+
+    // Update button UI state every second
+    setInterval(updateSecretLetterButtonUI, 1000);
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', updateSecretLetterButtonUI);
+    } else {
+        updateSecretLetterButtonUI();
+    }
+
+    // Keyboard ESC closes letter
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeSecretLetter();
+            closeLockedModal();
+        }
+    });
+
+    // Expose functions globally for inline HTML onclick compatibility
+    window.openSecretLetter = openSecretLetter;
+    window.closeSecretLetter = closeSecretLetter;
+    window.closeLockedModal = closeLockedModal;
+    window.unlockIvoryLetter = function() {
+        window._bypassBdayLock = true;
+        updateSecretLetterButtonUI();
+        openSecretLetter();
+    };
+    window.setMemorySlide = setMemorySlide;
+    window.nextMemorySlide = nextMemorySlide;
+    window.prevMemorySlide = prevMemorySlide;
+    window.triggerHeartBurst = triggerHeartBurst;
 })();
 
 

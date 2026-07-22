@@ -113,7 +113,7 @@
             <button class="pill" id="pill-artists" onclick="showArtists(this)">
               Artists
             </button>
-            <div id="bday-timer" class="bday-timer" title="Countdown to Birthday! ❤️">
+            <div id="bday-timer" class="bday-timer" onclick="openSecretLetter()" title="Countdown to Birthday! Click to open Secret Letter! ❤️">
               <span class="bday-heart">❤️</span>
               <span id="bday-countdown-text">...</span>
             </div>
@@ -121,6 +121,9 @@
           <div class="love-theme-row">
             <button class="love-theme-btn" id="love-theme-btn" onclick="toggleLoveTheme(this)" title="Toggle Beating Hearts visualizer! 💖">
               💖 Love Mode
+            </button>
+            <button class="secret-envelope-btn" id="secret-envelope-btn" onclick="openSecretLetter(event)" title="For Your Eyes Only 💌">
+              ✉️ Secret Letter
             </button>
           </div>
 
@@ -578,6 +581,124 @@
           <div id="fullscreen-lyrics" class="fs-lyrics-container">
             <p class="lyrics-placeholder">Lyrics will appear here...</p>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Secret Letter Locked Popup -->
+    <div id="letter-locked-modal" class="letter-modal-overlay" aria-hidden="true">
+      <div class="letter-modal-backdrop" onclick="closeLockedModal()"></div>
+      <div class="letter-modal-card glass-panel locked-card">
+        <button class="letter-modal-close" onclick="closeLockedModal()" aria-label="Close">✕</button>
+        <div class="locked-icon-anim">🔒✨</div>
+        <h3 class="locked-title">Shhh... It's a Secret! 💖</h3>
+        <p class="locked-desc">
+          This special birthday surprise for <strong>Anvii</strong> is locked until <strong>Midnight, 23rd July</strong>! ⏳
+        </p>
+        <div class="locked-timer-pill" id="locked-countdown-pill">
+          Unlocks in ...
+        </div>
+        <button class="letter-close-btn" onclick="closeLockedModal()" style="margin-top:16px; width:100%;">
+          <span>Okay, I'll Wait! 🥰</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Secret Love Letter & Photo Memory Card Modal -->
+    <div id="secret-letter-modal" class="letter-modal-overlay" aria-hidden="true">
+      <div class="letter-modal-backdrop" onclick="closeSecretLetter()"></div>
+      <div class="letter-modal-card glass-panel">
+        <button class="letter-modal-close" onclick="closeSecretLetter()" aria-label="Close Letter">✕</button>
+        
+        <!-- Header / Envelope flap decoration -->
+        <div class="letter-header">
+          <h2 class="letter-title">Happy Birthday Anvii! 🎂💖</h2>
+          <p class="letter-subtitle">✨ Made with all my love, forever & always — Shivam ✨</p>
+        </div>
+
+        <!-- Photo & Video Memory Carousel -->
+        <div class="letter-gallery">
+          <div class="gallery-slide-container">
+            <!-- Slide 1 -->
+            <div class="gallery-slide active" data-index="0">
+              <img src="23/Lost in You.jpeg" alt="Lost in You" class="gallery-media" />
+              <div class="gallery-caption">✨ Lost in You</div>
+            </div>
+            <!-- Slide 2 -->
+            <div class="gallery-slide" data-index="1">
+              <img src="23/Magic Exists.jpeg" alt="Magic Exists" class="gallery-media" />
+              <div class="gallery-caption">💖 Magic Exists With You</div>
+            </div>
+            <!-- Slide 3 -->
+            <div class="gallery-slide" data-index="2">
+              <img src="23/Speaking Our Truth.jpeg" alt="Speaking Our Truth" class="gallery-media" />
+              <div class="gallery-caption">💬 Speaking Our Truth</div>
+            </div>
+            <!-- Slide 4 -->
+            <div class="gallery-slide" data-index="3">
+              <img src="23/Tryst of Devotion.jpeg" alt="Tryst of Devotion" class="gallery-media" />
+              <div class="gallery-caption">🔐 Tryst of Devotion</div>
+            </div>
+            <!-- Slide 5 -->
+            <div class="gallery-slide" data-index="4">
+              <img src="23/WhatsApp Image 2026-07-16 at 11.40.55 PM.jpeg" alt="Our Special Moments" class="gallery-media" />
+              <div class="gallery-caption">🌟 Our Unforgettable Moments</div>
+            </div>
+            <!-- Slide 6 (Video 1) -->
+            <div class="gallery-slide" data-index="5">
+              <video src="23/WhatsApp Video 2026-07-03 at 10.19.18 PM.mp4" controls class="gallery-media gallery-video"></video>
+              <div class="gallery-caption">📹 Our Special Video Memory I</div>
+            </div>
+            <!-- Slide 7 (Video 2) -->
+            <div class="gallery-slide" data-index="6">
+              <video src="23/WhatsApp Video 2026-07-16 at 11.33.39 PM.mp4" controls class="gallery-media gallery-video"></video>
+              <div class="gallery-caption">📹 Our Special Video Memory II</div>
+            </div>
+          </div>
+
+          <!-- Carousel Controls -->
+          <button class="gallery-nav prev" onclick="prevMemorySlide()" aria-label="Previous photo">❮</button>
+          <button class="gallery-nav next" onclick="nextMemorySlide()" aria-label="Next photo">❯</button>
+          
+          <div class="gallery-dots">
+            <span class="dot active" onclick="setMemorySlide(0)"></span>
+            <span class="dot" onclick="setMemorySlide(1)"></span>
+            <span class="dot" onclick="setMemorySlide(2)"></span>
+            <span class="dot" onclick="setMemorySlide(3)"></span>
+            <span class="dot" onclick="setMemorySlide(4)"></span>
+            <span class="dot" onclick="setMemorySlide(5)"></span>
+            <span class="dot" onclick="setMemorySlide(6)"></span>
+          </div>
+        </div>
+
+        <!-- Handwritten Love Letter Content -->
+        <div class="letter-body-wrapper">
+          <div class="letter-paper">
+            <p class="letter-salutation">My Dearest Janna,</p>
+            <div class="letter-paragraph">
+              Happy Birthday, Janna! I love you so, so much. You know you are my everything, my soulmate, my Janna. I wish you a very Happy Birthday, my Jaan! You are my most special person, and I love you, my kid.
+            </div>
+            <div class="letter-paragraph">
+              Janna, no matter what the situation is, how much things get hard, we'll still be together. You know, kabhi bhi kisi cheez ka tension and stress mat lena, I'm always there for you every time. Hum saari problems ko saath mein face karenge and sort karenge, and finally, at the end, hume saath mein hi rehna hai na, my wifee! 💙🫂
+            </div>
+            <div class="letter-paragraph highlight-paragraph">
+              You are my everything, my Janna. Jab bhi koi problem ho, reach out to me. I'll always be there for you every single time. You are my sunshine, my everything, my lil kid. I love you so, so, so much, my Janna! ❤️
+            </div>
+            <div class="letter-signature">
+              Forever Yours,<br/>
+              <span class="sig-name">Shivam ❤️</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer actions inside card -->
+        <div class="letter-modal-footer">
+          <button class="heart-burst-btn" onclick="triggerHeartBurst()">
+            <span>💖 Send Lots of Love</span>
+          </button>
+          <button class="letter-close-btn" onclick="closeSecretLetter()">
+            <span>Close Letter 💌</span>
+          </button>
         </div>
       </div>
     </div>
