@@ -5721,8 +5721,6 @@ const OnlineMusicEngine = {
             ctx.save();
             ctx.globalAlpha = this.alpha;
             ctx.fillStyle = this.color;
-            ctx.shadowBlur = 14;
-            ctx.shadowColor = this.color;
             
             ctx.translate(this.x, this.y);
             ctx.rotate(this.rotation);
@@ -5843,7 +5841,7 @@ const OnlineMusicEngine = {
 // ── SECRET LOVE LETTER & PHOTO MEMORY CONTROLLER ─────────────────────
 (function initSecretLetterController() {
     let currentSlide = 0;
-    const totalSlides = 5; // 5 photo memories
+    const totalSlides = 7; // 5 photos + 2 video memories
     let autoSlideTimer = null;
 
     function isBirthdayUnlocked() {
