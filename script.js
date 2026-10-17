@@ -3514,12 +3514,13 @@ if (sb.repeat) {
 }
 
 function handleSongEnd() {
+    // Runs from the persistent <audio> element's "ended" event, so it must work
+    // with the screen locked and without any user gesture: reuse the same element,
+    // swap the source and call play() synchronously inside the event.
     if (isRepeat) {
-        // Repeat One
         audio.currentTime = 0;
         playSong();
     } else {
-        // Normal Next (Shuffle checked inside nextSong)
         nextSong();
     }
 }
@@ -3721,8 +3722,21 @@ function playSong() {
         }
         player.classList.add('is-playing');
     }
-    audio.play().catch(e => console.error("Play error:", e));
-
+    resumeAudioContextForBackground();
+    const attempt = audio.play();
+    if (attempt && typeof attempt.catch === 'function') {
+        attempt.catch(e => {
+            console.error("Play error:", e);
+            // Source may not be ready yet (e.g. auto-advance while locked): retry once ready.
+            if (e && e.name === 'AbortError') return; // superseded by a newer load/play
+            const retry = () => {
+                audio.removeEventListener('canplay', retry);
+                resumeAudioContextForBackground();
+                audio.play().catch(err => console.warn('Retry play failed:', err));
+            };
+            audio.addEventListener('canplay', retry);
+        });
+    }
 }
 
 function pauseSong() {
@@ -6093,6 +6107,33 @@ const OnlineMusicEngine = {
     window.triggerHeartBurst = triggerHeartBurst;
 })();
 
+// ── Background / lock-screen playback ─────────────────────────────────────
+// A suspended AudioContext (the visualizer routes <audio> through it) silences
+// the element when the screen locks, so keep it running.
+function resumeAudioContextForBackground() {
+    const ctx = window.VisualizerManager && window.VisualizerManager.audioContext;
+    if (ctx && ctx.state !== 'running' && ctx.state !== 'closed') {
+        ctx.resume().catch(() => {});
+    }
+}
 
+// Keep Media Session state in sync with the real element state (lock screen UI).
+audio.addEventListener('play', () => {
+    try { if (supportsMediaSession) navigator.mediaSession.playbackState = 'playing'; } catch (e) {}
+    resumeAudioContextForBackground();
+});
+audio.addEventListener('pause', () => {
+    // Don't flag "paused" during the gap between tracks when the track just ended.
+    if (audio.ended) return;
+    try { if (supportsMediaSession) navigator.mediaSession.playbackState = 'paused'; } catch (e) {}
+});
+audio.addEventListener('loadedmetadata', () => { syncMediaSession(); });
 
+// If the context is suspended by the OS (screen lock) while we should be playing, resume.
+document.addEventListener('visibilitychange', () => {
+    if (!audio.paused || audio.ended) resumeAudioContextForBackground();
+    if (!document.hidden && !audio.paused) syncMediaSession();
+});
 
+// Make sure the lock screen play/pause handlers also revive the audio graph.
+registerMediaSessionHandlers();
