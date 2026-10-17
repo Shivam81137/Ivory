@@ -125,82 +125,82 @@ const songs = [
     { title: "On Top", artist: "Karan Aujla", file: "songs/karan aujla/On Top - PagalNew - Karan Aujla.mp3", art: "https://c.saavncdn.com/978/On-Top-Punjabi-2022-20221125032515-500x500.jpg", folder: "Karan Aujla", durationFormatted: "3:03" },
     { title: "Softly", artist: "Karan Aujla", file: "songs/karan aujla/Softly - PagalNew - Karan Aujla.mp3", art: "https://c.saavncdn.com/136/Making-Memories-Punjabi-2023-20230818090714-500x500.jpg", folder: "Karan Aujla", durationFormatted: "2:35" },
     { title: "Winning Speech", artist: "Karan Aujla", file: "songs/karan aujla/Winning Speech - PagalNew - Karan Aujla.mp3", art: "https://c.saavncdn.com/956/Winning-Speech-Punjabi-2024-20240502053646-500x500.jpg", folder: "Karan Aujla", durationFormatted: "3:47" },
-    { title: "Sajni", artist: "Arijit Singh & Ram Sampath", file: "songs/HINDI HITS/Sajni (Lyrical Video) Arijit Singh, Ram Sampath  Laapataa Ladies   Aamir Khan Productions - T-Series.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "3:10" },
-    { title: "Ve Haaniyaan", artist: "Avvy Sra & Danny", file: "songs/HINDI HITS/Ve Haaniyaan - Official Video  Ravi Dubey & Sargun Mehta  Danny  Avvy Sra  Dreamiyata Music - Dreamiyata Music.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "3:24" },
-    { title: "Tum Tak", artist: "Javed Ali", file: "songs/HINDI HITS/A.R. Rahman - Tum Tak Best Lyric VideoRaanjhanaaSonam KapoorDhanushJaved Ali - SonyMusicIndiaVEVO.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "3:40" },
-    { title: "Pehli Nazar Mein", artist: "Atif Aslam", file: "songs/HINDI HITS/Pehli Nazar Mein - Full Video  Race I Akshaye , Bipasha & Saif Ali  Atif Aslam  Pritam  Tips - Tips Official.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "3:36" },
-    { title: "Jeene Laga Hoon", artist: "Atif Aslam & Shreya Ghoshal", file: "songs/HINDI HITS/Jeene Laga Hoon  Ramaiya Vastavaiya  Girish Kumar, Shruti Haasan  Atif Aslam  Shreya Goshal - Tips Official.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "3:56" },
-    { title: "Enna Sona", artist: "A.R. Rahman & Arijit Singh", file: "songs/HINDI HITS/A.R. Rahman - Enna Sona Best VideoOK JaanuArijit SinghShraddha KapoorAditya Roy - SonyMusicIndiaVEVO.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Mann Mera", artist: "Gajendra Verma", file: "songs/HINDI HITS/Gajendra Verma - Mann Mera (Lyrics)  Original Version - Indie India.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Zehnaseeb", artist: "Chinmayi Sripada", file: "songs/HINDI HITS/Zehnaseeb Lyric Video - Hasee Toh PhaseeParineeti, SidharthChinmayi S, Shekhar Ravjiani - SonyMusicIndiaVEVO.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "3:37" },
-    { title: "Tera Rastaa Chhodoon Na", artist: "Amaal Mallik, Shalmali Kholgade", file: "songs/HINDI HITS/Tera Rastaa Chhodoon Na_Duplicate.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "2:11" },
-    { title: "Humsafar", artist: "Akhil Sachdeva", file: "songs/HINDI HITS/Humsafar (Full Video)   Varun & Alia Bhatt  Akhil Sachdeva  Badrinath Ki Dulhania - T-Series.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Iraaday", artist: "Abdul Hannan & Rovalio", file: "songs/HINDI HITS/Abdul Hannan & Rovalio - Iraaday (Official Music Video) - Abdul Hannan.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Aankhon Se Batana", artist: "Dikshant", file: "songs/HINDI HITS/Aankhon Se Batana – Dikshant  Viral Song 2022  Official Video - Sony Music India.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Mere Liye Tum Kaafi Ho", artist: "Ayushmann Khurrana", file: "songs/HINDI HITS/Lyrical Mere Liye Tum Kaafi Ho  Shubh Mangal Zyada Saavdhan Ayushman Khurana,Jeetu  Tanishk-Vayu - T-Series.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Dariya", artist: "Arko Pravo Mukherjee", file: "songs/HINDI HITS/Dariya - Lyrical Video  Baar Baar Dekho  Sidharth Malhotra & Katrina Kaif  Arko - Zee Music Company.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Chaar Kadam", artist: "Shaan & Shreya Ghoshal", file: "songs/HINDI HITS/'Chaar Kadam' FULL VIDEO Song  PK  Sushant Singh Rajput  Anushka Sharma  T-series - T-Series.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Raanjhanaa", artist: "A.R. Rahman", file: "songs/HINDI HITS/Raanjhanaa - Lyrical Video  Dhanush, Sonam Kapoor  A. R. Rahman  Jaswinder Singh & Shiraz Uppal - SonyMusicIndiaVEVO.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "4:15" },
-    { title: "Ik Kudi", artist: "wolf.cryman", file: "songs/HINDI HITS/Ik Kudi - wolf.cryman - Topic.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Qaafirana", artist: "Arijit Singh & Nikhita Gandhi", file: "songs/HINDI HITS/Qaafirana - Lyrical   Kedarnath  Sushant S Rajput  Sara Ali Khan  Arijit Singh & Nikhita Amit T - Zee Music Company.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "5:52" },
-    { title: "Be Intehaan", artist: "Atif Aslam & Sunidhi Chauhan", file: "songs/HINDI HITS/Be Intehaan - Race 2  Saif Ali Khan & Deepika Padukone  Atif Aslam, Sunidhi chauhan  Pritam - Tips Official.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Aahista", artist: "Arijit Singh & Jonita Gandhi", file: "songs/HINDI HITS/Aahista - Lyrical  Laila Majnu  Arijit Singh & Jonita Gandhi  Avinash T & Tripti D  Imtiaz Ali - Zee Music Company.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Labon Ko", artist: "K.K.", file: "songs/HINDI HITS/Lyrical Labon Ko  Bhool Bhulaiyaa  Pritam  K.K. Akshay Kumar, Shiney Ahuja, Vidya Balan - T-Series.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Mere Bina", artist: "Mohit Chauhan", file: "songs/HINDI HITS/Mere Bina Full Video - CrookEmraan Hashmi,Neha SharmaNikhil D'SouzaPritamMukesh Bhatt - SonyMusicIndiaVEVO.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "4:49" },
-    { title: "Ishq Bulaava", artist: "Sanam Puri & Shipra Goyal", file: "songs/HINDI HITS/Ishq Bulaava Full Video - Hasee Toh PhaseeParineeti, SidharthSanam Puri, Shipra Goyal - SonyMusicIndiaVEVO.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Tu Chahiye", artist: "Atif Aslam", file: "songs/HINDI HITS/'Tu Chahiye' FULL VIDEO Song - Atif Aslam Pritam  Bajrangi Bhaijaan  Salman Khan, Kareena Kapoor - T-Series.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Rang Jo Lagyo", artist: "Atif Aslam & Shreya Ghoshal", file: "songs/HINDI HITS/Rang Jo Lagyo Lyrical  Ramaiya Vastavaiya  Girish Kumar, Shruti Haasan Atif Aslam, Shreya Ghoshal - Tips Official.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "5:20" },
-    { title: "Abhi Kuch Dino Se", artist: "Mohit Chauhan", file: "songs/HINDI HITS/Abhi Kuch Dino Se Lyrical Video  Dil Toh Baccha Hai Ji   Emraan hashmi, Ajay Devgn - T-Series.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Dekha Hazaro Dafaa", artist: "Arijit Singh & Palak Muchhal", file: "songs/HINDI HITS/Dekha Hazaro Dafaa  Rustom  Akshay Kumar & Ileana D'cruz  Arijit Singh , Palak M Jeet Gannguli - Zee Music Company.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "O Rangrez", artist: "Shreya Ghoshal & Javed Bashir", file: "songs/HINDI HITS/O Rangrez - Lyrcial Video  Bhaag Milkha Bhaag  Farhan, Sonam  Shreya Ghoshal, Javed Bashir - Sony Music India.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "6:25" },
-    { title: "Yeh Fitoor Mera", artist: "Arijit Singh", file: "songs/HINDI HITS/Yeh Fitoor Mera - Full Video  Fitoor  Aditya Roy Kapur, Katrina Kaif  Arijit Singh  Amit Trivedi - Zee Music Company.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "3:31" },
-    { title: "Sarangi", artist: "Sushant KC", file: "songs/HINDI HITS/Sushant KC - Sarangi (Official Music Video) - Sushant KC.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "4:59" },
-    { title: "Inkem Inkem", artist: "Sid Sriram", file: "songs/HINDI HITS/Inkem Inkem -lyrics  Geetha Govindam  Sid Sriram  LYRICS🖤 #vijaydevarakonda - Cinephile's Corner.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Hosanna", artist: "A.R. Rahman", file: "songs/HINDI HITS/A.R. Rahman - Hosanna (Lyrics) ft. Leon D'souza & Suzanne D'Mello - seventyskye.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Sajni", artist: "Arijit Singh & Ram Sampath", file: "songs/HINDI HITS/Sajni (Lyrical Video) Arijit Singh, Ram Sampath  Laapataa Ladies   Aamir Khan Productions - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "3:10" },
+    { title: "Ve Haaniyaan", artist: "Avvy Sra & Danny", file: "songs/HINDI HITS/Ve Haaniyaan - Official Video  Ravi Dubey & Sargun Mehta  Danny  Avvy Sra  Dreamiyata Music - Dreamiyata Music.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "3:24" },
+    { title: "Tum Tak", artist: "Javed Ali", file: "songs/HINDI HITS/A.R. Rahman - Tum Tak Best Lyric VideoRaanjhanaaSonam KapoorDhanushJaved Ali - SonyMusicIndiaVEVO.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "3:40" },
+    { title: "Pehli Nazar Mein", artist: "Atif Aslam", file: "songs/HINDI HITS/Pehli Nazar Mein - Full Video  Race I Akshaye , Bipasha & Saif Ali  Atif Aslam  Pritam  Tips - Tips Official.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "3:36" },
+    { title: "Jeene Laga Hoon", artist: "Atif Aslam & Shreya Ghoshal", file: "songs/HINDI HITS/Jeene Laga Hoon  Ramaiya Vastavaiya  Girish Kumar, Shruti Haasan  Atif Aslam  Shreya Goshal - Tips Official.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "3:56" },
+    { title: "Enna Sona", artist: "A.R. Rahman & Arijit Singh", file: "songs/HINDI HITS/A.R. Rahman - Enna Sona Best VideoOK JaanuArijit SinghShraddha KapoorAditya Roy - SonyMusicIndiaVEVO.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Mann Mera", artist: "Gajendra Verma", file: "songs/HINDI HITS/Gajendra Verma - Mann Mera (Lyrics)  Original Version - Indie India.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Zehnaseeb", artist: "Chinmayi Sripada", file: "songs/HINDI HITS/Zehnaseeb Lyric Video - Hasee Toh PhaseeParineeti, SidharthChinmayi S, Shekhar Ravjiani - SonyMusicIndiaVEVO.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "3:37" },
+    { title: "Tera Rastaa Chhodoon Na", artist: "Amaal Mallik, Shalmali Kholgade", file: "songs/HINDI HITS/Tera Rastaa Chhodoon Na_Duplicate.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "2:11" },
+    { title: "Humsafar", artist: "Akhil Sachdeva", file: "songs/HINDI HITS/Humsafar (Full Video)   Varun & Alia Bhatt  Akhil Sachdeva  Badrinath Ki Dulhania - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Iraaday", artist: "Abdul Hannan & Rovalio", file: "songs/HINDI HITS/Abdul Hannan & Rovalio - Iraaday (Official Music Video) - Abdul Hannan.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Aankhon Se Batana", artist: "Dikshant", file: "songs/HINDI HITS/Aankhon Se Batana – Dikshant  Viral Song 2022  Official Video - Sony Music India.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Mere Liye Tum Kaafi Ho", artist: "Ayushmann Khurrana", file: "songs/HINDI HITS/Lyrical Mere Liye Tum Kaafi Ho  Shubh Mangal Zyada Saavdhan Ayushman Khurana,Jeetu  Tanishk-Vayu - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Dariya", artist: "Arko Pravo Mukherjee", file: "songs/HINDI HITS/Dariya - Lyrical Video  Baar Baar Dekho  Sidharth Malhotra & Katrina Kaif  Arko - Zee Music Company.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Chaar Kadam", artist: "Shaan & Shreya Ghoshal", file: "songs/HINDI HITS/'Chaar Kadam' FULL VIDEO Song  PK  Sushant Singh Rajput  Anushka Sharma  T-series - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Raanjhanaa", artist: "A.R. Rahman", file: "songs/HINDI HITS/Raanjhanaa - Lyrical Video  Dhanush, Sonam Kapoor  A. R. Rahman  Jaswinder Singh & Shiraz Uppal - SonyMusicIndiaVEVO.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "4:15" },
+    { title: "Ik Kudi", artist: "wolf.cryman", file: "songs/HINDI HITS/Ik Kudi - wolf.cryman - Topic.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Qaafirana", artist: "Arijit Singh & Nikhita Gandhi", file: "songs/HINDI HITS/Qaafirana - Lyrical   Kedarnath  Sushant S Rajput  Sara Ali Khan  Arijit Singh & Nikhita Amit T - Zee Music Company.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "5:52" },
+    { title: "Be Intehaan", artist: "Atif Aslam & Sunidhi Chauhan", file: "songs/HINDI HITS/Be Intehaan - Race 2  Saif Ali Khan & Deepika Padukone  Atif Aslam, Sunidhi chauhan  Pritam - Tips Official.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Aahista", artist: "Arijit Singh & Jonita Gandhi", file: "songs/HINDI HITS/Aahista - Lyrical  Laila Majnu  Arijit Singh & Jonita Gandhi  Avinash T & Tripti D  Imtiaz Ali - Zee Music Company.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Labon Ko", artist: "K.K.", file: "songs/HINDI HITS/Lyrical Labon Ko  Bhool Bhulaiyaa  Pritam  K.K. Akshay Kumar, Shiney Ahuja, Vidya Balan - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Mere Bina", artist: "Mohit Chauhan", file: "songs/HINDI HITS/Mere Bina Full Video - CrookEmraan Hashmi,Neha SharmaNikhil D'SouzaPritamMukesh Bhatt - SonyMusicIndiaVEVO.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "4:49" },
+    { title: "Ishq Bulaava", artist: "Sanam Puri & Shipra Goyal", file: "songs/HINDI HITS/Ishq Bulaava Full Video - Hasee Toh PhaseeParineeti, SidharthSanam Puri, Shipra Goyal - SonyMusicIndiaVEVO.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Tu Chahiye", artist: "Atif Aslam", file: "songs/HINDI HITS/'Tu Chahiye' FULL VIDEO Song - Atif Aslam Pritam  Bajrangi Bhaijaan  Salman Khan, Kareena Kapoor - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Rang Jo Lagyo", artist: "Atif Aslam & Shreya Ghoshal", file: "songs/HINDI HITS/Rang Jo Lagyo Lyrical  Ramaiya Vastavaiya  Girish Kumar, Shruti Haasan Atif Aslam, Shreya Ghoshal - Tips Official.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "5:20" },
+    { title: "Abhi Kuch Dino Se", artist: "Mohit Chauhan", file: "songs/HINDI HITS/Abhi Kuch Dino Se Lyrical Video  Dil Toh Baccha Hai Ji   Emraan hashmi, Ajay Devgn - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Dekha Hazaro Dafaa", artist: "Arijit Singh & Palak Muchhal", file: "songs/HINDI HITS/Dekha Hazaro Dafaa  Rustom  Akshay Kumar & Ileana D'cruz  Arijit Singh , Palak M Jeet Gannguli - Zee Music Company.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "O Rangrez", artist: "Shreya Ghoshal & Javed Bashir", file: "songs/HINDI HITS/O Rangrez - Lyrcial Video  Bhaag Milkha Bhaag  Farhan, Sonam  Shreya Ghoshal, Javed Bashir - Sony Music India.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "6:25" },
+    { title: "Yeh Fitoor Mera", artist: "Arijit Singh", file: "songs/HINDI HITS/Yeh Fitoor Mera - Full Video  Fitoor  Aditya Roy Kapur, Katrina Kaif  Arijit Singh  Amit Trivedi - Zee Music Company.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "3:31" },
+    { title: "Sarangi", artist: "Sushant KC", file: "songs/HINDI HITS/Sushant KC - Sarangi (Official Music Video) - Sushant KC.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "4:59" },
+    { title: "Inkem Inkem", artist: "Sid Sriram", file: "songs/HINDI HITS/Inkem Inkem -lyrics  Geetha Govindam  Sid Sriram  LYRICS🖤 #vijaydevarakonda - Cinephile's Corner.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Hosanna", artist: "A.R. Rahman", file: "songs/HINDI HITS/A.R. Rahman - Hosanna (Lyrics) ft. Leon D'souza & Suzanne D'Mello - seventyskye.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
     { title: "Darkhaast", artist: "Arijit Singh & Sunidhi Chauhan", file: "song/DARKHAAST Full Audio Song   SHIVAAY   Arijit Singh & Sunidhi Chauhan  Ajay Devgn  T-Series - 256.MP3", art: "https://c.saavncdn.com/617/Shivaay-Hindi-2016-500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Jaan Ban Gaye", artist: "Vishal Mishra & Asees Kaur", file: "songs/HINDI HITS/Jaan Ban Gaye  Khuda Haafiz  Vidyut Jammwal, Shivaleeka Oberoi  Vishal Mishra,Asees Kaur Mithoon - Romance Rewind.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Saude Bazi", artist: "Pritam", file: "songs/HINDI HITS/Lyrical Saude Bazi  Aakrosh  Ajay Devgn, Bipasha Basu  Pritam  Anupam Amod  Irshad Kamil - T-Series Bollywood Classics.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Khoya Khoya", artist: "Mohit Chauhan", file: "songs/HINDI HITS/'Khoya Khoya' FULL VIDEO Song  Sooraj Pancholi, Athiya Shetty  Hero  T-Series - T-Series.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Tere Bina", artist: "Zaeden", file: "songs/HINDI HITS/tere bina - Zaeden  ft. Amyra Dastur  Kunaal Vermaa  VYRLOriginals  Romantic Songs 2019 - VYRLOriginals.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "2:41" },
-    { title: "Mere Nishan", artist: "Darshan Raval", file: "songs/HINDI HITS/Mere Nishan (Lyrics) - Darshan Raval 🎶  Jhuki teri palko mein mil jaye mujhe panahe✨ - Sankalp Lyrics.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "5:10" },
-    { title: "Bairiyaa", artist: "Atif Aslam & Shreya Ghoshal", file: "songs/HINDI HITS/Bairiyaa  Aatif Aslam  Shreya Ghoshal   Girish Kumar  Shruti Haasan  Ramaiya Vastavaiya - Bollywood Dhamaka.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Rukum Maikot", artist: "SD Yogi & Shanti Shree Pariyar", file: "songs/HINDI HITS/Rukum Maikot ( Lyrics)  Nepali Cultural New nepali song  Khusma   SD Yogi & Shanti Shree Pariyar - Sonic Serenade🎶.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "4:46" },
-    { title: "Timi Nacha Na", artist: "Wangden Sherpa", file: "songs/HINDI HITS/Wangden Sherpa - Timi Nacha Na  Lyric video (Mayalu Timi Sangai Sangai) - LyricsVerse.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "3:00" },
-    { title: "Bardali", artist: "Sushant KC & Indrakala Rai", file: "songs/HINDI HITS/Sushant KC - Bardali ft. Indrakala Rai (Official Music Video) - Sushant KC.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Jhol", artist: "Maanu & Annural Khalid", file: "songs/HINDI HITS/Jhol  Coke Studio Pakistan  Season 15  Maanu x Annural Khalid - Coke Studio Pakistan.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Nadaaniyan", artist: "Akshath", file: "songs/HINDI HITS/Akshath - Nadaaniyan (Lyrics) - Indie India.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Khwab", artist: "Iqlipse Nova & Aditya A", file: "songs/HINDI HITS/Iqlipse Nova, Aditya A  - Khwab (Lyrics) - seventyskye.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Zulfein", artist: "Mehul Mahesh & DJ Aynik", file: "songs/HINDI HITS/Mehul Mahesh & DJ Aynik - Zulfein  (Lyrics) - Musicgenree.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Meri Banogi Kya", artist: "Rito Riba", file: "songs/HINDI HITS/Meri Banogi Kya - Rito Riba  Official Music Lyrics Video - Lyrics4You.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "3:32" },
-    { title: "Savera", artist: "Iqlipse Nova & Anubha Bajaj", file: "songs/HINDI HITS/Savera -  New Instagram viral song  Official Lyric Video  Iqlipse Nova X Anubha Bajaj - Iqlipse Nova.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Dear Maahiya", artist: "Tanishka Bahl & Saaheal", file: "songs/HINDI HITS/Dear Maahiya (Official Music Video)  Tanishka Bahl  Saaheal  Showkidd  UR Debut  New Hindi Song - UR DEBUT.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Kasari", artist: "Yabesh Thapa", file: "songs/HINDI HITS/Yabesh thapa - Kasari [ Lyrics Video ] - Bishal Lyrics.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Jhim Jhim Aune Aakhale", artist: "Ekdev Limbu", file: "songs/HINDI HITS/Ekdev Limbu 🌹- Jhim Jhim Aune Aakhale (Lyrics Video Nepali) - Nepali Fine Tunes 🎵.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Timro Pratiksa", artist: "Shallum Lama", file: "songs/HINDI HITS/Shallum Lama - Timro Pratiksa (Lyrics) - seventyskye.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Timi Sangai", artist: "Apurva Tamang", file: "songs/HINDI HITS/Timi Sangai - Apurva Tamang  Lyric video - Lazy aayu.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Dil Ye Bekarar Kyun Hai", artist: "Mohit Chauhan & Shreya Ghoshal", file: "songs/HINDI HITS/Dil Ye Bekarar Kyun Hai  Players  Abhishek Bachchan  Sonam Kapoor - T-Series.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Taare Ginn", artist: "Mohit Chauhan & Shreya Ghoshal", file: "songs/HINDI HITS/Taare Ginn - Dil BecharaFull SongSushant-Sanjana@A. R. RahmanMohit-Shreya - SonyMusicIndiaVEVO.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "4:02" },
-    { title: "Haareya", artist: "Arijit Singh", file: "songs/HINDI HITS/Haareya Song  Meri Pyaari Bindu  Ayushmann, Parineeti  Arijit Singh  Sachin-Jigar, Priya Saraiya - YRF.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Sukoon Mila", artist: "Arijit Singh", file: "songs/HINDI HITS/Sukoon Mila Full Video  Mary Kom  Priyanka Chopra & Darshan Gandas  Arijit Singh  HD - Zee Music Company.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "3:53" },
-    { title: "Ehsaas", artist: "Faheem Abdullah", file: "songs/HINDI HITS/Ehsaas_Duplicate.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Zaroor", artist: "Aparshakti Khurana", file: "songs/HINDI HITS/Zaroor – Aparshakti Khurana  Savi Kahlon  Official Music Video - Sony Music India.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "2:46" },
-    { title: "Manchala", artist: "Shafqat Amanat Ali", file: "songs/HINDI HITS/Manchala Full song - Parineeti Chopra, Sidharth  Hasee Toh Phasee - Bollywood songs.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Meherbaan", artist: "Ash King & Shilpa Rao", file: "songs/HINDI HITS/Meherbaan Full Audio  Hrithik Roshan & Katrina Kaif  Vishal Shekhar - Zee Music Company.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Rang Lageya", artist: "Mohit Chauhan", file: "songs/HINDI HITS/Rang lageya - Paras chhabra mahira sharma ft. Mohit chuhaan (lyrics) - Music Club.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Jogi", artist: "Yasser Desai & Aakanksha Sharma", file: "songs/HINDI HITS/Jogi - Lyrical Shaadi Mein Zaroor Aana Rajkummar Rao,Kriti KArko ft Aakanksha Sharma - Zee Music Company.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Dooron Dooron", artist: "Paresh Pahuja", file: "songs/HINDI HITS/Dooron Dooron (Official Video) - Paresh Pahuja Feat. Harleen Sethi  Shiv  Meghdeep  Vaibhav - Paresh Pahuja.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Ranjheya Ve", artist: "Zain Zohaib", file: "songs/HINDI HITS/Ranjheya Ve  Zain Zohaib  Yratta media - Zain Zohaib.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "4:26" },
-    { title: "Kaise Bataaoon", artist: "K.K.", file: "songs/HINDI HITS/Kaise Bataaoon  Full (Video) Song - 3G  Neil Nitin Mukesh & Sonal Chauhan  KK - SonyMusicIndiaVEVO.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Is This Love", artist: "Mohit Chauhan & Shreya Ghoshal", file: "songs/HINDI HITS/Is This Love Lyrical - Kismat Konnection  Shahid Kapoor, Vidya Balan  Mohit C, Shreya G  Pritam - Tips Official.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Kyon", artist: "Papon & Sunidhi Chauhan", file: "songs/HINDI HITS/Kyon - BarfiPritamPaponSunidhiRanbirPriyanka - SonyMusicIndiaVEVO.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Tujhko Jo Paaya", artist: "Mohit Chauhan", file: "songs/HINDI HITS/Pritam - Tujhko Jo Paaya Best Audio SongCrookEmraan HashmiNeha SharmaMohit Chauhan - SonyMusicIndiaVEVO.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Sachiya Mohabbatan", artist: "Sachet Tandon", file: "songs/HINDI HITS/LYRICAL Sachiya Mohabbatan  Arjun Patiala  Diljit Dosanjh, Kriti S  Sachet Tandon  Sachin-Jigar - T-Series.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Jab Tak", artist: "Armaan Malik", file: "songs/HINDI HITS/JAB TAK Video Song  M.S. DHONI -THE UNTOLD STORY  Armaan Malik, Amaal Mallik Sushant Singh Rajput - T-Series.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Sadka Kiya", artist: "Suraj Jagan & Mahalaxmi Iyer", file: "songs/HINDI HITS/Sadka Best Audio Song - I Hate Luv StorysSonam KapoorImran KhanSurajMahalaxmi Iyer - SonyMusicIndiaVEVO.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "5:45" },
-    { title: "Kahaan Ho Tum", artist: "Prateek Kuhad", file: "songs/HINDI HITS/Prateek Kuhad - Kahaan Ho Tum  Official Music Video  Prajakta Koli & Rohit Saraf  Mismatched - Netflix India.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Ishq Hai", artist: "Anuv Jain", file: "songs/HINDI HITS/Ishq Hai Lyrics - Mismatched Season 3  Trending Hindi Song 2024 - Vibe Bird.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Maine Khud Ko", artist: "Mustafa Zahid", file: "songs/HINDI HITS/Maine Khud Ko Ragini MMS 2 Song With Lyrics  Sunny Leone  Mustafa Zahid - T-Series.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
-    { title: "Jugraafiya", artist: "Udit Narayan & Shreya Ghoshal", file: "songs/HINDI HITS/Jugraafiya  Super 30  Hrithik Roshan & Mrunal Thakur  Udit Narayan & Shreya Ghoshal  Lyrical - Romance Rewind.mp3", art: "https://c.saavncdn.com/editorial/Hindi-Hit-Songs_20241107055403_500x500.jpg", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Jaan Ban Gaye", artist: "Vishal Mishra & Asees Kaur", file: "songs/HINDI HITS/Jaan Ban Gaye  Khuda Haafiz  Vidyut Jammwal, Shivaleeka Oberoi  Vishal Mishra,Asees Kaur Mithoon - Romance Rewind.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Saude Bazi", artist: "Pritam", file: "songs/HINDI HITS/Lyrical Saude Bazi  Aakrosh  Ajay Devgn, Bipasha Basu  Pritam  Anupam Amod  Irshad Kamil - T-Series Bollywood Classics.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Khoya Khoya", artist: "Mohit Chauhan", file: "songs/HINDI HITS/'Khoya Khoya' FULL VIDEO Song  Sooraj Pancholi, Athiya Shetty  Hero  T-Series - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Tere Bina", artist: "Zaeden", file: "songs/HINDI HITS/tere bina - Zaeden  ft. Amyra Dastur  Kunaal Vermaa  VYRLOriginals  Romantic Songs 2019 - VYRLOriginals.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "2:41" },
+    { title: "Mere Nishan", artist: "Darshan Raval", file: "songs/HINDI HITS/Mere Nishan (Lyrics) - Darshan Raval 🎶  Jhuki teri palko mein mil jaye mujhe panahe✨ - Sankalp Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "5:10" },
+    { title: "Bairiyaa", artist: "Atif Aslam & Shreya Ghoshal", file: "songs/HINDI HITS/Bairiyaa  Aatif Aslam  Shreya Ghoshal   Girish Kumar  Shruti Haasan  Ramaiya Vastavaiya - Bollywood Dhamaka.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Rukum Maikot", artist: "SD Yogi & Shanti Shree Pariyar", file: "songs/HINDI HITS/Rukum Maikot ( Lyrics)  Nepali Cultural New nepali song  Khusma   SD Yogi & Shanti Shree Pariyar - Sonic Serenade🎶.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "4:46" },
+    { title: "Timi Nacha Na", artist: "Wangden Sherpa", file: "songs/HINDI HITS/Wangden Sherpa - Timi Nacha Na  Lyric video (Mayalu Timi Sangai Sangai) - LyricsVerse.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "3:00" },
+    { title: "Bardali", artist: "Sushant KC & Indrakala Rai", file: "songs/HINDI HITS/Sushant KC - Bardali ft. Indrakala Rai (Official Music Video) - Sushant KC.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Jhol", artist: "Maanu & Annural Khalid", file: "songs/HINDI HITS/Jhol  Coke Studio Pakistan  Season 15  Maanu x Annural Khalid - Coke Studio Pakistan.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Nadaaniyan", artist: "Akshath", file: "songs/HINDI HITS/Akshath - Nadaaniyan (Lyrics) - Indie India.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Khwab", artist: "Iqlipse Nova & Aditya A", file: "songs/HINDI HITS/Iqlipse Nova, Aditya A  - Khwab (Lyrics) - seventyskye.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Zulfein", artist: "Mehul Mahesh & DJ Aynik", file: "songs/HINDI HITS/Mehul Mahesh & DJ Aynik - Zulfein  (Lyrics) - Musicgenree.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Meri Banogi Kya", artist: "Rito Riba", file: "songs/HINDI HITS/Meri Banogi Kya - Rito Riba  Official Music Lyrics Video - Lyrics4You.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "3:32" },
+    { title: "Savera", artist: "Iqlipse Nova & Anubha Bajaj", file: "songs/HINDI HITS/Savera -  New Instagram viral song  Official Lyric Video  Iqlipse Nova X Anubha Bajaj - Iqlipse Nova.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Dear Maahiya", artist: "Tanishka Bahl & Saaheal", file: "songs/HINDI HITS/Dear Maahiya (Official Music Video)  Tanishka Bahl  Saaheal  Showkidd  UR Debut  New Hindi Song - UR DEBUT.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Kasari", artist: "Yabesh Thapa", file: "songs/HINDI HITS/Yabesh thapa - Kasari [ Lyrics Video ] - Bishal Lyrics.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Jhim Jhim Aune Aakhale", artist: "Ekdev Limbu", file: "songs/HINDI HITS/Ekdev Limbu 🌹- Jhim Jhim Aune Aakhale (Lyrics Video Nepali) - Nepali Fine Tunes 🎵.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Timro Pratiksa", artist: "Shallum Lama", file: "songs/HINDI HITS/Shallum Lama - Timro Pratiksa (Lyrics) - seventyskye.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Timi Sangai", artist: "Apurva Tamang", file: "songs/HINDI HITS/Timi Sangai - Apurva Tamang  Lyric video - Lazy aayu.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Dil Ye Bekarar Kyun Hai", artist: "Mohit Chauhan & Shreya Ghoshal", file: "songs/HINDI HITS/Dil Ye Bekarar Kyun Hai  Players  Abhishek Bachchan  Sonam Kapoor - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Taare Ginn", artist: "Mohit Chauhan & Shreya Ghoshal", file: "songs/HINDI HITS/Taare Ginn - Dil BecharaFull SongSushant-Sanjana@A. R. RahmanMohit-Shreya - SonyMusicIndiaVEVO.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "4:02" },
+    { title: "Haareya", artist: "Arijit Singh", file: "songs/HINDI HITS/Haareya Song  Meri Pyaari Bindu  Ayushmann, Parineeti  Arijit Singh  Sachin-Jigar, Priya Saraiya - YRF.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Sukoon Mila", artist: "Arijit Singh", file: "songs/HINDI HITS/Sukoon Mila Full Video  Mary Kom  Priyanka Chopra & Darshan Gandas  Arijit Singh  HD - Zee Music Company.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "3:53" },
+    { title: "Ehsaas", artist: "Faheem Abdullah", file: "songs/HINDI HITS/Ehsaas_Duplicate.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Zaroor", artist: "Aparshakti Khurana", file: "songs/HINDI HITS/Zaroor – Aparshakti Khurana  Savi Kahlon  Official Music Video - Sony Music India.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "2:46" },
+    { title: "Manchala", artist: "Shafqat Amanat Ali", file: "songs/HINDI HITS/Manchala Full song - Parineeti Chopra, Sidharth  Hasee Toh Phasee - Bollywood songs.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Meherbaan", artist: "Ash King & Shilpa Rao", file: "songs/HINDI HITS/Meherbaan Full Audio  Hrithik Roshan & Katrina Kaif  Vishal Shekhar - Zee Music Company.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Rang Lageya", artist: "Mohit Chauhan", file: "songs/HINDI HITS/Rang lageya - Paras chhabra mahira sharma ft. Mohit chuhaan (lyrics) - Music Club.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Jogi", artist: "Yasser Desai & Aakanksha Sharma", file: "songs/HINDI HITS/Jogi - Lyrical Shaadi Mein Zaroor Aana Rajkummar Rao,Kriti KArko ft Aakanksha Sharma - Zee Music Company.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Dooron Dooron", artist: "Paresh Pahuja", file: "songs/HINDI HITS/Dooron Dooron (Official Video) - Paresh Pahuja Feat. Harleen Sethi  Shiv  Meghdeep  Vaibhav - Paresh Pahuja.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Ranjheya Ve", artist: "Zain Zohaib", file: "songs/HINDI HITS/Ranjheya Ve  Zain Zohaib  Yratta media - Zain Zohaib.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "4:26" },
+    { title: "Kaise Bataaoon", artist: "K.K.", file: "songs/HINDI HITS/Kaise Bataaoon  Full (Video) Song - 3G  Neil Nitin Mukesh & Sonal Chauhan  KK - SonyMusicIndiaVEVO.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Is This Love", artist: "Mohit Chauhan & Shreya Ghoshal", file: "songs/HINDI HITS/Is This Love Lyrical - Kismat Konnection  Shahid Kapoor, Vidya Balan  Mohit C, Shreya G  Pritam - Tips Official.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Kyon", artist: "Papon & Sunidhi Chauhan", file: "songs/HINDI HITS/Kyon - BarfiPritamPaponSunidhiRanbirPriyanka - SonyMusicIndiaVEVO.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Tujhko Jo Paaya", artist: "Mohit Chauhan", file: "songs/HINDI HITS/Pritam - Tujhko Jo Paaya Best Audio SongCrookEmraan HashmiNeha SharmaMohit Chauhan - SonyMusicIndiaVEVO.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Sachiya Mohabbatan", artist: "Sachet Tandon", file: "songs/HINDI HITS/LYRICAL Sachiya Mohabbatan  Arjun Patiala  Diljit Dosanjh, Kriti S  Sachet Tandon  Sachin-Jigar - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Jab Tak", artist: "Armaan Malik", file: "songs/HINDI HITS/JAB TAK Video Song  M.S. DHONI -THE UNTOLD STORY  Armaan Malik, Amaal Mallik Sushant Singh Rajput - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Sadka Kiya", artist: "Suraj Jagan & Mahalaxmi Iyer", file: "songs/HINDI HITS/Sadka Best Audio Song - I Hate Luv StorysSonam KapoorImran KhanSurajMahalaxmi Iyer - SonyMusicIndiaVEVO.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "5:45" },
+    { title: "Kahaan Ho Tum", artist: "Prateek Kuhad", file: "songs/HINDI HITS/Prateek Kuhad - Kahaan Ho Tum  Official Music Video  Prajakta Koli & Rohit Saraf  Mismatched - Netflix India.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Ishq Hai", artist: "Anuv Jain", file: "songs/HINDI HITS/Ishq Hai Lyrics - Mismatched Season 3  Trending Hindi Song 2024 - Vibe Bird.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Maine Khud Ko", artist: "Mustafa Zahid", file: "songs/HINDI HITS/Maine Khud Ko Ragini MMS 2 Song With Lyrics  Sunny Leone  Mustafa Zahid - T-Series.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Jugraafiya", artist: "Udit Narayan & Shreya Ghoshal", file: "songs/HINDI HITS/Jugraafiya  Super 30  Hrithik Roshan & Mrunal Thakur  Udit Narayan & Shreya Ghoshal  Lyrical - Romance Rewind.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
     // ─── GLOBAL HITS (English Hits) — ordered by preference ─────────────
     // ─── GLOBAL HITS (English Hits) — ordered by preference ─────────────
     { title: "Blue", artist: "Yung Kai", file: "songs/english_hits/yung kai - blue (Lyrics) - Creative Chaos.mp3", art: "IMAGES/logoo.png", folder: "Global Hits", durationFormatted: "" },
@@ -578,7 +578,7 @@ const songs = [
     { title: "I Really Do", artist: "Karan Aujla", file: "song/I Really Do - PagalNew - Karan Aujla.mp3", art: "IMAGES/logoo.png", folder: "Karan Aujla", durationFormatted: "" },
     { title: "Ik Kudi", artist: "wolf.cryman", file: "song/Ik Kudi - wolf.cryman - Topic.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
     { title: "Ilahi", artist: "Pritam, Arijit Singh", file: "song/Ilahi - PagalNew - Pritam, Arijit Singh.mp3", art: "IMAGES/logoo.png", folder: "Arijit Singh", durationFormatted: "" },
-    { title: "Inkem Inkem", artist: "Sid Sriram", file: "song/Inkem Inkem -lyrics  Geetha Govindam  Sid Sriram  LYRICS🖤 #vijaydevarakonda - Cinephile's Corner.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
+    { title: "Inkem Inkem", artist: "Sid Sriram", file: "songs/HINDI HITS/Inkem Inkem -lyrics  Geetha Govindam  Sid Sriram  LYRICS🖤 #vijaydevarakonda - Cinephile's Corner.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
     { title: "Khwab", artist: "Iqlipse Nova & Aditya A", file: "song/Iqlipse Nova, Aditya A  - Khwab (Lyrics) - seventyskye.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
     { title: "Is This Love", artist: "Mohit Chauhan & Shreya Ghoshal", file: "song/Is This Love Lyrical - Kismat Konnection  Shahid Kapoor, Vidya Balan  Mohit C, Shreya G  Pritam - Tips Official.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
     { title: "Ishq Bulaava", artist: "Sanam Puri & Shipra Goyal", file: "song/Ishq Bulaava Full Video - Hasee Toh PhaseeParineeti, SidharthSanam Puri, Shipra Goyal - SonyMusicIndiaVEVO.mp3", art: "IMAGES/logoo.png", folder: "Hindi Hits", durationFormatted: "" },
@@ -2168,6 +2168,16 @@ let _durationFetchQueue = [];
 let _durationFetchActive = 0;
 const MAX_CONCURRENT_DURATION_FETCHES = RuntimePerf.isSlowNetwork() ? 1 : 3;
 
+// ── Local asset URL builder ────────────────────────────────────────────────
+// File names can contain characters that are reserved in URLs (#, ?, %).
+// A raw '#' would be treated as a fragment and truncate the request, so
+// encode every path segment before handing a local path to the browser.
+function toAssetUrl(filePath) {
+    if (!filePath) return filePath;
+    if (/^(https?:|blob:|data:)/i.test(filePath)) return filePath;
+    return filePath.split('/').map(encodeURIComponent).join('/');
+}
+
 function fetchSongDuration(song, index) {
     _durationFetchQueue.push({ song, index });
     _processDurationQueue();
@@ -2179,7 +2189,7 @@ function _processDurationQueue() {
         _durationFetchActive++;
         const audioObj = new Audio();
         audioObj.preload = 'metadata';
-        audioObj.src = song.file;
+        audioObj.src = toAssetUrl(song.file);
         audioObj.onloadedmetadata = () => {
             const duration = audioObj.duration;
             const formatted = formatTime(duration);
@@ -2209,8 +2219,8 @@ function _processDurationQueue() {
 
 function playSongAtIndex(index, event) {
     if (event) event.stopPropagation();
-    loadSong(index);
-    playSong();
+    const loaded = loadSong(index);
+    if (loaded !== false) playSong();
     updateSongbarUI();
 }
 
@@ -2230,9 +2240,42 @@ async function refreshSongs() {
 }
 
 let currentIndex = -1;
+
+// ── Persistent <audio> element ──────────────────────────────────────────────
+// A single media element is reused for the whole session. Keeping it alive and
+// attached to the document is what lets playback continue while the page is
+// hidden / the phone screen is locked, and lets the "ended" event fire so the
+// next track can start without any user interaction.
 const audio = new Audio();
+audio.preload = 'auto';
+audio.controls = false;
+audio.setAttribute('playsinline', '');
+audio.setAttribute('webkit-playsinline', '');
+audio.setAttribute('aria-hidden', 'true');
+
+function attachPersistentAudioElement() {
+    try {
+        if (document.body && !audio.parentNode) {
+            audio.style.display = 'none';
+            document.body.appendChild(audio);
+        }
+    } catch (e) {
+        // Even a detached element still plays on most browsers — keep going.
+    }
+}
+if (document.body) attachPersistentAudioElement();
+else document.addEventListener('DOMContentLoaded', attachPersistentAudioElement, { once: true });
+
 const supportsMediaSession = typeof navigator !== 'undefined' && 'mediaSession' in navigator;
 const MEDIA_ARTWORK_SIZES = [96, 128, 192, 256, 384, 512];
+
+// ── Background playback bookkeeping ─────────────────────────────────────────
+let _playAttemptToken = 0;            // invalidates stale play() retry chains
+let _consecutiveTrackFailures = 0;    // guards against infinite auto-skip loops
+let _skipRecoveryTimer = null;        // debounces automatic failure recovery
+let _autoAdvanceInProgress = false;   // prevents double advances (ended + error)
+let _suppressAudioErrorHandler = false;
+let _pendingBackgroundResume = false; // play() was rejected while backgrounded
 
 function resolveMediaArtworkUrl(src) {
     const fallback = DEFAULT_LOGO_PATH;
@@ -2264,23 +2307,27 @@ function buildMediaSessionArtwork(song) {
 
 function updateMediaSessionPositionState() {
     if (!supportsMediaSession || typeof navigator.mediaSession.setPositionState !== 'function') return;
-    if (!Number.isFinite(audio.duration) || audio.duration <= 0) return;
+
+    const duration = Number(audio.duration);
+    if (!Number.isFinite(duration) || duration <= 0) return;
+
+    const rate = Number(audio.playbackRate);
+    const playbackRate = Number.isFinite(rate) && rate > 0 ? rate : 1;
+    const position = Math.min(Math.max(Number(audio.currentTime) || 0, 0), duration);
 
     try {
         navigator.mediaSession.setPositionState({
-            duration: audio.duration,
-            playbackRate: audio.playbackRate || 1,
-            position: Math.min(audio.currentTime || 0, audio.duration)
+            duration,
+            playbackRate,
+            position
         });
     } catch (e) {
         // Some browsers expose the API but reject unsupported values.
     }
 }
 
-function syncMediaSession() {
-    if (!supportsMediaSession) return;
-    const song = songs?.[currentIndex];
-    if (!song) return;
+function applyMediaSessionMetadata(song) {
+    if (!supportsMediaSession || !song) return;
 
     try {
         navigator.mediaSession.metadata = new MediaMetadata({
@@ -2300,13 +2347,40 @@ function syncMediaSession() {
             // Ignore unsupported metadata construction.
         }
     }
+}
+
+/**
+ * Keeps navigator.mediaSession.playbackState in sync with the real element.
+ * Explicit values are only used for transient states (e.g. 'none').
+ */
+function setMediaSessionPlaybackState(state) {
+    if (!supportsMediaSession) return;
+
+    let next = state;
+    if (!next) {
+        if (!audio.src) next = 'none';
+        else next = (audio.paused || audio.ended) ? 'paused' : 'playing';
+    }
 
     try {
-        navigator.mediaSession.playbackState = audio.src ? (audio.paused ? 'paused' : 'playing') : 'none';
+        navigator.mediaSession.playbackState = next;
     } catch (e) {
         // Ignore playbackState issues on partial implementations.
     }
+}
 
+/**
+ * Pushes the current track into the OS media controls (lock screen,
+ * notification shade, headset buttons) and refreshes the playback state.
+ * Safe to call at any time, from any code path.
+ */
+function syncMediaSession(options = {}) {
+    if (!supportsMediaSession) return;
+    const song = songs?.[currentIndex];
+    if (!song) return;
+
+    applyMediaSessionMetadata(song);
+    setMediaSessionPlaybackState(options.playbackState);
     updateMediaSessionPositionState();
 
     document.body.classList.add('media-session-ready');
@@ -2325,29 +2399,28 @@ function registerMediaSessionHandlers() {
         }
     };
 
-    safeHandler('play', async () => {
+    // Lock-screen / headset / notification controls. These fire while the page
+    // is hidden and the screen is locked, so they must never depend on visible
+    // UI state and must always be able to start the next track on their own.
+    safeHandler('play', () => {
         playSong();
-        syncMediaSession();
     });
     safeHandler('pause', () => {
         pauseSong();
-        syncMediaSession();
     });
     safeHandler('previoustrack', () => {
         prevSong();
-        syncMediaSession();
     });
     safeHandler('nexttrack', () => {
         nextSong();
-        syncMediaSession();
     });
     safeHandler('seekbackward', (details) => {
-        const offset = details?.seekOffset || 10;
+        const offset = Number(details?.seekOffset) || 10;
         audio.currentTime = Math.max((audio.currentTime || 0) - offset, 0);
         updateMediaSessionPositionState();
     });
     safeHandler('seekforward', (details) => {
-        const offset = details?.seekOffset || 10;
+        const offset = Number(details?.seekOffset) || 10;
         const duration = Number.isFinite(audio.duration) ? audio.duration : Number.MAX_SAFE_INTEGER;
         audio.currentTime = Math.min((audio.currentTime || 0) + offset, duration);
         updateMediaSessionPositionState();
@@ -2363,50 +2436,273 @@ function registerMediaSessionHandlers() {
     });
     safeHandler('stop', () => {
         pauseSong();
-        audio.currentTime = 0;
+        try { audio.currentTime = 0; } catch (e) {}
         updateMediaSessionPositionState();
-        syncMediaSession();
     });
 }
 
-function loadSong(index) {
-	if (!songs.length) return;
+// ── Media Session state follows the element, not the UI ─────────────────────
+// Playback can be started/stopped by the auto-advance logic, the lock screen,
+// headset buttons or the operating system itself. Listening on the element
+// keeps the OS controls and metadata correct in every one of those cases.
+audio.addEventListener('play', () => {
+    if (_pendingBackgroundResume) _pendingBackgroundResume = false;
+    syncMediaSession({ playbackState: 'playing' });
+});
+audio.addEventListener('playing', () => {
+    _consecutiveTrackFailures = 0;
+    _pendingBackgroundResume = false;
+    syncMediaSession({ playbackState: 'playing' });
+});
+audio.addEventListener('pause', () => {
+    // A deliberate pause cancels any pending "resume when visible" attempt.
+    _pendingBackgroundResume = false;
+    if (!audio.ended) syncMediaSession({ playbackState: 'paused' });
+});
+audio.addEventListener('ended', () => {
+    syncMediaSession({ playbackState: 'paused' });
+});
+audio.addEventListener('loadedmetadata', () => {
+    syncMediaSession();
+});
+audio.addEventListener('emptied', () => {
+    setMediaSessionPlaybackState('none');
+});
+
+// If a background play() was rejected (some browsers ask for a fresh user
+// gesture after a long lock), retry transparently as soon as the app is
+// foregrounded again instead of leaving the queue stranded mid-playlist.
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState !== 'visible') return;
+    syncMediaSession();
+    if (_pendingBackgroundResume) {
+        _pendingBackgroundResume = false;
+        attemptPlayback({ retries: 1, delayMs: 0 });
+    }
+});
+
+// Coming back from the bfcache (common on mobile) must not leave stale state.
+window.addEventListener('pageshow', () => {
+    syncMediaSession();
+});
+
+// ── Playback resilience helpers (used by the UI, auto-advance and lock screen) ─
+
+/**
+ * Tracks that can actually be streamed through the persistent <audio> element.
+ * YouTube results cannot be decoded here (the app opens them in a browser tab),
+ * so background auto-advance has to skip them.
+ */
+function isTrackPlayableAsAudio(song) {
+	if (!song || !song.file) return false;
+	if (song._isOnline && song._source === 'youtube') return false;
+	return true;
+}
+
+/**
+ * Random playable index (shuffle mode), never the current track if possible.
+ */
+function _randomPlayableIndex() {
+	const skipUnplayable = document.visibilityState === 'hidden';
+	const candidates = [];
+	for (let i = 0; i < songs.length; i++) {
+		if (i === currentIndex) continue;
+		if (skipUnplayable && !isTrackPlayableAsAudio(songs[i])) continue;
+		candidates.push(i);
+	}
+	if (!candidates.length) {
+		return isTrackPlayableAsAudio(songs[currentIndex]) ? currentIndex : -1;
+	}
+	return candidates[Math.floor(Math.random() * candidates.length)];
+}
+
+/**
+ * Sequential index for a direction (+1 next / -1 previous). While the app is
+ * hidden (screen locked) tracks the element cannot play are skipped silently —
+ * there is no way to open a browser tab from a locked phone.
+ */
+function _sequentialIndex(step) {
+	const total = songs.length;
+	const skipUnplayable = document.visibilityState === 'hidden';
+	for (let i = 1; i <= total; i++) {
+		const idx = (((currentIndex + step * i) % total) + total) % total;
+		if (!skipUnplayable || isTrackPlayableAsAudio(songs[idx])) return idx;
+	}
+	return (((currentIndex + step) % total) + total) % total;
+}
+
+function _resolveAdjacentIndex(step) {
+	if (!songs.length) return -1;
+	if (isShuffle) return _randomPlayableIndex();
+	return _sequentialIndex(step);
+}
+
+/**
+ * Starts playback with a bounded retry loop. Handles the two failure modes that
+ * matter for lock-screen playback:
+ *  - "AbortError": our own load() interrupted a previous play() promise → ignore.
+ *  - "NotAllowedError": the browser blocked autoplay → remember it and retry
+ *    when the app becomes visible again (the track stays loaded meanwhile).
+ */
+function attemptPlayback(options = {}) {
+	const retries = Number.isInteger(options.retries) ? options.retries : 2;
+	const delayMs = Number.isInteger(options.delayMs) ? options.delayMs : 200;
+	const token = ++_playAttemptToken;
+
+	const tryOnce = (attempt) => {
+		let promise;
+		try {
+			promise = audio.play();
+		} catch (err) {
+			promise = Promise.reject(err);
+		}
+		if (!promise || typeof promise.then !== 'function') return Promise.resolve(true);
+
+		return promise.then(
+			() => {
+				if (token === _playAttemptToken) {
+					_pendingBackgroundResume = false;
+					syncMediaSession({ playbackState: 'playing' });
+				}
+				return true;
+			},
+			(err) => {
+				if (token !== _playAttemptToken) return false; // superseded by a newer load/play
+				const name = err && err.name;
+				if (name === 'AbortError') return false; // the element was re-loaded on purpose
+
+				if (attempt < retries) {
+					return new Promise((resolve) => setTimeout(resolve, delayMs))
+						.then(() => (token === _playAttemptToken ? tryOnce(attempt + 1) : false));
+				}
+
+				if (name === 'NotAllowedError' || name === 'SecurityError') {
+					// Keep the track loaded and the media session alive; resume
+					// automatically once the app is foregrounded again.
+					_pendingBackgroundResume = true;
+				}
+				console.warn('[Ivory] Playback could not start:', err);
+				syncMediaSession({ playbackState: audio.src ? 'paused' : 'none' });
+				return false;
+			}
+		);
+	};
+
+	return tryOnce(0);
+}
+
+/**
+ * Detaches the current media source without tripping the error handler
+ * (clearing a source dispatches an error in some browsers).
+ */
+function _clearAudioSource() {
+	_suppressAudioErrorHandler = true;
+	try { audio.pause(); } catch (e) {}
+	try {
+		audio.removeAttribute('src');
+		audio.load();
+	} catch (e) {}
+	setTimeout(() => { _suppressAudioErrorHandler = false; }, 0);
+}
+
+/**
+ * Moves on to the next playable track after a failure (bad stream, unplayable
+ * source). Stops the queue instead of looping forever when everything fails.
+ */
+function _scheduleSkipToNextPlayable(reason) {
+	if (_skipRecoveryTimer) return;
+
+	const maxAttempts = Math.max(1, songs.length);
+	_consecutiveTrackFailures += 1;
+
+	if (_consecutiveTrackFailures > maxAttempts) {
+		console.warn(`[Ivory] Stopping auto-advance after ${maxAttempts} consecutive failures (${reason}).`);
+		_consecutiveTrackFailures = 0;
+		try { pauseSong(); } catch (e) {}
+		return;
+	}
+
+	_skipRecoveryTimer = setTimeout(() => {
+		_skipRecoveryTimer = null;
+		const target = _sequentialIndex(1);
+		if (target < 0 || target === currentIndex) {
+			try { pauseSong(); } catch (e) {}
+			return;
+		}
+		// Only start playback when the replacement track was actually loaded.
+		if (loadSong(target) === false) return;
+		playSong();
+	}, 150);
+}
+
+/**
+ * Loads a track into the persistent element.
+ * Returns false when nothing was loaded (unplayable source, hard load error),
+ * true otherwise. Callers use this to avoid calling play() on a stale source.
+ */
+function loadSong(index, options = {}) {
+	if (!songs.length) return false;
 	currentIndex = ((index % songs.length) + songs.length) % songs.length;
 	const song = songs[currentIndex];
-	
-	let sourceUrl = song.file;
-	
+	const backgroundSafe = options.backgroundSafe === true || document.visibilityState === 'hidden';
+
+	// A new load supersedes any pending play() retry chain.
+	_playAttemptToken++;
+
+	let sourceUrl = toAssetUrl(song.file);
+
 	// ── Handle online streams ──────────────────
 	if (song._isOnline) {
 		console.log(`🌐 Online: ${song._source} - ${song.title}`);
-		
+
 		// YouTube: open in browser ONLY - don't try to load as audio
 		if (song._source === 'youtube') {
+			if (backgroundSafe) {
+				// A locked phone cannot open tabs — skip instead of stalling
+				// so the queue keeps flowing without user interaction.
+				console.log('📺 Skipping YouTube track (background playback)');
+				_scheduleSkipToNextPlayable('youtube-track');
+				return false;
+			}
 			console.log('📺 Opening YouTube - skipping audio load');
 			window.open(sourceUrl, '_blank');
-			audio.src = ''; // Clear audio
+			_clearAudioSource(); // Clear audio
 			updateSongbarUI(); // Update UI
-			return; // EXIT - don't try audio.load()
+			setMediaSessionPlaybackState('none');
+			return false; // EXIT - don't try audio.load()
 		}
-		
+
 		// iTunes: try CORS proxy for playback
 		if (song._source === 'itunes' && sourceUrl.startsWith('http')) {
 			sourceUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(sourceUrl)}`;
 			console.log('Using CORS proxy');
 		}
 	}
-	
+
+	// Drop the previous track's callbacks before re-pointing the element, so a
+	// stale handler can never fire against the newly loaded source.
+	audio.onloadedmetadata = null;
+	audio.onerror = null;
+
+	// Only cross-origin media needs CORS; local files keep playing without it.
+	try {
+		const resolved = new URL(sourceUrl, window.location.href);
+		if (resolved.origin !== window.location.origin) audio.crossOrigin = 'anonymous';
+		else audio.removeAttribute('crossorigin');
+	} catch (e) {
+		// Relative / file URLs: leave crossOrigin untouched.
+	}
+
 	audio.src = sourceUrl;
-	audio.crossOrigin = 'anonymous';
-	
+
 	try {
 		audio.load();
 	} catch (e) {
 		console.error('Load error:', e);
-		nextSong();
-		return;
+		_scheduleSkipToNextPlayable('load-error');
+		return false;
 	}
-	
+
 	console.log(`Loaded: ${song.title} — ${song.artist} ${song._isOnline ? '(🌐)' : ''}`);
 
 	// Show the player bar immediately when a song is loaded (mobile + desktop)
@@ -2419,9 +2715,13 @@ function loadSong(index) {
 		document.body.classList.remove('intro-mode');
 	}
 
+	// Push the freshly loaded track to the OS media controls straight away, so
+	// the lock screen shows the right title/artist even before playback starts.
+	syncMediaSession();
 
     // Fetch lyrics and canvas
     audio.onloadedmetadata = () => {
+		updateMediaSessionPositionState();
         LyricsManager.fetchLyrics(song.artist, song.title, audio.duration);
         
         const primaryArtist = song.artist.split(',')[0].trim(); 
@@ -2433,9 +2733,11 @@ function loadSong(index) {
 	
 	// ── Error handler ──────────────────
 	audio.onerror = function(e) {
+		if (_suppressAudioErrorHandler) return;
+		if (songs[currentIndex] !== song) return; // stale event from an older load
 		console.warn(`Stream error: ${song.title}`, e);
 		
-		if (song._isOnline) {
+		if (song._isOnline && document.visibilityState === 'visible') {
 			console.log('Opening stream in browser');
 			if (song._source === 'youtube') {
 				window.open(song.file, '_blank');
@@ -2443,8 +2745,10 @@ function loadSong(index) {
 				window.open(song.fullStreamUrl, '_blank');
 			}
 		}
-		nextSong();
+		_scheduleSkipToNextPlayable('stream-error');
 	};
+
+	return true;
 }
 
 // ── Next-track preloading for smooth transitions ──
@@ -2466,7 +2770,7 @@ function _preloadNextTrack() {
 
     _preloadAudio = new Audio();
     _preloadAudio.preload = 'metadata';
-    _preloadAudio.src = nextSongObj.file;
+    _preloadAudio.src = toAssetUrl(nextSongObj.file);
     _preloadAudio.onloadedmetadata = () => {
         // Cache duration if not already cached
         if (!nextSongObj.durationFormatted && _preloadAudio.duration) {
@@ -2747,8 +3051,8 @@ const AmbientEngine = (() => {
 
     async function fetchImageAsBlob(originalUrl, proxyIndex = 0) {
         const proxies = [
-            (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
             (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+            (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
             (url) => url,  // Direct attempt (works when served from http/https)
         ];
 
@@ -3072,7 +3376,11 @@ function updateSongbarUI() {
 
 // Ensure loadSong updates the bar (keeps same function signature)
 const _loadSong = loadSong;
-function loadSongWrap(index) { _loadSong(index); updateSongbarUI(); }
+function loadSongWrap(index, options) {
+    const result = _loadSong(index, options);
+    updateSongbarUI();
+    return result;
+}
 loadSong = loadSongWrap; // replace global reference
 
 // Hook up controls (if elements exist)
@@ -3514,13 +3822,22 @@ if (sb.repeat) {
 }
 
 function handleSongEnd() {
-    if (isRepeat) {
-        // Repeat One
-        audio.currentTime = 0;
-        playSong();
-    } else {
+    // The "ended" event is the single trigger for automatic advancement, both
+    // in the foreground and while the phone is locked. The guard stops a
+    // simultaneous error recovery from advancing twice.
+    if (_autoAdvanceInProgress) return;
+    _autoAdvanceInProgress = true;
+    try {
+        if (isRepeat) {
+            // Repeat One
+            audio.currentTime = 0;
+            playSong();
+            return;
+        }
         // Normal Next (Shuffle checked inside nextSong)
         nextSong();
+    } finally {
+        _autoAdvanceInProgress = false;
     }
 }
 
@@ -3707,7 +4024,6 @@ function getSongs() {
 window.music = { songs, getSongs, refreshSongs, loadSong, playSong, pauseSong, nextSong, prevSong, renderPlaylist, loadCategory, renderHome, playHindiHits };
 
 // --- Missing Player Functions ---
-// --- Missing Player Functions ---
 function playSong() {
     // Exit intro mode on first play — reveal sidebar & player bar
     if (document.body.classList.contains('intro-mode')) {
@@ -3721,80 +4037,46 @@ function playSong() {
         }
         player.classList.add('is-playing');
     }
-    audio.play().catch(e => console.error("Play error:", e));
 
+    // Uses a retrying play() so a track that ends while the page is hidden can
+    // always hand over to the next one, even if the browser hesitates.
+    return attemptPlayback();
 }
 
 function pauseSong() {
     audio.pause();
     const player = document.querySelector('.music-player');
     if (player) player.classList.remove('is-playing');
+    syncMediaSession({ playbackState: 'paused' });
 }
 
 function prevSong() {
     if (audio.currentTime > 3) {
         // If playing for more than 3 sec, restart song
         audio.currentTime = 0;
+        updateMediaSessionPositionState();
+        syncMediaSession();
         return;
     }
-    
-    if (isShuffle) {
-        // Pure random for now
-        currentIndex = Math.floor(Math.random() * songs.length);
-    } else {
-        currentIndex = (currentIndex - 1 + songs.length) % songs.length;
-    }
-    loadSong(currentIndex);
+
+    const prevIndex = _resolveAdjacentIndex(-1);
+    if (prevIndex < 0) return;
+
+    if (loadSong(prevIndex) === false) return;
     playSong();
 }
 
 function nextSong() {
-    if (isShuffle) {
-         // Simple random implementation
-         // Improved: prevent picking same song if possible
-         let newIndex = Math.floor(Math.random() * songs.length);
-         if (songs.length > 1 && newIndex === currentIndex) {
-             newIndex = (newIndex + 1) % songs.length;
-         }
-         currentIndex = newIndex;
-    } else {
-        currentIndex = (currentIndex + 1) % songs.length;
-    }
-    loadSong(currentIndex);
+    const nextIndex = _resolveAdjacentIndex(1);
+    if (nextIndex < 0) return;
+
+    if (loadSong(nextIndex) === false) return;
     playSong();
 }
 
+// Lock-screen / headset controls are registered once, before any playback, so
+// they are available even if the very first track is started from the OS.
 registerMediaSessionHandlers();
-
-const _baseLoadSongForMediaSession = loadSong;
-loadSong = function(index) {
-    const result = _baseLoadSongForMediaSession(index);
-    syncMediaSession();
-    queueMicrotask(() => syncMediaSession());
-    return result;
-};
-
-const _baseUpdateSongbarUIForMediaSession = updateSongbarUI;
-updateSongbarUI = function() {
-    const result = _baseUpdateSongbarUIForMediaSession();
-    syncMediaSession();
-    return result;
-};
-
-const _basePlaySongForMediaSession = playSong;
-playSong = function() {
-    const result = _basePlaySongForMediaSession();
-    document.querySelector('.music-player')?.classList.add('media-session-ready');
-    syncMediaSession();
-    return result;
-};
-
-const _basePauseSongForMediaSession = pauseSong;
-pauseSong = function() {
-    const result = _basePauseSongForMediaSession();
-    syncMediaSession();
-    return result;
-};
 
 
 
@@ -4633,7 +4915,6 @@ function onYouTubeIframeAPIReady() {
 
 async function fetchYouTubeVideoId(artist, title) {
     if (YOUTUBE_API_KEY === "YOUR_YOUTUBE_API_KEY") {
-        console.warn("Please enter YOUR_YOUTUBE_API_KEY to use the Spotify Canvas feature.");
         return;
     }
 
@@ -4865,9 +5146,18 @@ const OnlineMusicEngine = {
     function positionDropdown() {
         if (!searchContainer || !dropdown.classList.contains('active')) return;
         const rect = searchContainer.getBoundingClientRect();
+        // Keep the dropdown inside the viewport on narrow screens: clamp its
+        // width to the viewport and shift it left when it would overflow.
+        const margin = 8;
+        const maxWidth = window.innerWidth - margin * 2;
+        const width = Math.min(Math.max(rect.width, 360), maxWidth);
+        let left = rect.left;
+        if (left + width > window.innerWidth - margin) {
+            left = Math.max(margin, window.innerWidth - margin - width);
+        }
         dropdown.style.top  = (rect.bottom + 8) + 'px';
-        dropdown.style.left = rect.left + 'px';
-        dropdown.style.width = Math.max(rect.width, 360) + 'px';
+        dropdown.style.left = left + 'px';
+        dropdown.style.width = width + 'px';
     }
 
     function showDropdown(html) {
@@ -4911,9 +5201,10 @@ const OnlineMusicEngine = {
         });
     }
 
-    function renderResults(localMatches, onlineTracks, query) {
+    function renderResults(localMatches, onlineTracks, query, serverSongs) {
         const hasLocal = Array.isArray(localMatches) && localMatches.length > 0;
         const hasOnline = Array.isArray(onlineTracks) && onlineTracks.length > 0;
+        const hasServer = Array.isArray(serverSongs) && serverSongs.length > 0;
         dropdown.innerHTML = '';
 
         if (hasLocal) {
@@ -4968,7 +5259,33 @@ const OnlineMusicEngine = {
             });
         }
 
-        if (!hasLocal && !hasOnline) {
+        if (hasServer) {
+            const hdr = document.createElement('div');
+            hdr.innerHTML = divider('☁️ Your Music Servers · Infinite');
+            dropdown.appendChild(hdr);
+
+            serverSongs.slice(0, 20).forEach(song => {
+                const { html, onClick } = buildItem({
+                    imgSrc:   song.art || 'IMAGES/logoo.png',
+                    title:    song.title,
+                    artist:   song.artist,
+                    sub:      song._serverName || song.album || 'Stream',
+                    source:   song._source,
+                    quality:  'full',
+                    onClick:  () => playServerSong(song)
+                });
+                const el = document.createElement('div');
+                el.innerHTML = html;
+                const item = el.firstElementChild;
+                item.style.cursor = 'pointer';
+                item.setAttribute('role', 'button');
+                item.setAttribute('tabindex', '0');
+                bindResultAction(item, onClick);
+                dropdown.appendChild(item);
+            });
+        }
+
+        if (!hasLocal && !hasOnline && !hasServer) {
             dropdown.innerHTML = `<div class="search-result-item" style="pointer-events:none;justify-content:center;padding:30px;color:#aaa;text-align:center">
                 <div>
                     <div style="font-size:1.2em;margin-bottom:8px">🔍</div>
@@ -4987,6 +5304,56 @@ const OnlineMusicEngine = {
         playSongAtIndex(globalIndex);
         hideDropdown();
         searchInput.blur();
+    }
+
+    // ── Play an app-ready song object produced by the Online Hub
+    //    (music server / Audius). Mirrors playOnlineResult: dedupe, append, play. ──
+    function playServerSong(song) {
+        if (!song || !song.file) return;
+        const existingIdx = songs.findIndex(s =>
+            s._onlineId && song._onlineId &&
+            s._onlineId === song._onlineId && s._source === song._source
+        );
+        let targetIndex;
+        if (existingIdx >= 0) {
+            targetIndex = existingIdx;
+        } else {
+            songs.push(song);
+            targetIndex = songs.length - 1;
+            console.log('✅ Added server song to queue at index', targetIndex);
+        }
+        playSongAtIndex(targetIndex);
+        hideDropdown();
+        searchInput.blur();
+    }
+
+    // ── Public API: search the local Hindi/English library and play the best
+    //    match in ORIGINAL format (the actual local file — no online stream,
+    //    no preview, no proxy). Triggered from the search bar. ──
+    function playLocalSearch(query) {
+        if (!query || !query.trim()) {
+            return { played: false, reason: 'empty query' };
+        }
+        const matches = searchLocal(query.trim());
+        if (!matches.length) {
+            return { played: false, reason: 'no local match' };
+        }
+        const { s, i } = matches[0]; // best local match (Hindi or English)
+        playSongAtIndex(i);
+        hideDropdown();
+        searchInput.blur();
+        console.log(`🎵 Played local (original format): ${s.title} — ${s.artist} [${s.file}]`);
+        return {
+            played: true,
+            index: i,
+            song: {
+                title: s.title,
+                artist: s.artist,
+                folder: s.folder,
+                file: s.file,
+                art: s.art
+            }
+        };
     }
 
     // ── Inject an online track as a temporary song and play it ──
@@ -5063,7 +5430,10 @@ const OnlineMusicEngine = {
             'jiosaavn': '🇮🇳',
             'itunes': '🍎',
             'spotify': '🟢',
-            'local': '💿'
+            'local': '💿',
+            'server': '☁️',
+            'subsonic': '☁️',
+            'audius': '🎧'
         }[source] || '🌐';
 
         const qualityLabel = quality === 'preview' ? '30s' : quality === 'high' ? 'HQ' : 'FULL';
@@ -5136,8 +5506,20 @@ const OnlineMusicEngine = {
         try {
             isLoading = true;
 
-            // Start online search in parallel
-            const onlineTracks = await OnlineMusicEngine.searchAll(q);
+            // Start online search in parallel with the Online Hub search
+            // (music servers + Audius) — guarded so the app works without it.
+            const hubJobs = [];
+            if (typeof window.IvoryServerSearch === 'function') {
+                hubJobs.push(window.IvoryServerSearch(q).catch(() => []));
+            }
+            if (typeof window.IvoryAudiusSearch === 'function') {
+                hubJobs.push(window.IvoryAudiusSearch(q).catch(() => []));
+            }
+
+            const [onlineTracks, ...hubResults] = await Promise.all([
+                OnlineMusicEngine.searchAll(q),
+                ...hubJobs
+            ]);
             isLoading = false;
 
             // If query changed, discard
@@ -5146,9 +5528,11 @@ const OnlineMusicEngine = {
                 return;
             }
 
-            console.log('📊 Search results - Local:', localMatches.length, 'Online:', onlineTracks.length);
+            const serverSongs = hubResults.flat().filter(t => t && t.title);
 
-            renderResults(localMatches, onlineTracks, q);
+            console.log('📊 Search results - Local:', localMatches.length, 'Online:', onlineTracks.length, 'Hub:', serverSongs.length);
+
+            renderResults(localMatches, onlineTracks, q, serverSongs);
 
         } catch (err) {
             isLoading = false;
@@ -5191,7 +5575,11 @@ const OnlineMusicEngine = {
             const q = searchInput.value.trim();
             if (q) {
                 clearTimeout(debounceTimer);
-                doSearch(q);
+                // Play the top local Hindi/English match in ORIGINAL format (local file)
+                const played = playLocalSearch(q);
+                if (!played.played) {
+                    doSearch(q); // fall back to showing local + online results
+                }
             }
         }
     });
@@ -5204,6 +5592,11 @@ const OnlineMusicEngine = {
     });
 
     console.log('✅ Global search initialized - Ready to search 200M+ songs!');
+
+    // Expose public local-playback API on window.music
+    window.music = window.music || {};
+    window.music.playLocalSearch = playLocalSearch;
+    window.music.searchAndPlayLocal = playLocalSearch;
 
 })(); // end initSearch
 
@@ -5594,505 +5987,3 @@ const OnlineMusicEngine = {
         deferredPrompt = null;
     });
 })();
-
-// ── LIVE BIRTHDAY COUNTDOWN TIMER & CELEBRATION (LOVE THEME) ──────────
-(function initBirthdayTimer() {
-    function updateTimer() {
-        const timerText = document.getElementById('bday-countdown-text');
-        const timerContainer = document.getElementById('bday-timer');
-        if (!timerText) return;
-        
-        const now = new Date();
-        let targetYear = now.getFullYear();
-        let bdayStart = new Date(targetYear, 6, 23, 0, 0, 0); // July 23 00:00:00
-        let bdayEnd = new Date(targetYear, 6, 23, 23, 59, 59, 999); // July 23 23:59:59
-        
-        // If birthday has passed for this year, set next target to next year
-        if (now > bdayEnd) {
-            targetYear++;
-            bdayStart = new Date(targetYear, 6, 23, 0, 0, 0);
-            bdayEnd = new Date(targetYear, 6, 23, 23, 59, 59, 999);
-        }
-        
-        // Check if TODAY is her birthday!
-        if (now >= bdayStart && now <= bdayEnd) {
-            timerText.textContent = "HAPPY BIRTHDAY ANVII! 🎉❤️";
-            if (timerContainer) timerContainer.classList.add('is-bday');
-            return;
-        }
-        
-        // Otherwise count down to July 23 start
-        const diff = bdayStart - now;
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        
-        // Live string formatting
-        timerText.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-    }
-    
-    // Run update every second and once immediately on script load / DOM ready
-    setInterval(updateTimer, 1000);
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', updateTimer);
-    } else {
-        updateTimer();
-    }
-})();
-
-// ── LIVE BIRTHDAY CELEBRATION VISUALIZER ENGINE (BIRTHDAY MODE) ────────
-(function initBirthdayModeVisualizer() {
-    let canvas = document.getElementById('love-theme-canvas');
-    if (!canvas) {
-        canvas = document.createElement('canvas');
-        canvas.id = 'love-theme-canvas';
-        canvas.style.position = 'fixed';
-        canvas.style.inset = '0';
-        canvas.style.zIndex = '-8';
-        canvas.style.pointerEvents = 'none';
-        canvas.style.opacity = '0';
-        canvas.style.transition = 'opacity 1.5s ease';
-        document.body.appendChild(canvas);
-    }
-    
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    let active = false;
-    let animationFrame = null;
-    
-    function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resize);
-    resize();
-    
-    const colors = [
-        '#ff4a75', '#ff0a54', '#ff477e', '#ffd700', 
-        '#ff1493', '#00e5ff', '#ff7096', '#7000ff'
-    ];
-    
-    class BirthdayParticle {
-        constructor() {
-            this.reset();
-            this.y = Math.random() * canvas.height;
-        }
-        
-        reset() {
-            this.x = Math.random() * canvas.width;
-            this.y = canvas.height + 40;
-            const isBday = (typeof window.isBirthdayUnlocked === 'function' && window.isBirthdayUnlocked());
-            if (isBday) {
-                const rand = Math.random();
-                this.type = rand < 0.35 ? 'balloon' : rand < 0.65 ? 'heart' : rand < 0.85 ? 'star' : 'confetti';
-            } else {
-                this.type = 'heart';
-            }
-            this.baseSize = this.type === 'confetti' ? 6 + Math.random() * 10 : this.type === 'balloon' ? 14 + Math.random() * 20 : 12 + Math.random() * 22;
-            this.size = this.baseSize;
-            this.speedY = 0.8 + Math.random() * 1.8;
-            this.wobbleSpeed = 0.015 + Math.random() * 0.03;
-            this.wobbleRange = 6 + Math.random() * 16;
-            this.phase = Math.random() * Math.PI * 2;
-            this.rotation = this.type === 'balloon' ? 0 : Math.random() * Math.PI * 2;
-            this.rotSpeed = this.type === 'balloon' ? 0 : (Math.random() - 0.5) * 0.08;
-            this.color = colors[Math.floor(Math.random() * colors.length)];
-            this.alpha = 0.25 + Math.random() * 0.55;
-        }
-        
-        update(bass) {
-            this.y -= this.speedY * (bass * 0.85 + 0.15);
-            this.phase += this.wobbleSpeed;
-            this.x += Math.sin(this.phase) * (this.type === 'balloon' ? 0.8 : 0.5);
-            if (this.type !== 'balloon') {
-                this.rotation += this.rotSpeed;
-            } else {
-                this.rotation = Math.sin(this.phase) * 0.08; // gentle balloon sway
-            }
-            this.size = this.baseSize * (1.0 + (bass - 1.0) * 1.25);
-            
-            if (this.y < -this.size * 3 - 25) {
-                this.reset();
-            }
-        }
-        
-        draw() {
-            ctx.save();
-            ctx.globalAlpha = this.alpha;
-            ctx.fillStyle = this.color;
-            
-            ctx.translate(this.x, this.y);
-            ctx.rotate(this.rotation);
-            
-            if (this.type === 'balloon') {
-                const r = this.size;
-                // Balloon body
-                ctx.beginPath();
-                ctx.ellipse(0, 0, r, r * 1.25, 0, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // Balloon highlight sheen
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
-                ctx.beginPath();
-                ctx.ellipse(-r * 0.35, -r * 0.4, r * 0.28, r * 0.42, -Math.PI / 4, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // Balloon knot
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.moveTo(-r * 0.2, r * 1.22);
-                ctx.lineTo(r * 0.2, r * 1.22);
-                ctx.lineTo(0, r * 1.38);
-                ctx.closePath();
-                ctx.fill();
-                
-                // Wavy balloon string
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-                ctx.lineWidth = 1.5;
-                ctx.beginPath();
-                ctx.moveTo(0, r * 1.38);
-                ctx.quadraticCurveTo(Math.sin(this.phase * 2) * 10, r * 1.9, 0, r * 2.5);
-                ctx.stroke();
-            } else if (this.type === 'heart') {
-                ctx.beginPath();
-                ctx.moveTo(0, 0);
-                ctx.bezierCurveTo(-this.size/2, -this.size/2, -this.size, this.size/3, 0, this.size);
-                ctx.bezierCurveTo(this.size, this.size/3, this.size/2, -this.size/2, 0, 0);
-                ctx.closePath();
-                ctx.fill();
-            } else if (this.type === 'star') {
-                ctx.beginPath();
-                for (let i = 0; i < 5; i++) {
-                    ctx.lineTo(Math.cos((18 + i * 72) * Math.PI / 180) * this.size, -Math.sin((18 + i * 72) * Math.PI / 180) * this.size);
-                    ctx.lineTo(Math.cos((54 + i * 72) * Math.PI / 180) * (this.size / 2), -Math.sin((54 + i * 72) * Math.PI / 180) * (this.size / 2));
-                }
-                ctx.closePath();
-                ctx.fill();
-            } else {
-                ctx.fillRect(-this.size / 2, -this.size / 4, this.size, this.size / 2);
-            }
-            
-            ctx.restore();
-        }
-    }
-    
-    function initParticles() {
-        particles = [];
-        const count = Math.min(35, Math.floor(window.innerWidth / 20));
-        for (let i = 0; i < count; i++) {
-            particles.push(new BirthdayParticle());
-        }
-    }
-    
-    function loop() {
-        if (!active) return;
-        animationFrame = requestAnimationFrame(loop);
-        
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        let bass = 1.0;
-        if (window.ivoryVisualizer && window.ivoryVisualizer.dataArray) {
-            const data = window.ivoryVisualizer.dataArray;
-            let sum = 0;
-            const checkBins = Math.min(12, data.length);
-            for (let i = 0; i < checkBins; i++) {
-                sum += data[i];
-            }
-            const avg = sum / checkBins;
-            bass = 1.0 + (avg / 255.0) * 0.85;
-        }
-        
-        for (let p of particles) {
-            p.update(bass);
-            p.draw();
-        }
-    }
-    
-    window.toggleLoveTheme = function(btn) {
-        active = !active;
-        const bdayBtn = btn || document.getElementById('love-theme-btn');
-        
-        if (active) {
-            canvas.style.opacity = '0.85';
-            initParticles();
-            loop();
-            if (bdayBtn) {
-                bdayBtn.classList.add('active');
-            }
-            if (typeof window.triggerHeartBurst === 'function') {
-                window.triggerHeartBurst();
-            }
-        } else {
-            canvas.style.opacity = '0';
-            if (bdayBtn) {
-                bdayBtn.classList.remove('active');
-            }
-            setTimeout(() => {
-                if (!active) {
-                    cancelAnimationFrame(animationFrame);
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                }
-            }, 1500);
-        }
-    };
-})();
-
-// ── SECRET LOVE LETTER & PHOTO MEMORY CONTROLLER ─────────────────────
-(function initSecretLetterController() {
-    let currentSlide = 0;
-    const totalSlides = 7; // 5 photos + 2 video memories
-    let autoSlideTimer = null;
-
-    function isBirthdayUnlocked() {
-        if (window._bypassBdayLock === true) return true;
-        const now = new Date();
-        const targetYear = now.getFullYear();
-        const bdayStart = new Date(targetYear, 6, 23, 0, 0, 0); // July 23 00:00:00
-        const bdayEnd = new Date(targetYear, 6, 23, 23, 59, 59, 999);
-        return now >= bdayStart && now <= bdayEnd;
-    }
-    window.isBirthdayUnlocked = isBirthdayUnlocked;
-
-    function updateSecretLetterButtonUI() {
-        const isUnlocked = isBirthdayUnlocked();
-
-        // Secret Letter button
-        const btn = document.getElementById('secret-envelope-btn');
-        if (btn) {
-            if (isUnlocked) {
-                btn.innerHTML = '💌 Secret Letter';
-                btn.classList.add('unlocked');
-                btn.classList.remove('locked');
-                btn.title = "Open Secret Birthday Letter! 💖";
-            } else {
-                btn.innerHTML = '🔒 Secret Letter';
-                btn.classList.add('locked');
-                btn.classList.remove('unlocked');
-                btn.title = "Unlocks on July 23 at Midnight! 🔒 (Triple-click to preview)";
-            }
-        }
-
-        // Love / Birthday Mode button
-        const loveBtn = document.getElementById('love-theme-btn');
-        if (loveBtn) {
-            if (isUnlocked) {
-                loveBtn.innerHTML = '🎂 Birthday Mode';
-                loveBtn.title = "Toggle Birthday Celebration Mode! 🎂🎉";
-                loveBtn.classList.add('is-bday-mode');
-            } else {
-                loveBtn.innerHTML = '💖 Love Mode';
-                loveBtn.title = "Toggle Beating Hearts visualizer! 💖";
-                loveBtn.classList.remove('is-bday-mode');
-            }
-        }
-
-        // Locked countdown pill
-        const pill = document.getElementById('locked-countdown-pill');
-        if (pill) {
-            const now = new Date();
-            const bdayStart = new Date(now.getFullYear(), 6, 23, 0, 0, 0);
-            const diff = bdayStart - now;
-            if (diff > 0) {
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-                pill.textContent = `⏳ Unlocks in ${days}d ${hours}h ${minutes}m ${seconds}s`;
-            } else {
-                pill.textContent = `🎉 Ready to Unlock!`;
-            }
-        }
-    }
-
-    function openLockedModal() {
-        const modal = document.getElementById('letter-locked-modal');
-        if (modal) {
-            modal.classList.add('active');
-            modal.setAttribute('aria-hidden', 'false');
-        } else {
-            // Fallback if modal node missing: unlock directly for preview
-            window._bypassBdayLock = true;
-            openSecretLetter();
-            return;
-        }
-        
-        const btn = document.getElementById('secret-envelope-btn');
-        if (btn) {
-            btn.classList.remove('shake');
-            void btn.offsetWidth;
-            btn.classList.add('shake');
-            setTimeout(() => btn.classList.remove('shake'), 600);
-        }
-    }
-
-    function closeLockedModal() {
-        const modal = document.getElementById('letter-locked-modal');
-        if (!modal) return;
-        modal.classList.remove('active');
-        modal.setAttribute('aria-hidden', 'true');
-    }
-
-    function startAutoSlide() {
-        stopAutoSlide();
-        autoSlideTimer = setInterval(() => {
-            nextMemorySlide(false);
-        }, 3600); // Auto switch every 3.6 seconds
-    }
-
-    function stopAutoSlide() {
-        if (autoSlideTimer) {
-            clearInterval(autoSlideTimer);
-            autoSlideTimer = null;
-        }
-    }
-
-    let clickCount = 0;
-    let clickTimer = null;
-
-    function openSecretLetter(event) {
-        // Fast triple click or Shift key unlocks for Shivam developer preview!
-        clickCount++;
-        clearTimeout(clickTimer);
-        clickTimer = setTimeout(() => { clickCount = 0; }, 800);
-
-        if ((event && event.shiftKey) || clickCount >= 3) {
-            window._bypassBdayLock = true;
-            clickCount = 0;
-            console.log('🔓 Developer preview unlocked!');
-        }
-
-        if (!isBirthdayUnlocked()) {
-            openLockedModal();
-            return;
-        }
-
-        closeLockedModal();
-        const modal = document.getElementById('secret-letter-modal');
-        if (!modal) return;
-        modal.classList.add('active');
-        modal.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
-
-        // Auto-enable Birthday Mode floating particles if not active
-        if (typeof window.toggleLoveTheme === 'function') {
-            const bdayBtn = document.getElementById('love-theme-btn');
-            if (bdayBtn && !bdayBtn.classList.contains('active')) {
-                window.toggleLoveTheme(bdayBtn);
-            }
-        }
-
-        // Start auto slideshow
-        startAutoSlide();
-
-        // Trigger celebratory heart burst
-        triggerHeartBurst();
-    }
-
-    function closeSecretLetter() {
-        const modal = document.getElementById('secret-letter-modal');
-        if (!modal) return;
-        modal.classList.remove('active');
-        modal.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = '';
-
-        // Stop auto slideshow
-        stopAutoSlide();
-
-        // Pause any playing memory videos when modal is closed
-        const videos = modal.querySelectorAll('video');
-        videos.forEach(v => v.pause());
-    }
-
-    function setMemorySlide(idx, userInitiated = true) {
-        currentSlide = (idx + totalSlides) % totalSlides;
-
-        const slides = document.querySelectorAll('.gallery-slide');
-        const dots = document.querySelectorAll('.gallery-dots .dot');
-
-        slides.forEach((slide, i) => {
-            if (i === currentSlide) {
-                slide.classList.add('active');
-            } else {
-                slide.classList.remove('active');
-                const video = slide.querySelector('video');
-                if (video) video.pause();
-            }
-        });
-
-        dots.forEach((dot, i) => {
-            if (i === currentSlide) {
-                dot.classList.add('active');
-            } else {
-                dot.classList.remove('active');
-            }
-        });
-
-        if (userInitiated) {
-            startAutoSlide();
-        }
-    }
-
-    function nextMemorySlide(userInitiated = true) {
-        setMemorySlide(currentSlide + 1, userInitiated);
-    }
-
-    function prevMemorySlide(userInitiated = true) {
-        setMemorySlide(currentSlide - 1, userInitiated);
-    }
-
-    function triggerHeartBurst() {
-        const hearts = ['🎈', '💖', '💕', '❤️', '💙', '💗', '✨', '🌸', '🥳', '🎁', '🎂'];
-        const container = document.body;
-
-        for (let i = 0; i < 30; i++) {
-            const heart = document.createElement('div');
-            heart.className = 'floating-heart-particle';
-            heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
-            heart.style.left = `${Math.random() * 100}vw`;
-            heart.style.top = `${80 + Math.random() * 20}vh`;
-            heart.style.fontSize = `${1.2 + Math.random() * 1.5}rem`;
-            heart.style.animationDuration = `${2 + Math.random() * 1.5}s`;
-            heart.style.animationDelay = `${Math.random() * 0.4}s`;
-            
-            container.appendChild(heart);
-            setTimeout(() => {
-                if (heart && heart.parentNode) heart.parentNode.removeChild(heart);
-            }, 3500);
-        }
-    }
-
-    // Update button UI state every second
-    setInterval(updateSecretLetterButtonUI, 1000);
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', updateSecretLetterButtonUI);
-    } else {
-        updateSecretLetterButtonUI();
-    }
-
-    // Keyboard ESC closes letter
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            closeSecretLetter();
-            closeLockedModal();
-        }
-    });
-
-    // Expose functions globally for inline HTML onclick compatibility
-    window.openSecretLetter = openSecretLetter;
-    window.closeSecretLetter = closeSecretLetter;
-    window.closeLockedModal = closeLockedModal;
-    window.unlockIvoryLetter = function() {
-        window._bypassBdayLock = true;
-        updateSecretLetterButtonUI();
-        openSecretLetter();
-    };
-    window.setMemorySlide = setMemorySlide;
-    window.nextMemorySlide = nextMemorySlide;
-    window.prevMemorySlide = prevMemorySlide;
-    window.triggerHeartBurst = triggerHeartBurst;
-})();
-
-
-
-

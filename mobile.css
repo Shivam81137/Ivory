@@ -550,53 +550,88 @@
      7.  SEARCH BAR — premium glass input
   ───────────────────────────────────────────────── */
 
-  .search-container {
+  /* On mobile the wrapper is only a positioning shell: strip the desktop
+     pill (background / padding / margin / focus ring) so the input itself
+     is the one and only field — no double outline, full usable width. */
+  .search-container,
+  .search-container:hover,
+  .search-container:focus-within {
     position: relative;
     width: 100%;
     isolation: isolate;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
   }
 
   .search-container input#song-search {
     width: 100%;
-    height: 46px;
-    padding: 0 14px 0 42px;
-    border-radius: 14px;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
-    border: 1px solid rgba(255, 255, 255, 0.14);
+    height: 48px;
+    padding: 0 16px 0 46px;
+    border-radius: 24px;
+    /* glass fill: brighter than the header so the field clearly reads */
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.13) 0%,
+      rgba(255, 255, 255, 0.06) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.20);
     color: #fff;
-    font-size: 0.9rem;
+    /* 16px prevents iOS Safari from auto-zooming the page on focus */
+    font-size: 1rem;
+    font-weight: 500;
     font-family: inherit;
-    outline: none;
-    transition:
-      border-color 0.25s,
-      background 0.25s,
-      box-shadow 0.25s;
     letter-spacing: 0.01em;
+    outline: none;
+    caret-color: var(--cyan-accent);
+    -webkit-appearance: none;
+    appearance: none;
+    transition:
+      border-color 0.25s ease,
+      background 0.25s ease,
+      box-shadow 0.25s ease;
+    /* lift + top glass highlight for depth */
+    box-shadow:
+      0 8px 22px rgba(2, 7, 18, 0.45),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
   }
 
   .search-container input#song-search::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.84rem;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.92rem;
+    font-weight: 500;
   }
 
   .search-container input#song-search:focus,
   .search-container input#song-search:focus-visible {
-    border-color: rgba(var(--accent-rgb), 0.4);
-    background: linear-gradient(180deg, rgba(var(--accent-rgb), 0.08), rgba(var(--accent-rgb), 0.03));
+    border-color: rgba(var(--accent-rgb), 0.6);
+    background:
+      linear-gradient(180deg, rgba(var(--accent-rgb), 0.14) 0%, rgba(var(--accent-rgb), 0.05) 100%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
     box-shadow:
-      0 0 0 3px rgba(var(--accent-rgb), 0.14),
-      inset 0 1px 0 rgba(var(--accent-rgb), 0.08);
+      0 0 0 3px rgba(var(--accent-rgb), 0.16),
+      0 10px 26px rgba(2, 7, 18, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.16);
   }
 
   .search-icon-input {
     position: absolute;
-    left: 13px;
+    left: 17px;
     top: 50%;
     transform: translateY(-50%);
-    width: 16px;
-    height: 16px;
-    color: rgba(255, 255, 255, 0.56);
+    width: 17px;
+    height: 17px;
+    color: rgba(255, 255, 255, 0.8);
+    stroke-width: 2.2;
     pointer-events: none;
+    transition: color 0.25s ease;
+  }
+
+  .search-container:focus-within .search-icon-input {
+    color: var(--cyan-accent);
   }
 
   /* Search dropdown */
@@ -2678,69 +2713,4 @@ body:not(.intro-mode) #mobile-mini-player {
 .like-btn.active svg, .fs-like-btn.active svg {
   fill: currentColor !important;
   color: #ff4d6d !important;
-}
-
-/* ==========================================================================
-   Live Birthday Countdown - Mobile overrides
-   ========================================================================== */
-.bday-timer {
-  padding: 5px 10px !important;
-  font-size: 0.7rem !important;
-  gap: 4px !important;
-  height: 28px !important;
-  align-self: center;
-}
-
-.bday-heart {
-  font-size: 0.7rem;
-}
-
-.love-theme-row {
-  display: flex !important;
-  padding: 0 14px !important;
-  margin-top: 2px !important;
-  margin-bottom: 14px !important;
-  width: 100% !important;
-}
-
-.love-theme-btn {
-  width: 100% !important;
-  justify-content: center !important;
-  padding: 6px 12px !important;
-  font-size: 0.76rem !important;
-  gap: 6px !important;
-  height: 32px !important;
-  border-radius: 10px !important;
-}
-
-.secret-envelope-btn {
-  width: 100% !important;
-  justify-content: center !important;
-  padding: 6px 12px !important;
-  font-size: 0.76rem !important;
-  gap: 6px !important;
-  height: 32px !important;
-  border-radius: 10px !important;
-  margin-left: 0 !important;
-}
-
-@media (max-width: 768px) {
-  .love-theme-row {
-    flex-direction: row !important;
-    gap: 8px !important;
-  }
-  .letter-modal-card {
-    padding: 20px 16px 18px !important;
-    max-height: 88vh !important;
-    border-radius: 20px !important;
-  }
-  .letter-title {
-    font-size: 1.45rem !important;
-  }
-  .gallery-slide-container {
-    height: 340px !important;
-  }
-  .letter-paper {
-    font-size: 0.88rem !important;
-  }
 }

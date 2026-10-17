@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ivory-cache-v1';
+const CACHE_NAME = 'ivory-cache-v4';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -6,7 +6,11 @@ const ASSETS_TO_CACHE = [
   './mobile.css',
   './script.js',
   './post_render_patch.js',
+  './online_hub.js',
   './STREAMING_CONFIG.js',
+  './daily-quote.css',
+  './daily-quote.js',
+  './quotes-data.js',
   './IMAGES/logoo.png'
 ];
 

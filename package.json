@@ -5,7 +5,9 @@
   "main": "post_render_patch.js",
   "scripts": {
     "build:css": "tailwindcss -i ./src/input.css -o ./dist/tailwind.css --minify",
-    "dev:css": "tailwindcss -i ./src/input.css -o ./dist/tailwind.css --watch"
+    "dev:css": "tailwindcss -i ./src/input.css -o ./dist/tailwind.css --watch",
+    "build:quotes": "node scripts/build_quotes.mjs",
+    "dev": "node scripts/dev-server.mjs"
   },
   "repository": {
     "type": "git",

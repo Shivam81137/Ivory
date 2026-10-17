@@ -1,0 +1,517 @@
+/* ════════════════════════════════════════════════════════════════
+   IVORY · DAILY QUOTE CARD for Anveshika
+   A quiet frosted-glass card at the top of the home view: IST
+   greeting + typewriter name, one editorial quote, one pill.
+   Auto-refreshes on every visit (internet first, thousands of
+   quotes offline as backup).
+   ════════════════════════════════════════════════════════════════ */
+
+.dq-wrap {
+  margin: 0 0 22px;
+}
+
+.dq-card {
+  position: relative;
+  overflow: hidden;
+  padding: 28px 32px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(13, 16, 26, 0.72);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 20px 44px rgba(2, 6, 12, 0.45);
+  animation: dqCardIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* one soft radial glow, top-left, behind the content */
+.dq-card::before {
+  content: "";
+  position: absolute;
+  top: -90px;
+  left: -70px;
+  width: 360px;
+  height: 300px;
+  background: radial-gradient(
+    closest-side,
+    rgba(125, 211, 252, 0.1),
+    rgba(167, 139, 250, 0.05) 55%,
+    transparent 75%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes dqCardIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.99); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes dqFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes dqBlink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0; }
+}
+
+/* ─────────────── header ─────────────── */
+.dq-head {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.dq-id {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.dq-badge {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(rgba(17, 20, 30, 0.92), rgba(17, 20, 30, 0.92)) padding-box,
+    linear-gradient(135deg, rgba(125, 211, 252, 0.55), rgba(192, 132, 252, 0.5), rgba(244, 114, 182, 0.4)) border-box;
+  color: #f1f5f9;
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 600;
+  font-size: 17px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  box-shadow: 0 0 12px rgba(167, 139, 250, 0.12);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.dq-badge:hover { transform: translateY(-1px); box-shadow: 0 0 16px rgba(167, 139, 250, 0.22); }
+.dq-badge:active { transform: scale(0.95); }
+.dq-badge:focus-visible { outline: 2px solid rgba(125, 211, 252, 0.7); outline-offset: 2px; }
+
+.dq-heading {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.dq-kicker {
+  margin: 0 0 4px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #94a3b8;
+}
+
+.dq-title {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  column-gap: 6px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #f1f5f9;
+  min-height: 1.35em; /* the typewriter never shifts what's below it */
+}
+
+.dq-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+.dq-icon svg { display: block; }
+.dq-icon--moon    { color: #a5b4fc; }
+.dq-icon--sunrise { color: #fbbf24; }
+.dq-icon--sun     { color: #fcd34d; }
+.dq-icon--dusk    { color: #fdba74; }
+.dq-icon--starmoon { color: #c4b5fd; }
+
+.dq-greet { white-space: nowrap; }
+
+.dq-tw {
+  display: inline-block;
+  white-space: nowrap;
+}
+.dq-tw-text {
+  background: linear-gradient(90deg, #7dd3fc, #c084fc, #f472b6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  font-weight: 600;
+}
+.dq-tw-cursor {
+  margin-left: 1px;
+  color: #c084fc;
+  font-weight: 300;
+  animation: dqBlink 1.05s steps(2, start) infinite;
+}
+@supports not (background-clip: text) {
+  .dq-tw-text { color: #a5b4fc; -webkit-text-fill-color: #a5b4fc; }
+}
+
+/* one unified glass pill: date • Day X */
+.dq-pill {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 13px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 11.5px;
+  letter-spacing: 0.03em;
+  color: #cbd5e1;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.dq-pill .dq-dot { color: #475569; font-size: 9px; }
+.dq-day { color: #c4b5fd; font-weight: 600; }
+
+/* ─────────────── quote block (the hero) ─────────────── */
+.dq-body {
+  position: relative;
+  z-index: 1;
+  margin: 28px 0 0;
+  padding: 0;
+  min-height: 84px;
+}
+
+/* oversized low-opacity quote watermark */
+.dq-mark {
+  position: absolute;
+  top: -34px;
+  left: -4px;
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  font-size: 72px;
+  line-height: 1;
+  color: #f8fafc;
+  opacity: 0.06;
+  pointer-events: none;
+  user-select: none;
+}
+
+.dq-quote {
+  position: relative;
+  margin: 0;
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  font-size: clamp(24px, 2.4vw, 26px);
+  font-weight: 500;
+  line-height: 1.4;
+  color: #f8fafc;
+  transition: opacity 0.32s ease, transform 0.32s ease, filter 0.32s ease;
+}
+.dq-quote.is-swapping {
+  opacity: 0;
+  transform: translateY(6px);
+  filter: blur(3px);
+}
+
+.dq-author {
+  position: relative;
+  margin: 14px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: #cbd5e1;
+}
+.dq-sep { color: #475569; font-size: 10px; }
+.dq-tag {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.dq-fresh {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #a5b4fc;
+  opacity: 0;
+  transform: translateY(-2px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.dq-fresh svg { display: block; }
+.dq-fresh.is-on { opacity: 1; transform: translateY(0); }
+
+/* the quiet P.S. whisper */
+.dq-ps {
+  position: relative;
+  margin: 16px 0 0;
+  border-left: 2px solid rgba(192, 132, 252, 0.35);
+  padding-left: 12px;
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.5;
+  color: #94a3b8;
+  transition: opacity 0.3s ease;
+}
+.dq-ps.is-swapping { opacity: 0; }
+
+/* ─────────────── actions ─────────────── */
+.dq-actions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.dq-btn {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: #e2e8f0;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+  /* the app pulls in Tailwind preflight (`appearance: button`), which makes
+     Chrome swallow color/background transitions on buttons — opt out */
+  appearance: none;
+  -webkit-appearance: none;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.25s ease, transform 0.2s ease, color 0.2s ease;
+}
+.dq-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.14);
+  transform: translateY(-1px);
+}
+.dq-btn:active { transform: translateY(0) scale(0.98); }
+.dq-btn:focus-visible { outline: 2px solid rgba(125, 211, 252, 0.7); outline-offset: 2px; }
+
+.dq-btn .dq-ico { display: inline-flex; flex: 0 0 auto; }
+.dq-btn .dq-ico svg { display: block; }
+
+.dq-btn--primary {
+  color: #ffffff;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.16), rgba(168, 85, 247, 0.16));
+  border-color: rgba(168, 85, 247, 0.35);
+}
+.dq-btn--primary:hover {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.22), rgba(168, 85, 247, 0.22));
+  border-color: rgba(192, 132, 252, 0.55);
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.22);
+}
+
+.dq-btn.is-on {
+  color: #fbcfe8;
+  border-color: rgba(244, 114, 182, 0.45);
+  background: rgba(244, 114, 182, 0.1);
+}
+.dq-btn.is-on .dq-ico svg { fill: currentColor; }
+
+.dq-btn--book:hover {
+  background: rgba(244, 114, 182, 0.06);
+  border-color: rgba(244, 114, 182, 0.45);
+  box-shadow: inset 0 0 0 1px rgba(192, 132, 252, 0.18);
+}
+
+.dq-spacer { flex: 1 1 auto; }
+.dq-count { color: #a5b4fc; font-size: 11.5px; font-weight: 600; }
+
+/* ─────────────── saved quotes drawer ─────────────── */
+.dq-saved {
+  position: relative;
+  z-index: 1;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  display: none;
+}
+.dq-saved.is-open { display: block; animation: dqFadeIn 0.3s ease both; }
+
+.dq-saved-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.dq-saved-title {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  font-weight: 600;
+}
+.dq-saved-head .dq-btn { height: 28px; padding: 0 11px; font-size: 11.5px; }
+
+.dq-saved-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 210px;
+  overflow-y: auto;
+  display: grid;
+  gap: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.35) transparent;
+}
+.dq-saved-list::-webkit-scrollbar { width: 4px; }
+.dq-saved-list::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 3px; }
+
+.dq-saved-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: #e2e8f0;
+  animation: dqFadeIn 0.3s ease both;
+}
+.dq-saved-item p { margin: 0; flex: 1 1 auto; }
+.dq-saved-item p span { display: block; font-size: 11.5px; color: #94a3b8; margin-top: 4px; }
+.dq-saved-item button {
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 3px 5px;
+  border-radius: 6px;
+}
+.dq-saved-item button:hover { color: #f472b6; }
+.dq-saved-empty { font-size: 13px; color: #94a3b8; margin: 0; }
+
+/* ─────────────── footer ─────────────── */
+.dq-foot {
+  position: relative;
+  z-index: 1;
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 11px;
+  color: #64748b;
+  letter-spacing: 0.02em;
+}
+.dq-sig { color: #64748b; }
+
+/* ─────────────── floating hearts burst ─────────────── */
+.dq-heart {
+  position: absolute;
+  pointer-events: none;
+  animation: dqFloat 1.15s ease-out forwards;
+  z-index: 3;
+}
+.dq-heart svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+  filter: drop-shadow(0 0 4px rgba(244, 114, 182, 0.35));
+}
+@keyframes dqFloat {
+  0%   { opacity: 0; transform: translate(0, 0) scale(0.6); }
+  25%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--dx, 0px), -70px) scale(1.25); }
+}
+
+/* ─────────────── loading skeleton ─────────────── */
+.dq-skeleton {
+  height: 1.1em;
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.1), rgba(255,255,255,0.04));
+  background-size: 200% 100%;
+  animation: dqSkeleton 1.6s linear infinite;
+}
+@keyframes dqSkeleton {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+/* ─────────────── mobile ─────────────── */
+@media (max-width: 768px) {
+  .dq-wrap { margin-bottom: 16px; }
+
+  .dq-card {
+    padding: 22px 20px 18px;
+    border-radius: 18px;
+  }
+
+  .dq-badge { width: 40px; height: 40px; font-size: 16px; }
+  .dq-title { font-size: 17px; min-height: 2.7em; align-items: center; }
+
+  .dq-body { margin-top: 24px; min-height: 72px; }
+  .dq-mark { font-size: 56px; top: -26px; }
+  .dq-quote { font-size: 21px; line-height: 1.45; }
+
+  .dq-actions { gap: 7px; margin-top: 18px; }
+  .dq-btn { height: 34px; padding: 0 12px; font-size: 12.5px; gap: 6px; }
+  .dq-spacer { display: none; }
+  .dq-btn--book { margin-left: auto; }
+
+  .dq-foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .dq-fresh { font-size: 9.5px; }
+  .dq-saved-list { max-height: 170px; }
+}
+
+@media (max-width: 560px) {
+  .dq-head { flex-wrap: wrap; }
+  .dq-id { flex: 1 1 100%; }
+  .dq-pill { margin-left: auto; }
+}
+
+@media (max-width: 380px) {
+  .dq-card { padding: 18px 16px 15px; }
+  .dq-quote { font-size: 19.5px; }
+  .dq-btn { padding: 0 10px; font-size: 12px; }
+  .dq-btn .dq-ico svg { width: 14px; height: 14px; }
+}
+
+/* respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+  .dq-card,
+  .dq-quote,
+  .dq-ps,
+  .dq-skeleton,
+  .dq-heart,
+  .dq-saved-item,
+  .dq-tw-cursor {
+    animation: none !important;
+    transition: none !important;
+  }
+}
