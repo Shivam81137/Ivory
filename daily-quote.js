@@ -22,6 +22,57 @@
   const HER_NAMES = ["Anveshika ✨", "Anvi 🌸", "Noor 🌙", "Sunshine ☀️", "My Favorite Person 🤍"];
   const TYPEWRITER = { typeMs: 85, deleteMs: 45, holdMs: 2600, gapMs: 480 };
 
+  /* quotes that sound like her world — hand-written, always in the mix.
+     Add as many as you like; they're tagged "just for you" (category 7). */
+  const RELATABLE_QUOTES = [
+    ["You overthink at 2 a.m. and still get up at 7 — that's not weakness, that's stamina.", "Shivam"],
+    ["Chai can fix half your problems. The other half is sleep, but who's counting.", "Shivam"],
+    ["Saying I'm fine has become your favourite full sentence. Try a different one today.", "Shivam"],
+    ["Some days you're the sunshine, some days you just survive the weather. Both count.", "Shivam"],
+    ["Anvi, you don't need to be perfect to be someone's favourite person.", "Shivam"],
+    ["Noor means light, so please stop apologising for taking up space.", "Shivam"],
+    ["Your playlists know you better than most people do.", "Shivam"],
+    ["You give the best advice to everyone and take none of it. Classic you.", "Shivam"],
+    ["Crying in the shower counts as self-care. Don't argue with me.", "Shivam"],
+    ["You're not behind. You're just on a route nobody else is taking.", "Shivam"],
+    ["The way you remember tiny details about people is a whole love language.", "Shivam"],
+    ["Sunshine, your smile has better uptime than most apps.", "Shivam"],
+    ["You're allowed to outgrow the things you once loved.", "Shivam"],
+    ["Rest is not a reward you earn at the end. It's a requirement in the middle.", "Shivam"],
+    ["You are the reason at least three people still believe in kindness.", "Shivam"],
+    ["Overthinking is just imagination with the volume turned against you.", "Shivam"],
+    ["You've survived every single one of your worst days. That's a 100% record.", "Shivam"],
+    ["Not everyone will get you, and honestly, that's a them problem.", "Shivam"],
+    ["You're soft and strong somehow at the same time. That's rare.", "Shivam"],
+    ["Your 3 a.m. thoughts are not facts. They're just noise with confidence.", "Shivam"],
+    ["Anveshika, you deserve the same gentleness you keep giving everyone else.", "Shivam"],
+    ["Some mornings you win, some mornings you just show up. Showing up counts.", "Shivam"],
+    ["You make ordinary days feel like they have a soundtrack.", "Shivam"],
+    ["It's okay to be a work in progress and still be proud of the draft.", "Shivam"],
+    ["You don't owe anyone a version of you that's easier to digest.", "Shivam"],
+    ["The right people won't ask you to shrink.", "Shivam"],
+    ["You've been strong for so long that resting feels weird. Do it anyway.", "Shivam"],
+    ["The world gets louder when you're in a good mood. Protect that.", "Shivam"],
+    ["Feelings are visitors. Some stay longer than they should, but none stay forever.", "Shivam"],
+    ["You are not too much. You're a lot, for the right people, which is exactly the point.", "Shivam"],
+    ["One day you'll look back at this version of you and be proud she kept going.", "Shivam"],
+    ["Your laugh is the kind people remember.", "Shivam"],
+    ["You're allowed to change your mind, your plans, even your personality. That's growth, not betrayal.", "Shivam"],
+    ["Anvi, later is a completely valid answer to anything that's draining you.", "Shivam"],
+    ["You treat strangers like they matter, and that says everything.", "Shivam"],
+    ["Chai, music, and one text from the right person — that's a whole medicine cabinet.", "Shivam"],
+    ["You're not cold. You're just tired, and there's a difference.", "Shivam"],
+    ["The goal isn't to be happy every day. It's to be honest most days.", "Shivam"],
+    ["You've got the kind of heart that makes seasons change.", "Shivam"],
+    ["Even the moon takes a full month to come back around. Take your time too.", "Shivam"],
+    ["You don't need a glow-up. You need sleep, water, and one week off.", "Shivam"],
+    ["The version of you that's healing is not the version that's failing.", "Shivam"],
+    ["Some people collect followers. You collect people. That's the better game.", "Shivam"],
+    ["You don't just listen to songs, you live inside them for a while.", "Shivam"],
+    ["Your playlists are love letters you never send.", "Shivam"],
+    ["You're doing better than the voice in your head is charging you for.", "Shivam"],
+  ];
+
   /* every greeting, date and streak on this card runs on this clock */
   const TIME_ZONE = "Asia/Kolkata";
 
@@ -67,6 +118,7 @@
     heart: '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/>',
     share: '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98"/><path d="M15.41 6.51l-6.82 3.98"/>',
     copy: '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+    check: '<path d="M20 6 9 17l-5-5"/>',
     book: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/><path d="M12.6 8.7a1.7 1.7 0 0 0-2.4 0l-.2.2-.2-.2a1.7 1.7 0 0 0-2.4 2.4l2.6 2.6 2.6-2.6a1.7 1.7 0 0 0 0-2.4Z"/>',
   };
 
@@ -115,6 +167,14 @@
     const cat = typeof q[2] === "number" ? q[2] : 2;
     if (!byCategory.has(cat)) byCategory.set(cat, []);
     byCategory.get(cat).push(q);
+  }
+
+  /* her hand-written notes live in the "just for you" bucket (index 7) */
+  for (const rel of RELATABLE_QUOTES) {
+    const q = [rel[0], rel[1] || "Shivam", 7];
+    pool.push(q);
+    if (!byCategory.has(7)) byCategory.set(7, []);
+    byCategory.get(7).push(q);
   }
 
   function pickLocalQuote(avoidText) {
@@ -484,7 +544,6 @@
           <div class="dq-id">
             <button class="dq-badge" id="dq-badge" type="button" title="Send some love" aria-label="Send some love">A</button>
             <div class="dq-heading">
-              <p class="dq-kicker">A little something for</p>
               <h2 class="dq-title">
                 <span class="dq-icon dq-icon--${band.icon}" id="dq-icon">${icon(band.icon, 18)}</span><span class="dq-greet" id="dq-greet">${band.greet}</span><span class="dq-tw" id="dq-tw" aria-label="${GIRL}"></span>
               </h2>
@@ -492,8 +551,6 @@
           </div>
           <div class="dq-pill">
             <span id="dq-date">${clock.dateLabel}</span>
-            <span class="dq-dot" aria-hidden="true">•</span>
-            <span class="dq-day" id="dq-visits" title="Days you've brightened this app">Day ${clock.visits.count}</span>
           </div>
         </header>
 
@@ -502,20 +559,18 @@
           <p class="dq-quote" id="dq-quote" aria-live="polite"><span class="dq-skeleton" style="display:inline-block;width:70%"></span></p>
           <p class="dq-author">
             <span id="dq-author"></span>
-            <span class="dq-sep" aria-hidden="true">•</span>
-            <span class="dq-tag" id="dq-tag">picked for you</span>
-            <span class="dq-fresh" id="dq-fresh">${icon("sparkles", 12)}<span>fresh from the internet</span></span>
+            <span class="dq-fresh" id="dq-fresh" title="Fresh from the internet">${icon("sparkles", 12)}</span>
           </p>
           <p class="dq-ps" id="dq-ps">${band.ps}</p>
         </blockquote>
 
         <div class="dq-actions">
-          <button class="dq-btn dq-btn--primary" id="dq-next" type="button"><span class="dq-ico">${icon("sparkles", 15)}</span><span class="dq-btn-t">One more</span></button>
-          <button class="dq-btn" id="dq-save" type="button" aria-pressed="false"><span class="dq-ico">${icon("heart", 15)}</span><span class="dq-btn-t">Save</span></button>
-          <button class="dq-btn" id="dq-share" type="button"><span class="dq-ico">${icon("share", 15)}</span><span class="dq-btn-t">Share</span></button>
-          <button class="dq-btn" id="dq-copy" type="button"><span class="dq-ico">${icon("copy", 15)}</span><span class="dq-btn-t">Copy</span></button>
+          <button class="dq-btn dq-btn--primary" id="dq-next" type="button" title="Another quote"><span class="dq-ico">${icon("sparkles", 15)}</span><span class="dq-btn-t">One more</span></button>
+          <button class="dq-btn dq-btn--icon" id="dq-save" type="button" title="Save" aria-pressed="false"><span class="dq-ico">${icon("heart", 15)}</span><span class="dq-btn-t dq-sr">Save</span></button>
+          <button class="dq-btn dq-btn--icon" id="dq-share" type="button" title="Share"><span class="dq-ico">${icon("share", 15)}</span><span class="dq-btn-t dq-sr">Share</span></button>
+          <button class="dq-btn dq-btn--icon" id="dq-copy" type="button" title="Copy"><span class="dq-ico">${icon("copy", 15)}</span><span class="dq-btn-t dq-sr">Copy</span></button>
           <span class="dq-spacer"></span>
-          <button class="dq-btn dq-btn--book" id="dq-open-saved" type="button"><span class="dq-ico">${icon("book", 15)}</span><span class="dq-btn-t">Her little book</span><span class="dq-count" id="dq-count"></span></button>
+          <button class="dq-btn dq-btn--icon dq-btn--book" id="dq-open-saved" type="button" title="Her little book"><span class="dq-ico">${icon("book", 15)}</span><span class="dq-count" id="dq-count"></span><span class="dq-btn-t dq-sr">Her little book</span></button>
         </div>
 
         <div class="dq-saved" id="dq-saved">
@@ -527,7 +582,6 @@
         </div>
 
         <footer class="dq-foot">
-          <span id="dq-meta"></span>
           <span class="dq-sig">made with <span class="dq-h">&hearts;</span> by ${FROM}</span>
         </footer>
       </article>`;
@@ -540,6 +594,57 @@
      ════════════════════════════════════════════════════════════ */
   let card, els, current = null;
 
+  /* ════════════════════════════════════════════════════════════
+     MUSIC DOCK — the card steps aside while a song plays
+     ════════════════════════════════════════════════════════════ */
+  let musicPlaying = false;
+  const hookedMedia = new WeakSet();
+
+  function applyMusicDock() {
+    const wrap = card && document.body.contains(card) ? card : document.getElementById("dq-wrap");
+    if (wrap) wrap.classList.toggle("is-playing", musicPlaying);
+  }
+
+  function setMusicPlaying(on) {
+    on = !!on;
+    if (on === musicPlaying) return;
+    musicPlaying = on;
+    applyMusicDock();
+  }
+
+  function hookMedia(el) {
+    if (!el || hookedMedia.has(el)) return;
+    hookedMedia.add(el);
+    /* a play() with no source behind it isn't a song — don't duck for it */
+    const hasSource = () => Boolean(el.currentSrc || el.src || (el.querySelector && el.querySelector("source")));
+    el.addEventListener("play", () => setMusicPlaying(hasSource()));
+    el.addEventListener("playing", () => setMusicPlaying(true));
+    el.addEventListener("pause", () => setMusicPlaying(false));
+    el.addEventListener("ended", () => setMusicPlaying(false));
+    el.addEventListener("error", () => setMusicPlaying(false));
+  }
+
+  /* media events don't bubble — capture them for anything in the DOM … */
+  document.addEventListener("play", (e) => hookMedia(e.target), true);
+
+  /* … and wrap play() once so the music app's detached <audio> is caught too.
+     Never touches playback itself: if play fails or is blocked, the card
+     simply comes back. */
+  if (window.HTMLMediaElement && !window.__ivoryDqMediaPatched) {
+    window.__ivoryDqMediaPatched = true;
+    const nativePlay = HTMLMediaElement.prototype.play;
+    HTMLMediaElement.prototype.play = function () {
+      try {
+        hookMedia(this);
+      } catch {
+        /* keep playback untouched */
+      }
+      const result = nativePlay.apply(this, arguments);
+      if (result && typeof result.catch === "function") result.catch(() => setMusicPlaying(false));
+      return result;
+    };
+  }
+
   function quoteToObject(text, author, cat) {
     return { t: text, a: author || "", c: typeof cat === "number" ? cat : -1 };
   }
@@ -551,9 +656,7 @@
     const paint = () => {
       els.quote.textContent = q.t;
       els.author.textContent = authorLine(q.a);
-      els.tag.textContent = q.c >= 0 ? CATEGORY_LABELS[q.c] || "picked for you" : "picked for you";
       els.ps.textContent = clock.band.ps;
-      els.meta.textContent = metaLine();
       syncSaveButton();
 
       els.quote.classList.remove("is-swapping");
@@ -596,10 +699,17 @@
     }
   }
 
-  function metaLine() {
-    const total = (window.IVORY_QUOTES_META && window.IVORY_QUOTES_META.count) || pool.length;
-    const inPool = pool.length >= total ? pool.length : total;
-    return `${inPool.toLocaleString()} quotes in her collection · a new one every visit`;
+  /* icon-only buttons give feedback by swapping to a checkmark for a beat */
+  function flashCheck(btn) {
+    const ico = btn && btn.querySelector(".dq-ico");
+    if (!ico) return;
+    if (!ico.dataset.orig) ico.dataset.orig = ico.innerHTML;
+    ico.innerHTML = icon("check", 15);
+    clearTimeout(Number(ico.dataset.t) || 0);
+    ico.dataset.t = setTimeout(() => {
+      ico.innerHTML = ico.dataset.orig;
+      delete ico.dataset.t;
+    }, 1600);
   }
 
   function flashFresh() {
@@ -690,8 +800,9 @@
     els.save.classList.toggle("is-on", on);
     els.save.setAttribute("aria-pressed", on ? "true" : "false");
     els.saveLabel.textContent = on ? "Saved" : "Save";
+    els.save.title = on ? "Saved to her little book" : "Save";
     const list = savedList();
-    els.count.textContent = list.length ? "(" + list.length + ")" : "";
+    els.count.textContent = list.length ? String(list.length) : "";
   }
 
   function renderSaved() {
@@ -760,7 +871,6 @@
     }
     if (clock.dateKey !== prevKey) {
       els.date.textContent = clock.dateLabel;
-      els.visits.textContent = "Day " + clock.visits.count;
     }
   }
 
@@ -774,14 +884,13 @@
 
     card = buildCard();
     host.insertBefore(card, host.firstChild);
+    applyMusicDock();
 
     els = {
       card: card.querySelector("#dq-card"),
       quote: card.querySelector("#dq-quote"),
       author: card.querySelector("#dq-author"),
-      tag: card.querySelector("#dq-tag"),
       ps: card.querySelector("#dq-ps"),
-      meta: card.querySelector("#dq-meta"),
       fresh: card.querySelector("#dq-fresh"),
       save: card.querySelector("#dq-save"),
       saveLabel: card.querySelector("#dq-save .dq-btn-t"),
@@ -791,7 +900,6 @@
       icon: card.querySelector("#dq-icon"),
       greet: card.querySelector("#dq-greet"),
       date: card.querySelector("#dq-date"),
-      visits: card.querySelector("#dq-visits"),
     };
 
     useTypewriter(card.querySelector("#dq-tw"));
@@ -828,6 +936,7 @@
       const ok = await copyText(text);
       const old = label.textContent;
       label.textContent = ok ? "Copied" : "Can't copy";
+      if (ok) flashCheck(btn);
       setTimeout(() => (label.textContent = old), 1600);
     });
 
@@ -839,7 +948,8 @@
         title: `A quote for ${GIRL}`,
         text: `${text}\n\nFrom ${FROM}, with love ❤️`,
       };
-      const label = e.currentTarget.querySelector(".dq-btn-t");
+      const btn = e.currentTarget;
+      const label = btn.querySelector(".dq-btn-t");
       try {
         if (navigator.share) {
           await navigator.share(payload);
@@ -851,6 +961,7 @@
       const old = label.textContent;
       const ok = await copyText(payload.text);
       label.textContent = ok ? "Copied" : "Can't share";
+      if (ok) flashCheck(btn);
       setTimeout(() => (label.textContent = old), 1600);
     });
 
@@ -939,6 +1050,11 @@
     next: () => nextQuote(true),
     saved: () => savedList(),
     size: () => pool.length,
+    buckets: () => Object.fromEntries([...byCategory].map(([k, v]) => [k, v.length])),
+    pick: () => {
+      const q = pickLocalQuote();
+      return q ? q[0].slice(0, 60) : null;
+    },
     clock: () => ({
       hour: clock.hour,
       dateKey: clock.dateKey,

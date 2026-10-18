@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ivory-cache-v4';
+const CACHE_NAME = 'ivory-cache-v6';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
