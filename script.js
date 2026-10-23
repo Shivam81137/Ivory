@@ -2094,11 +2094,6 @@ function renderSongList(playlistSongs, titleOverride) {
             `;
             container.appendChild(row);
 
-            // Lazy fetch duration if not present
-            if (!song.durationFormatted) {
-                fetchSongDuration(song, globalIndex);
-            }
-
             // Set up error handler instantly
             const artEl = document.getElementById(`list-art-${globalIndex}`);
             if (artEl) {
@@ -2127,7 +2122,14 @@ function renderSongList(playlistSongs, titleOverride) {
                     const indexStr = img.id.split('-')[2];
                     const index = parseInt(indexStr);
                     const song = songs[index];
-                    
+
+                    // Duration is read from the media file itself (a second
+                    // stream to the server), so only request it for rows that
+                    // actually come into view instead of all at once on render.
+                    if (song && !song.durationFormatted) {
+                        fetchSongDuration(song, index);
+                    }
+
                     if (song && !song.fetchedArt) {
                         const currentArt = song.art || "IMAGES/logoo.png";
                         const isGeneric = currentArt === "IMAGES/logoo.png" || !currentArt.startsWith('http') || currentArt.includes('Hindi-Hit-Songs');
@@ -2183,7 +2185,36 @@ function fetchSongDuration(song, index) {
     _processDurationQueue();
 }
 
+// ── Metadata-request throttling ──────────────────────────────────────────────
+// Reading duration means opening a second HTTP stream for the same server. If
+// those requests start while the current track is still buffering they compete
+// with playback and make songs start late / stutter. Hold the queue back until
+// the active track has a healthy buffer, then drain it normally.
+let _durationQueueRetryTimer = null;
+
+function _isPlaybackBuffering() {
+    if (!audio || audio.paused || audio.ended) return false;
+    return audio.readyState < HTMLMediaElement.HAVE_FUTURE_DATA || audio.currentTime < 3;
+}
+
 function _processDurationQueue() {
+    if (_durationFetchQueue.length === 0) return;
+
+    if (_isPlaybackBuffering()) {
+        if (!_durationQueueRetryTimer) {
+            _durationQueueRetryTimer = setTimeout(() => {
+                _durationQueueRetryTimer = null;
+                _processDurationQueue();
+            }, 2000);
+        }
+        return;
+    }
+
+    if (_durationQueueRetryTimer) {
+        clearTimeout(_durationQueueRetryTimer);
+        _durationQueueRetryTimer = null;
+    }
+
     while (_durationFetchActive < MAX_CONCURRENT_DURATION_FETCHES && _durationFetchQueue.length > 0) {
         const { song, index } = _durationFetchQueue.shift();
         _durationFetchActive++;
@@ -2256,7 +2287,17 @@ audio.setAttribute('aria-hidden', 'true');
 function attachPersistentAudioElement() {
     try {
         if (document.body && !audio.parentNode) {
-            audio.style.display = 'none';
+            // Keep the element in the document (iOS will not keep a detached
+            // element alive in the background) but move it off-screen instead
+            // of `display:none`, which some mobile browsers treat as "not
+            // rendered" and pause when the screen locks.
+            audio.style.position = 'fixed';
+            audio.style.left = '-9999px';
+            audio.style.top = '0';
+            audio.style.width = '1px';
+            audio.style.height = '1px';
+            audio.style.opacity = '0';
+            audio.style.pointerEvents = 'none';
             document.body.appendChild(audio);
         }
     } catch (e) {
@@ -2265,6 +2306,74 @@ function attachPersistentAudioElement() {
 }
 if (document.body) attachPersistentAudioElement();
 else document.addEventListener('DOMContentLoaded', attachPersistentAudioElement, { once: true });
+
+// ── Shared Web Audio graph ──────────────────────────────────────────────────
+// A media element can only ever be attached to one MediaElementSourceNode.
+// Creating a second one throws InvalidStateError and can leave the element
+// routed through a dead graph (silence). Both visualizers therefore share one
+// context + source, created lazily on first use.
+let _sharedAudioContext = null;
+let _sharedAudioSource = null;
+let _sharedAnalyser = null;
+
+function getSharedAudioContext() {
+    if (_sharedAudioContext) return _sharedAudioContext;
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return null;
+    try {
+        _sharedAudioContext = new AudioContextClass();
+    } catch (e) {
+        console.warn('[Ivory] Web Audio unavailable:', e);
+        _sharedAudioContext = null;
+    }
+    return _sharedAudioContext;
+}
+
+function getSharedAudioSource() {
+    if (_sharedAudioSource) return _sharedAudioSource;
+    const context = getSharedAudioContext();
+    if (!context) return null;
+    try {
+        _sharedAudioSource = context.createMediaElementSource(audio);
+        window.audioSourceNode = _sharedAudioSource; // legacy compatibility
+    } catch (e) {
+        // Another visualizer already created the source — reuse its node.
+        _sharedAudioSource = window.audioSourceNode || null;
+    }
+    return _sharedAudioSource;
+}
+
+/**
+ * The (single) analyser that also keeps the element routed to the speakers.
+ * Every visualizer draws from this node, so the audio graph is never rebuilt.
+ */
+function getSharedAnalyser() {
+    if (_sharedAnalyser) return _sharedAnalyser;
+    const context = getSharedAudioContext();
+    const source = getSharedAudioSource();
+    if (!context || !source) return null;
+    try {
+        _sharedAnalyser = context.createAnalyser();
+        _sharedAnalyser.fftSize = 256;
+        source.connect(_sharedAnalyser);
+        _sharedAnalyser.connect(context.destination);
+    } catch (e) {
+        console.warn('[Ivory] Could not build audio analyser:', e);
+        _sharedAnalyser = null;
+    }
+    return _sharedAnalyser;
+}
+
+function resumeSharedAudioContext() {
+    const context = _sharedAudioContext;
+    if (!context || context.state === 'running') return;
+    try {
+        const p = context.resume();
+        if (p && typeof p.catch === 'function') p.catch(() => {});
+    } catch (e) {
+        // Autoplay policy can reject resume until the next user gesture.
+    }
+}
 
 const supportsMediaSession = typeof navigator !== 'undefined' && 'mediaSession' in navigator;
 const MEDIA_ARTWORK_SIZES = [96, 128, 192, 256, 384, 512];
@@ -2684,6 +2793,38 @@ function loadSong(index, options = {}) {
 	audio.onloadedmetadata = null;
 	audio.onerror = null;
 
+	// Both handlers are installed *before* `src` is assigned. A bad URL can fail
+	// fast enough that the `error` event fires while `load()` is still running;
+	// a handler attached afterwards would miss it and playback would stay stuck
+	// on a dead track with no auto-skip.
+	audio.onerror = function(e) {
+		if (_suppressAudioErrorHandler) return;
+		if (songs[currentIndex] !== song) return; // stale event from an older load
+		console.warn(`Stream error: ${song.title}`, e);
+
+		if (song._isOnline && document.visibilityState === 'visible') {
+			console.log('Opening stream in browser');
+			if (song._source === 'youtube') {
+				window.open(song.file, '_blank');
+			} else if (song.fullStreamUrl) {
+				window.open(song.fullStreamUrl, '_blank');
+			}
+		}
+		_scheduleSkipToNextPlayable('stream-error');
+	};
+
+	audio.onloadedmetadata = () => {
+		updateMediaSessionPositionState();
+		LyricsManager.fetchLyrics(song.artist, song.title, audio.duration);
+
+		const primaryArtist = song.artist.split(',')[0].trim();
+		fetchYouTubeVideoId(primaryArtist, song.title);
+
+		// Preload the next track, but only after this one has settled. See
+		// _schedulePreloadNextTrack() for why this is deferred.
+		_schedulePreloadNextTrack();
+	};
+
 	// Only cross-origin media needs CORS; local files keep playing without it.
 	try {
 		const resolved = new URL(sourceUrl, window.location.href);
@@ -2719,40 +2860,39 @@ function loadSong(index, options = {}) {
 	// the lock screen shows the right title/artist even before playback starts.
 	syncMediaSession();
 
-    // Fetch lyrics and canvas
-    audio.onloadedmetadata = () => {
-		updateMediaSessionPositionState();
-        LyricsManager.fetchLyrics(song.artist, song.title, audio.duration);
-        
-        const primaryArtist = song.artist.split(',')[0].trim(); 
-        fetchYouTubeVideoId(primaryArtist, song.title);
-
-        // Preload next track's metadata for smooth transitions
-        _preloadNextTrack();
-    };
-	
-	// ── Error handler ──────────────────
-	audio.onerror = function(e) {
-		if (_suppressAudioErrorHandler) return;
-		if (songs[currentIndex] !== song) return; // stale event from an older load
-		console.warn(`Stream error: ${song.title}`, e);
-		
-		if (song._isOnline && document.visibilityState === 'visible') {
-			console.log('Opening stream in browser');
-			if (song._source === 'youtube') {
-				window.open(song.file, '_blank');
-			} else if (song.fullStreamUrl) {
-				window.open(song.fullStreamUrl, '_blank');
-			}
-		}
-		_scheduleSkipToNextPlayable('stream-error');
-	};
-
 	return true;
 }
 
 // ── Next-track preloading for smooth transitions ──
 let _preloadAudio = null;
+let _preloadTimer = null;
+
+/**
+ * Defers the metadata preload of the upcoming track.
+ *
+ * Opening a second media stream right after `loadedmetadata` competes with the
+ * current track for bandwidth/connections — on mobile and on local dev servers
+ * that shows up as the first few seconds of a song stuttering or restarting.
+ * Waiting until the current track is comfortably buffered keeps the start of
+ * playback clean; preloading still happens well before the track ends.
+ */
+function _schedulePreloadNextTrack(delay = 4000) {
+    if (_preloadTimer) clearTimeout(_preloadTimer);
+    const scheduledIndex = currentIndex;
+    const attempt = () => {
+        _preloadTimer = null;
+        if (currentIndex !== scheduledIndex) return;   // track changed meanwhile
+        if (document.visibilityState !== 'visible') return;
+        if (audio.paused || audio.ended) return;
+        if (audio.readyState < HTMLMediaElement.HAVE_FUTURE_DATA) {
+            _preloadTimer = setTimeout(attempt, 2000); // still buffering — retry
+            return;
+        }
+        _preloadNextTrack();
+    };
+    _preloadTimer = setTimeout(attempt, delay);
+}
+
 function _preloadNextTrack() {
     if (RuntimePerf.isSlowNetwork()) return;
 
@@ -3870,16 +4010,18 @@ const VisualizerManager = window.VisualizerManager = {
             return;
         }
 
-        // Initialize AudioContext
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        this.audioContext = new AudioContext();
-
-        // Connect Audio Source
-        // Note: connect only once to avoid errors
-        if (!this.source) {
-            this.source = this.audioContext.createMediaElementSource(audio);
-            this.source.connect(this.audioContext.destination);
+        // Reuse the single shared context/source created by the audio
+        // visualizer. Creating a second MediaElementSource for the same audio
+        // element throws and can mute playback.
+        const sharedContext = getSharedAudioContext();
+        const sharedSource = getSharedAudioSource();
+        if (!sharedContext || !sharedSource) {
+            console.warn('Visualizer skipped: shared audio graph unavailable.');
+            return;
         }
+        this.audioContext = sharedContext;
+        this.source = sharedSource;
+        resumeSharedAudioContext();
 
         // Setup Canvas
         container.innerHTML = '<canvas id="viz-canvas"></canvas>';
@@ -4815,49 +4957,81 @@ class AudioVisualizer {
         if (!this.canvas) return;
         this.ctx = this.canvas.getContext('2d');
 
-        this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        this.analyser = this.audioCtx.createAnalyser();
+        // Use the shared audio graph. Re-creating a MediaElementSource throws
+        // InvalidStateError, and rebuilding the analyser on every track/play
+        // leaks nodes and makes playback progressively heavier.
+        this.audioCtx = getSharedAudioContext();
+        this.analyser = getSharedAnalyser();
+        if (!this.audioCtx || !this.analyser) return;
+        // Kept for backwards compatibility with code that inspects it.
+        this.source = _sharedAudioSource;
 
-        // Connect source only once
-        if (!window.audioSourceNode) {
-            window.audioSourceNode = this.audioCtx.createMediaElementSource(this.audio);
-        }
-        window.audioSourceNode.connect(this.analyser);
-        this.analyser.connect(this.audioCtx.destination);
-
-        this.analyser.fftSize = 256;
+        this.fftSize = this.analyser.fftSize;
         this.bufferLength = this.analyser.frequencyBinCount;
         this.dataArray = new Uint8Array(this.bufferLength);
+        this._running = false;
+        this._rafId = null;
+        this._accent = '#32e0ff';
+        this._accentTick = 0;
 
         this.draw = this.draw.bind(this);
     }
 
+    _refreshAccent() {
+        try {
+            const computedStyle = getComputedStyle(document.documentElement);
+            const neonAccent = computedStyle.getPropertyValue('--neon-accent').trim();
+            if (neonAccent) this._accent = neonAccent;
+        } catch (e) {
+            this._accent = '#32e0ff';
+        }
+    }
+
     start() {
-        if (this.audioCtx.state === 'suspended') this.audioCtx.resume();
-        this.draw();
+        if (!this.analyser || !this.ctx) return;
+        resumeSharedAudioContext();
+        // Guard: `play` can fire repeatedly (retries, track switches). Without
+        // this every call would start another endless rAF loop.
+        if (this._running) return;
+        this._running = true;
+        this._refreshAccent();
+        this._rafId = requestAnimationFrame(this.draw);
+    }
+
+    stop() {
+        this._running = false;
+        if (this._rafId) {
+            cancelAnimationFrame(this._rafId);
+            this._rafId = null;
+        }
+        try {
+            if (this.ctx) this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        } catch (e) {}
     }
 
     draw() {
-        requestAnimationFrame(this.draw); // Maintains 60fps link
+        if (!this._running) return;
+
+        this._rafId = requestAnimationFrame(this.draw);
 
         this.analyser.getByteFrequencyData(this.dataArray);
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+        // Reading computed CSS every frame is expensive on mobile. Refresh the
+        // accent occasionally instead.
+        if (++this._accentTick % 120 === 0) this._refreshAccent();
+
         const barWidth = (this.canvas.width / this.bufferLength) * 2.5;
         let x = 0;
 
-        // Fetch current UI accent variable dynamically
-        const computedStyle = getComputedStyle(document.documentElement);
-        const neonAccent = computedStyle.getPropertyValue('--neon-accent').trim() || '#32e0ff';
-
-        for(let i = 0; i < this.bufferLength; i++) {
+        for (let i = 0; i < this.bufferLength; i++) {
             const barHeight = this.dataArray[i] / 2;
-            this.ctx.fillStyle = neonAccent;
+            this.ctx.fillStyle = this._accent;
             this.ctx.globalAlpha = 0.4; // Soft background glow
-
             this.ctx.fillRect(x, this.canvas.height - barHeight, barWidth, barHeight);
             x += barWidth + 1;
         }
+        this.ctx.globalAlpha = 1;
     }
 }
 
@@ -4895,9 +5069,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (playerAudio) {
        ivoryVisualizer = new AudioVisualizer(playerAudio, 'audio-visualizer');
-       // Auto-starts drawing loop on first play
-       playerAudio.addEventListener('play', () => {
-           if (ivoryVisualizer) ivoryVisualizer.start();
+       if (ivoryVisualizer) {
+           // Drive the single rAF loop from playback state. Left unguarded the
+           // loop would keep redrawing (and burning battery) while paused, and
+           // duplicate `play` events would stack extra loops.
+           playerAudio.addEventListener('play', () => ivoryVisualizer.start());
+           playerAudio.addEventListener('playing', () => ivoryVisualizer.start());
+           playerAudio.addEventListener('pause', () => ivoryVisualizer.stop());
+           playerAudio.addEventListener('ended', () => ivoryVisualizer.stop());
+           playerAudio.addEventListener('emptied', () => ivoryVisualizer.stop());
+       }
+
+       // The tab being hidden should idle the canvas but never touch the audio
+       // graph, so background playback keeps working.
+       document.addEventListener('visibilitychange', () => {
+           if (!ivoryVisualizer) return;
+           if (document.hidden) ivoryVisualizer.stop();
+           else if (!playerAudio.paused && !playerAudio.ended) ivoryVisualizer.start();
        });
     }
 });
